@@ -1,0 +1,72 @@
+2025-01-03 10:13:31 - INFO - [main.py:112] - Starting Modbus TCP Server...
+2025-01-03 10:13:31 - INFO - [async_io.py:247] - Server listening.
+2025-01-03 10:13:31 - INFO - [main.py:135] - Starting Web Server on port 5001...
+2025-01-03 10:13:31 - INFO - [_internal.py:97] - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.0.4:5001
+2025-01-03 10:13:31 - INFO - [_internal.py:97] - [33mPress CTRL+C to quit[0m
+2025-01-03 10:13:55 - INFO - [_internal.py:97] - 127.0.0.1 - - [03/Jan/2025 10:13:55] "[32mGET / HTTP/1.1[0m" 302 -
+2025-01-03 10:13:55 - INFO - [_internal.py:97] - 127.0.0.1 - - [03/Jan/2025 10:13:55] "GET /login?next=/ HTTP/1.1" 200 -
+2025-01-03 10:14:11 - INFO - [_internal.py:97] - 127.0.0.1 - - [03/Jan/2025 10:14:11] "[32mPOST /login?next=/ HTTP/1.1[0m" 302 -
+2025-01-03 10:14:11 - INFO - [_internal.py:97] - 127.0.0.1 - - [03/Jan/2025 10:14:11] "GET / HTTP/1.1" 200 -
+2025-01-03 10:21:11 - INFO - [database_handler.py:77] - Saved message with ID: 1
+2025-01-03 10:21:11 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [7, 54, 85]
+2025-01-03 10:21:14 - INFO - [database_handler.py:77] - Saved message with ID: 2
+2025-01-03 10:21:14 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [146, 86]
+2025-01-03 10:21:17 - INFO - [database_handler.py:77] - Saved message with ID: 3
+2025-01-03 10:21:17 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [34, 105, 10]
+2025-01-03 10:21:20 - INFO - [database_handler.py:77] - Saved message with ID: 4
+2025-01-03 10:21:20 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [41]
+2025-01-03 10:21:23 - INFO - [database_handler.py:77] - Saved message with ID: 5
+2025-01-03 10:21:23 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [96]
+2025-01-03 10:21:24 - INFO - [_internal.py:97] - 127.0.0.1 - - [03/Jan/2025 10:21:24] "GET / HTTP/1.1" 200 -
+2025-01-03 10:21:26 - INFO - [database_handler.py:77] - Saved message with ID: 6
+2025-01-03 10:21:26 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [115, 90]
+2025-01-03 10:21:29 - INFO - [database_handler.py:77] - Saved message with ID: 7
+2025-01-03 10:21:29 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [144, 31]
+2025-01-03 10:21:32 - INFO - [database_handler.py:77] - Saved message with ID: 8
+2025-01-03 10:21:32 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [130, 141, 99]
+2025-01-03 10:21:35 - INFO - [database_handler.py:77] - Saved message with ID: 9
+2025-01-03 10:21:35 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [16, 71, 124]
+2025-01-03 10:21:38 - INFO - [database_handler.py:77] - Saved message with ID: 10
+2025-01-03 10:21:38 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [100, 69]
+2025-01-03 10:21:41 - INFO - [database_handler.py:77] - Saved message with ID: 11
+2025-01-03 10:21:41 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [131, 59, 42]
+2025-01-03 10:21:44 - INFO - [database_handler.py:77] - Saved message with ID: 12
+2025-01-03 10:21:44 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [67, 97]
+2025-01-03 10:21:47 - INFO - [database_handler.py:77] - Saved message with ID: 13
+2025-01-03 10:21:47 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [65]
+2025-01-03 10:21:50 - INFO - [_internal.py:97] - 127.0.0.1 - - [03/Jan/2025 10:21:50] "[32mGET / HTTP/1.1[0m" 302 -
+2025-01-03 10:21:50 - INFO - [_internal.py:97] - 127.0.0.1 - - [03/Jan/2025 10:21:50] "GET /login?next=/ HTTP/1.1" 200 -
+2025-01-03 10:21:50 - INFO - [database_handler.py:77] - Saved message with ID: 14
+2025-01-03 10:21:50 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [49, 134]
+2025-01-03 10:21:50 - INFO - [_internal.py:97] - 127.0.0.1 - - [03/Jan/2025 10:21:50] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-01-03 10:21:53 - INFO - [database_handler.py:77] - Saved message with ID: 15
+2025-01-03 10:21:53 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [31, 74]
+2025-01-03 10:21:56 - INFO - [database_handler.py:77] - Saved message with ID: 16
+2025-01-03 10:21:56 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [97]
+2025-01-03 10:21:59 - INFO - [database_handler.py:77] - Saved message with ID: 17
+2025-01-03 10:21:59 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [145, 155, 149]
+2025-01-03 10:22:02 - INFO - [database_handler.py:77] - Saved message with ID: 18
+2025-01-03 10:22:02 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [24, 156]
+2025-01-03 10:22:04 - INFO - [_internal.py:97] - 127.0.0.1 - - [03/Jan/2025 10:22:04] "[32mPOST /login?next=/ HTTP/1.1[0m" 302 -
+2025-01-03 10:22:04 - INFO - [_internal.py:97] - 127.0.0.1 - - [03/Jan/2025 10:22:04] "GET / HTTP/1.1" 200 -
+2025-01-03 10:22:05 - INFO - [database_handler.py:77] - Saved message with ID: 19
+2025-01-03 10:22:05 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [134, 140]
+2025-01-03 10:22:08 - INFO - [database_handler.py:77] - Saved message with ID: 20
+2025-01-03 10:22:08 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [152]
+2025-01-03 10:22:15 - INFO - [database_handler.py:77] - Saved message with ID: 21
+2025-01-03 10:22:15 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [13]
+2025-01-03 10:22:18 - INFO - [database_handler.py:77] - Saved message with ID: 22
+2025-01-03 10:22:18 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [62, 106]
+2025-01-03 10:22:21 - INFO - [database_handler.py:77] - Saved message with ID: 23
+2025-01-03 10:22:21 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [14]
+2025-01-03 10:22:24 - INFO - [database_handler.py:77] - Saved message with ID: 24
+2025-01-03 10:22:24 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [155]
+2025-01-03 10:22:27 - INFO - [_internal.py:97] - 127.0.0.1 - - [03/Jan/2025 10:22:27] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-01-03 10:22:27 - INFO - [_internal.py:97] - 127.0.0.1 - - [03/Jan/2025 10:22:27] "GET /login HTTP/1.1" 200 -
+2025-01-03 10:22:27 - INFO - [database_handler.py:77] - Saved message with ID: 25
+2025-01-03 10:22:27 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [41, 85]
+2025-01-03 10:22:30 - INFO - [database_handler.py:77] - Saved message with ID: 26
+2025-01-03 10:22:30 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [127, 122, 131]

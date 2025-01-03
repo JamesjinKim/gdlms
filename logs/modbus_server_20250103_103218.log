@@ -1,0 +1,72 @@
+2025-01-03 10:32:18 - INFO - [main.py:112] - Starting Modbus TCP Server...
+2025-01-03 10:32:18 - INFO - [async_io.py:247] - Server listening.
+2025-01-03 10:32:18 - INFO - [main.py:135] - Starting Web Server on port 5001...
+2025-01-03 10:32:18 - INFO - [_internal.py:97] - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.0.4:5001
+2025-01-03 10:32:18 - INFO - [_internal.py:97] - [33mPress CTRL+C to quit[0m
+2025-01-03 10:32:20 - INFO - [_internal.py:97] - 127.0.0.1 - - [03/Jan/2025 10:32:20] "GET / HTTP/1.1" 200 -
+2025-01-03 10:32:21 - INFO - [_internal.py:97] - 127.0.0.1 - - [03/Jan/2025 10:32:21] "GET /socket.io/?EIO=4&transport=polling&t=PGfoi5Z HTTP/1.1" 200 -
+2025-01-03 10:32:21 - INFO - [views.py:34] - Web Client Connected: drjins@gmail.com
+2025-01-03 10:32:21 - INFO - [_internal.py:97] - 127.0.0.1 - - [03/Jan/2025 10:32:21] "POST /socket.io/?EIO=4&transport=polling&t=PGfoi86&sid=GgI1HAOY5UTHEvRgAAAA HTTP/1.1" 200 -
+2025-01-03 10:32:21 - INFO - [_internal.py:97] - 127.0.0.1 - - [03/Jan/2025 10:32:21] "GET /socket.io/?EIO=4&transport=polling&t=PGfoi89&sid=GgI1HAOY5UTHEvRgAAAA HTTP/1.1" 200 -
+2025-01-03 10:32:21 - INFO - [_internal.py:97] - 127.0.0.1 - - [03/Jan/2025 10:32:21] "GET /socket.io/?EIO=4&transport=polling&t=PGfoi8u&sid=GgI1HAOY5UTHEvRgAAAA HTTP/1.1" 200 -
+2025-01-03 10:32:28 - INFO - [database_handler.py:77] - Saved message with ID: 27
+2025-01-03 10:32:28 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [66]
+2025-01-03 10:32:31 - INFO - [database_handler.py:77] - Saved message with ID: 28
+2025-01-03 10:32:31 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [69, 32, 58]
+2025-01-03 10:32:34 - INFO - [database_handler.py:77] - Saved message with ID: 29
+2025-01-03 10:32:34 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [166]
+2025-01-03 10:32:37 - INFO - [database_handler.py:77] - Saved message with ID: 30
+2025-01-03 10:32:37 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [6]
+2025-01-03 10:32:40 - INFO - [database_handler.py:77] - Saved message with ID: 31
+2025-01-03 10:32:40 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [72, 108]
+2025-01-03 10:32:43 - INFO - [database_handler.py:77] - Saved message with ID: 32
+2025-01-03 10:32:43 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [44, 41, 65]
+2025-01-03 10:32:46 - INFO - [database_handler.py:77] - Saved message with ID: 33
+2025-01-03 10:32:46 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [35, 21, 105]
+2025-01-03 10:32:49 - INFO - [database_handler.py:77] - Saved message with ID: 34
+2025-01-03 10:32:49 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [72]
+2025-01-03 10:32:52 - INFO - [database_handler.py:77] - Saved message with ID: 35
+2025-01-03 10:32:52 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [78, 67]
+2025-01-03 10:32:55 - INFO - [database_handler.py:77] - Saved message with ID: 36
+2025-01-03 10:32:55 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [40]
+2025-01-03 10:32:58 - INFO - [database_handler.py:77] - Saved message with ID: 37
+2025-01-03 10:32:58 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [149]
+2025-01-03 10:33:01 - INFO - [database_handler.py:77] - Saved message with ID: 38
+2025-01-03 10:33:01 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [72, 74]
+2025-01-03 10:33:04 - INFO - [database_handler.py:77] - Saved message with ID: 39
+2025-01-03 10:33:04 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [1, 130]
+2025-01-03 10:33:07 - INFO - [database_handler.py:77] - Saved message with ID: 40
+2025-01-03 10:33:07 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [112]
+2025-01-03 10:33:10 - INFO - [database_handler.py:77] - Saved message with ID: 41
+2025-01-03 10:33:10 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [82, 55]
+2025-01-03 10:33:13 - INFO - [database_handler.py:77] - Saved message with ID: 42
+2025-01-03 10:33:13 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [131, 75, 14]
+2025-01-03 10:33:16 - INFO - [database_handler.py:77] - Saved message with ID: 43
+2025-01-03 10:33:16 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [108, 150, 151]
+2025-01-03 10:33:19 - INFO - [database_handler.py:77] - Saved message with ID: 44
+2025-01-03 10:33:19 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [155, 70]
+2025-01-03 10:33:22 - INFO - [database_handler.py:77] - Saved message with ID: 45
+2025-01-03 10:33:22 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [110]
+2025-01-03 10:33:25 - INFO - [database_handler.py:77] - Saved message with ID: 46
+2025-01-03 10:33:25 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [94]
+2025-01-03 10:33:28 - INFO - [database_handler.py:77] - Saved message with ID: 47
+2025-01-03 10:33:28 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [45]
+2025-01-03 10:33:31 - INFO - [database_handler.py:77] - Saved message with ID: 48
+2025-01-03 10:33:31 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [51]
+2025-01-03 10:33:34 - INFO - [database_handler.py:77] - Saved message with ID: 49
+2025-01-03 10:33:34 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [93, 32, 61]
+2025-01-03 10:33:37 - INFO - [database_handler.py:77] - Saved message with ID: 50
+2025-01-03 10:33:37 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [132]
+2025-01-03 10:33:40 - INFO - [database_handler.py:77] - Saved message with ID: 51
+2025-01-03 10:33:40 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [114, 85, 28]
+2025-01-03 10:33:43 - INFO - [database_handler.py:77] - Saved message with ID: 52
+2025-01-03 10:33:43 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [128, 143]
+2025-01-03 10:33:46 - INFO - [database_handler.py:77] - Saved message with ID: 53
+2025-01-03 10:33:46 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [3, 37]
+2025-01-03 10:33:49 - INFO - [database_handler.py:77] - Saved message with ID: 54
+2025-01-03 10:33:49 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [146]
+2025-01-03 10:33:53 - INFO - [database_handler.py:77] - Saved message with ID: 55
+2025-01-03 10:33:53 - INFO - [main.py:97] - Modbus Message - Type: Write Multiple Registers, Address: 0, Values: [36, 110, 32]

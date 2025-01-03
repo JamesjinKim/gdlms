@@ -1,0 +1,73 @@
+{% extends "base.html" %} 
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="table-wrapper">  
+<form method="POST">
+  <h3 align="center">Sign Up</h3>
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input
+      type="email"
+      class="form-control"
+      id="email"
+      name="email"
+      placeholder="이메일을 입력하세요."
+    />
+  </div>
+  <div class="form-group">
+    <label for="userName">이름</label>
+    <input
+      type="text"
+      class="form-control"
+      id="userName"
+      name="userName"
+      placeholder="이름을 입력하세요."
+    />
+  </div>
+  <div class="form-group">
+    <label>소속부서</label>
+    <select id="uDepartment" class="form-control" name="uDepartment">
+      <option value="">선택하세요</option>
+      {% for task in task_list %}
+          <option name="uDepartment" value="{{ task }}">{{ task }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="uPosition">직책</label>
+    <input
+      type="text"
+      class="form-control"
+      id="uPosition"
+      name="uPosition"
+      placeholder="직책을 입력하세요."
+    />
+  </div>
+  <div class="form-group">
+    <label for="password1">Password</label>
+    <input
+      type="password"
+      class="form-control"
+      id="password1"
+      name="password1"
+      placeholder="패스워드 5자리 이상 필요"
+    />
+  </div>
+  <div class="form-group">
+    <label for="password2">Password (Confirm)</label>
+    <input
+      type="password"
+      class="form-control"
+      id="password2"
+      name="password2"
+      placeholder="패스워드 확인 입력"
+    />
+  </div>
+  <br />
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+</div>
+</div>
+{% endblock %}

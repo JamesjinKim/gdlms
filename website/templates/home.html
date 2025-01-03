@@ -1,0 +1,121 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} 
+
+{% block content %}
+<h1 align="center">Welcome, {{ user.name }}!</h1>
+
+<!-- Modbus 모니터링 섹션 -->
+<div class="container mt-4">
+    <!-- 연결 상태 표시 -->
+    <div id="connectionStatus" class="alert alert-secondary">
+        Disconnected
+    </div>
+
+    <!-- 통계 정보 -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Statistics</h5>
+        </div>
+        <div class="card-body">
+            <p>Messages received: <span id="messageCount">0</span></p>
+            <p>Messages per second: <span id="messagesPerSecond">0</span></p>
+        </div>
+    </div>
+
+    <!-- 메시지 목록 -->
+    <div class="card">
+        <div class="card-header">
+            <h5>Modbus Messages</h5>
+        </div>
+        <div class="card-body">
+            <div id="messageList" style="max-height: 400px; overflow-y: auto;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Socket.IO 스크립트 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Socket.IO 연결
+        const socket = io({
+            reconnection: true,
+            reconnectionDelay: 1000,
+            reconnectionDelayMax: 5000,
+            reconnectionAttempts: Infinity
+        });
+
+        // 변수 초기화
+        let messageCount = 0;
+        let lastSecondCount = 0;
+        let messagesPerSecond = 0;
+        const connectionStatus = document.getElementById('connectionStatus');
+
+        // 통계 업데이트 함수
+        function updateStats() {
+            const mps = messageCount - lastSecondCount;
+            lastSecondCount = messageCount;
+            messagesPerSecond = mps;
+            document.getElementById('messagesPerSecond').textContent = mps;
+        }
+
+        // 1초마다 통계 업데이트
+        setInterval(updateStats, 1000);
+
+        // 연결 이벤트
+        socket.on('connect', () => {
+            console.log('Connected to server');
+            connectionStatus.textContent = 'Connected';
+            connectionStatus.className = 'alert alert-success';
+        });
+
+        // 연결 해제 이벤트
+        socket.on('disconnect', () => {
+            console.log('Disconnected from server');
+            connectionStatus.textContent = 'Disconnected';
+            connectionStatus.className = 'alert alert-danger';
+        });
+
+        // Modbus 메시지 수신
+        socket.on('modbus_message', (data) => {
+            console.log('Received message:', data);
+            
+            // 메시지 카운터 증가
+            messageCount++;
+            document.getElementById('messageCount').textContent = messageCount;
+
+            // 새 메시지 요소 생성
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'alert alert-info mb-2';
+            messageDiv.innerHTML = `
+                <small class="text-muted">[${data.timestamp}]</small>
+                <strong class="mx-2">${data.type}</strong>
+                <span>Address: ${data.address}</span>
+                <span class="mx-2">Values: [${data.values.join(', ')}]</span>
+            `;
+
+            // 메시지 목록에 추가
+            const messageList = document.getElementById('messageList');
+            messageList.insertBefore(messageDiv, messageList.firstChild);
+
+            // 최대 100개 메시지만 유지
+            while (messageList.children.length > 100) {
+                messageList.removeChild(messageList.lastChild);
+            }
+        });
+
+        // 연결 에러 처리
+        socket.on('connect_error', (error) => {
+            console.error('Connection error:', error);
+            connectionStatus.textContent = 'Connection Error';
+            connectionStatus.className = 'alert alert-danger';
+        });
+
+        // 재연결 시도
+        socket.on('reconnecting', (attemptNumber) => {
+            console.log('Reconnecting...', attemptNumber);
+            connectionStatus.textContent = `Reconnecting... (Attempt ${attemptNumber})`;
+            connectionStatus.className = 'alert alert-warning';
+        });
+    });
+</script>
+{% endblock %}
