@@ -113,11 +113,6 @@ def generate_bit_data() -> list:
         word_116 |= random.choice([0, 1]) << i
     bit_data.append(word_116)
 
-    # Word 117 ([B] Port additional status)
-    word_117 = 0
-    for i in range(3):  # B Port additional status flags
-        word_117 |= random.choice([0, 1]) << i
-    bit_data.append(word_117)
 
     return bit_data
 
