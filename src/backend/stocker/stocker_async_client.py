@@ -80,7 +80,7 @@ async def run_client():
         logger.info("Server connection successful!")
 
         # 연결 후 바로 서버의 시간 읽기
-        time_response = await client.read_holding_registers(0, count=6)
+        time_response = await client.read_holding_registers(900, count=6)
         if not time_response.isError():
             server_time = datetime.datetime(
                 year=time_response.registers[0],

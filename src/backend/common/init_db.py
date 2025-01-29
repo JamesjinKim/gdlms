@@ -62,7 +62,6 @@ def init_operational_db():
            bunker_id TEXT,
            name TEXT NOT NULL,
            ip_address TEXT,
-           port TEXT CHECK(port IN ('A', 'B')),
            description TEXT,
            is_active BOOLEAN DEFAULT 1,
            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -79,7 +78,6 @@ def init_operational_db():
            bunker_id TEXT,
            name TEXT NOT NULL,
            ip_address TEXT,
-           port TEXT CHECK(port IN ('A', 'B')),
            gas_type TEXT,
            description TEXT,
            is_active BOOLEAN DEFAULT 1,
@@ -150,7 +148,7 @@ def init_operational_db():
            
 def init_stocker_history_db():
     """Stocker 히스토리 데이터베이스 초기화"""
-    db_dir = Path("src/data/db/history")
+    db_dir = Path("src/data/db")
     db_dir.mkdir(parents=True, exist_ok=True)
     db_path = db_dir / "stocker_history.db"
 
@@ -164,7 +162,6 @@ def init_stocker_history_db():
         CREATE TABLE IF NOT EXISTS stocker_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             stocker_id TEXT NOT NULL,
-            port TEXT CHECK(port IN ('A', 'B')),
             status_data JSON NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
@@ -175,7 +172,6 @@ def init_stocker_history_db():
         CREATE TABLE IF NOT EXISTS stocker_alarm_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             stocker_id TEXT NOT NULL,
-            port TEXT CHECK(port IN ('A', 'B')),
             alarm_code INTEGER NOT NULL,
             alarm_description TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -184,8 +180,8 @@ def init_stocker_history_db():
         ''')
 
         # 인덱스 생성
-        cursor.execute('CREATE INDEX IF NOT EXISTS idx_stocker_history_id ON stocker_history(stocker_id, port)')
-        cursor.execute('CREATE INDEX IF NOT EXISTS idx_stocker_alarm_id ON stocker_alarm_history(stocker_id, port)')
+        cursor.execute('CREATE INDEX IF NOT EXISTS idx_stocker_history_id ON stocker_history(stocker_id)')
+        cursor.execute('CREATE INDEX IF NOT EXISTS idx_stocker_alarm_id ON stocker_alarm_history(stocker_id)')
 
         conn.commit()
         logger.info("Stocker 히스토리 DB 테이블 생성 완료")
@@ -214,7 +210,6 @@ def init_gas_cabinet_history_db():
         CREATE TABLE IF NOT EXISTS gas_cabinet_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             cabinet_id TEXT NOT NULL,
-            port TEXT CHECK(port IN ('A', 'B')),
             status_data JSON NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
@@ -225,7 +220,6 @@ def init_gas_cabinet_history_db():
         CREATE TABLE IF NOT EXISTS gas_cabinet_alarm_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             cabinet_id TEXT NOT NULL,
-            port TEXT CHECK(port IN ('A', 'B')),
             alarm_code INTEGER NOT NULL,
             alarm_description TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -234,8 +228,8 @@ def init_gas_cabinet_history_db():
         ''')
 
         # 인덱스 생성
-        cursor.execute('CREATE INDEX IF NOT EXISTS idx_cabinet_history_id ON gas_cabinet_history(cabinet_id, port)')
-        cursor.execute('CREATE INDEX IF NOT EXISTS idx_cabinet_alarm_id ON gas_cabinet_alarm_history(cabinet_id, port)')
+        cursor.execute('CREATE INDEX IF NOT EXISTS idx_cabinet_history_id ON gas_cabinet_history(cabinet_id)')
+        cursor.execute('CREATE INDEX IF NOT EXISTS idx_cabinet_alarm_id ON gas_cabinet_alarm_history(cabinet_id)')
 
         conn.commit()
         logger.info("Gas Cabinet 히스토리 DB 테이블 생성 완료")
@@ -250,7 +244,7 @@ def init_gas_cabinet_history_db():
 
 def init_agv_history_db():
     """AGV 히스토리 데이터베이스 초기화"""
-    db_dir = Path("src/data/db/history")
+    db_dir = Path("src/data/db")
     db_dir.mkdir(parents=True, exist_ok=True)
     db_path = db_dir / "agv_history.db"
 

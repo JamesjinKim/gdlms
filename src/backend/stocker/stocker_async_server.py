@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))  # src/backend를 Python 경로에 추가
+
 from pymodbus.server import StartAsyncTcpServer
 from pymodbus.datastore import ModbusSequentialDataBlock, ModbusSlaveContext, ModbusServerContext
 import logging
@@ -7,12 +11,12 @@ from logging.handlers import TimedRotatingFileHandler
 from pymodbus.device import ModbusDeviceIdentification
 from common.db_manager import DBManager
 from typing import Dict, Any
-from pathlib import Path
+
 
 # 로그 디렉토리 설정
 log_dir = "./log"
 os.makedirs(log_dir, exist_ok=True)
-log_file = os.path.join(log_dir, "stocker.log")
+log_file = os.path.join(log_dir, "stocker_server.log")
 
 # 로깅 설정
 log_handler = TimedRotatingFileHandler(
@@ -34,8 +38,8 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
         self.last_log_time = 0
         self.LOG_INTERVAL = 1
         self._buffer = []
-        # DB 매니저 초기화
-        self.db_manager = DBManager()
+        # DBManager 초기화 (stocker 타입으로)
+        self.db_manager = DBManager('stocker')
         self.retry_count = 3  # DB 저장 재시도 횟수
         self.setup_logging()
 
@@ -100,10 +104,12 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
         """DB 저장 재시도 로직"""
         for attempt in range(self.retry_count):
             try:
-                await self.db_manager.update_equipment_data(
-                    'stocker',
-                    str(equipment_data['plc_data']['stocker_id']),
-                    equipment_data
+                stocker_id = str(equipment_data['plc_data']['stocker_id'])
+                
+                # 두 포트 데이터를 한 번에 저장
+                await self.db_manager.update_data(
+                    stocker_id=stocker_id,
+                    data=equipment_data  # 전체 데이터를 한 번에 저장
                 )
                 self.logger.info("Data successfully saved to DB")
                 return True
@@ -117,51 +123,77 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
     def format_equipment_data(self, values: list, bit_values: list, current_time: str) -> Dict[str, Any]:
         """장비 데이터 포맷팅"""
         try:
+            # 입력 데이터 복사
+            values = list(values)
+            bit_values = list(bit_values)
+            
             plc_data = {
-                'bunker_id': values[0],
-                'stocker_id': values[1],
-                'gas_types': values[2:7],
-                'alarm_code': values[8],
+                'bunker_id': values[0],         # Bunker ID
+                'stocker_id': values[1],        # Stocker ID
+                'gas_types': values[2:7].copy(),# Gas Stocker 가스 종류
+                'alarm_code': values[8],        # Stocker Alarm Code
                 'axis_data': {
-                    'x_position': values[10],
-                    'z_position': values[11],
-                    'cap_remove_torque': values[12],
-                    'cap_set_torque': values[13]
+                    'x_position': values[10],   # X축 현재값
+                    'z_position': values[11],   # Z축 현재값
+                    'cap_remove_torque': values[12],    # Cap Unit 축 보호캡 분리 Torque 설정값
+                    'cap_set_torque': values[13]        # Cap Unit 축 보호캡 체결 Torque 설정값
                 },
                 'barcodes': {
                     'port_a': ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' 
-                                     for i in range(30, 60)]),
+                                    for i in range(30, 60)]),
                     'port_b': ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' 
-                                     for i in range(60, 90)])
+                                    for i in range(60, 90)])
                 },
                 'port_gas_types': {
-                    'port_a': values[90:95],
-                    'port_b': values[95:100]
+                    'port_a': values[90:95].copy(),  # [A] Port 가스 종류
+                    'port_b': values[95:100].copy()  # [B] Port 가스 종류
                 }
             }
 
             bit_data = {
-                'basic_signals': {
-                    'emg_signal': bool(bit_values[0] & (1 << 0)),
-                    'heart_bit': bool(bit_values[0] & (1 << 1)),
-                    'run_stop': bool(bit_values[0] & (1 << 2)),
-                    'server_connected': bool(bit_values[0] & (1 << 3)),
-                    't_lamp_red': bool(bit_values[0] & (1 << 4)),
-                    't_lamp_yellow': bool(bit_values[0] & (1 << 5)),
-                    't_lamp_green': bool(bit_values[0] & (1 << 6)),
-                    'touch_manual': bool(bit_values[0] & (1 << 7))
+                'basic_signals': dict(  # Word 100
+                    emg_signal=bool(bit_values[0] & (1 << 0)),
+                    heart_bit=bool(bit_values[0] & (1 << 1)),
+                    run_stop=bool(bit_values[0] & (1 << 2)),
+                    server_connected=bool(bit_values[0] & (1 << 3)),
+                    t_lamp_red=bool(bit_values[0] & (1 << 4)),
+                    t_lamp_yellow=bool(bit_values[0] & (1 << 5)),
+                    t_lamp_green=bool(bit_values[0] & (1 << 6)),
+                    touch_manual=bool(bit_values[0] & (1 << 7))
+                ),
+                'door_status': dict(  # Word 105
+                    port_a_cylinder=bool(bit_values[5] & (1 << 0)),
+                    port_b_cylinder=bool(bit_values[5] & (1 << 1)),
+                    port_a_worker_door_open=bool(bit_values[5] & (1 << 2)),
+                    port_a_worker_door_close=bool(bit_values[5] & (1 << 3)),
+                    port_a_bunker_door_open=bool(bit_values[5] & (1 << 4)),
+                    port_a_bunker_door_close=bool(bit_values[5] & (1 << 5)),
+                    port_b_worker_door_open=bool(bit_values[5] & (1 << 6)),
+                    port_b_worker_door_close=bool(bit_values[5] & (1 << 7)),
+                    port_b_bunker_door_open=bool(bit_values[5] & (1 << 8)),
+                    port_b_bunker_door_close=bool(bit_values[5] & (1 << 9))
+                ),
+                'port_a_status': {  # Word 110
+                    f'signal_{i}': bool(bit_values[10] & (1 << i))
+                    for i in range(16)
                 },
-                'cylinder_door_status': {
-                    'porta_cylinder': bool(bit_values[5] & (1 << 0)),
-                    'portb_cylinder': bool(bit_values[5] & (1 << 1)),
-                    'worker_door_open': bool(bit_values[5] & (1 << 2)),
-                    'worker_door_close': bool(bit_values[5] & (1 << 3))
+                'port_a_detail': {  # Word 111
+                    f'signal_{i}': bool(bit_values[11] & (1 << i))
+                    for i in range(10)
+                },
+                'port_b_status': {  # Word 115
+                    f'signal_{i}': bool(bit_values[15] & (1 << i))
+                    for i in range(16)
+                },
+                'port_b_detail': {  # Word 116
+                    f'signal_{i}': bool(bit_values[16] & (1 << i))
+                    for i in range(10)
                 }
             }
 
             return {
-                'plc_data': plc_data,
-                'bit_data': bit_data,
+                'plc_data': dict(plc_data),  # 전체 데이터도 새로운 딕셔너리로 복사
+                'bit_data': dict(bit_data),
                 'timestamp': current_time
             }
         except Exception as e:
@@ -170,7 +202,7 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
 
     def log_all_data(self):
         """모든 데이터 로깅"""
-        with open("./log/stocker.log", "a") as f:
+        with open("./log/stocker_server.log", "a") as f:
             current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             # PLC 데이터 영역
@@ -233,13 +265,13 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
                 # DB 저장 (비동기로 처리)
                 asyncio.create_task(
                     self.db_manager.update_data(
-                        'stocker',
-                        str(plc_data['stocker_id']),
-                        equipment_data
+                        f"stocker_{plc_data['stocker_id']}",  # device_id 형식 수정
+                        equipment_data  # 전체 데이터 전달
                     )
                 )
             except Exception as e:
                 f.write(f"{current_time} | DB 저장 오류: {str(e)}\n")
+                self.logger.error(f"DB 저장 실패: {e}", exc_info=True)
 
             # 기본 정보
             f.write(f"{current_time} | Bunker ID: {values[0]}\n")
@@ -353,18 +385,27 @@ class CustomModbusSlaveContext(ModbusSlaveContext):
             hr=CustomModbusSequentialDataBlock(0, [0]*1000),
             ir=CustomModbusSequentialDataBlock(0, [0]*1000)
         )
+        self.TIME_SYNC_ADDRESS = 900  # 시간 동기화 주소 정의
         self.update_time()
     
     def update_time(self):
         now = datetime.datetime.now()
-        self.setValues(3, 0, [
-            now.year,
-            now.month,
-            now.day,
-            now.hour,
-            now.minute,
-            now.second
-        ])
+        time_values = [
+            now.year,   # 900: 년
+            now.month,  # 901: 월
+            now.day,    # 902: 일
+            now.hour,   # 903: 시
+            now.minute, # 904: 분
+            now.second  # 905: 초
+        ]
+        # 시간 데이터를 900번지에 저장
+        try:
+            # 홀딩 레지스터에 시간 데이터 저장
+            self.setValues(3, self.TIME_SYNC_ADDRESS, list(time_values.copy()))
+            #self.store['hr'].setValues(self.TIME_SYNC_ADDRESS, time_values)
+            logger.info(f"시간 동기화 완료: {time_values}")
+        except Exception as e:
+            logger.error(f"시간 동기화 중 오류 발생: {e}")
 
 # 서버 실행 함수
 async def run_server():
