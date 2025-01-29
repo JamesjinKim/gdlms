@@ -5,7 +5,9 @@ import asyncio, time, json, datetime
 import os
 from logging.handlers import TimedRotatingFileHandler
 from pymodbus.device import ModbusDeviceIdentification
-
+from common.db_manager import DBManager
+from typing import Dict, Any
+from pathlib import Path
 
 # 로그 디렉토리 설정
 log_dir = "./log"
@@ -32,6 +34,10 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
         self.last_log_time = 0
         self.LOG_INTERVAL = 1
         self._buffer = []
+        # DB 매니저 초기화
+        self.db_manager = DBManager()
+        self.retry_count = 3  # DB 저장 재시도 횟수
+        self.setup_logging()
 
     def setValues(self, address, values):
         self._buffer.append((address, values))
@@ -44,6 +50,124 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
                 self.log_all_data()
                 self._buffer.clear()
 
+    def setup_logging(self):
+        """로깅 설정"""
+        log_dir = Path("./log")
+        log_dir.mkdir(exist_ok=True)
+        
+        self.logger = logging.getLogger("StockerServer")
+        self.logger.setLevel(logging.INFO)
+        
+        # 파일 핸들러
+        fh = logging.FileHandler("./log/stocker_server.log")
+        fh.setFormatter(logging.Formatter('%(asctime)s | %(levelname)s | %(message)s'))
+        self.logger.addHandler(fh)
+        
+        # 콘솔 핸들러
+        ch = logging.StreamHandler()
+        ch.setFormatter(logging.Formatter('%(asctime)s | %(levelname)s | %(message)s'))
+        self.logger.addHandler(ch)
+
+    def validate_plc_data(self, values: list) -> bool:
+        """PLC 데이터 유효성 검사"""
+        try:
+            # 기본 길이 확인
+            if len(values) < 120:
+                self.logger.error(f"Invalid PLC data length: {len(values)}")
+                return False
+
+            # 주요 값들의 범위 확인
+            validations = [
+                (0 < values[0] <= 10, "Bunker ID out of range"),
+                (0 < values[1] <= 10, "Stocker ID out of range"),
+                (0 <= values[8] <= 500, "Alarm code out of range"),
+                (0 <= values[10] <= 1000, "X position out of range"),
+                (0 <= values[11] <= 1000, "Z position out of range")
+            ]
+
+            for condition, error_msg in validations:
+                if not condition:
+                    self.logger.error(f"Data validation error: {error_msg}")
+                    return False
+
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Data validation error: {str(e)}")
+            return False
+
+    async def save_to_db_with_retry(self, equipment_data: Dict[str, Any]) -> bool:
+        """DB 저장 재시도 로직"""
+        for attempt in range(self.retry_count):
+            try:
+                await self.db_manager.update_equipment_data(
+                    'stocker',
+                    str(equipment_data['plc_data']['stocker_id']),
+                    equipment_data
+                )
+                self.logger.info("Data successfully saved to DB")
+                return True
+            except Exception as e:
+                self.logger.error(f"DB save attempt {attempt + 1} failed: {str(e)}")
+                if attempt < self.retry_count - 1:
+                    await asyncio.sleep(1)  # 재시도 전 대기
+                continue
+        return False
+
+    def format_equipment_data(self, values: list, bit_values: list, current_time: str) -> Dict[str, Any]:
+        """장비 데이터 포맷팅"""
+        try:
+            plc_data = {
+                'bunker_id': values[0],
+                'stocker_id': values[1],
+                'gas_types': values[2:7],
+                'alarm_code': values[8],
+                'axis_data': {
+                    'x_position': values[10],
+                    'z_position': values[11],
+                    'cap_remove_torque': values[12],
+                    'cap_set_torque': values[13]
+                },
+                'barcodes': {
+                    'port_a': ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' 
+                                     for i in range(30, 60)]),
+                    'port_b': ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' 
+                                     for i in range(60, 90)])
+                },
+                'port_gas_types': {
+                    'port_a': values[90:95],
+                    'port_b': values[95:100]
+                }
+            }
+
+            bit_data = {
+                'basic_signals': {
+                    'emg_signal': bool(bit_values[0] & (1 << 0)),
+                    'heart_bit': bool(bit_values[0] & (1 << 1)),
+                    'run_stop': bool(bit_values[0] & (1 << 2)),
+                    'server_connected': bool(bit_values[0] & (1 << 3)),
+                    't_lamp_red': bool(bit_values[0] & (1 << 4)),
+                    't_lamp_yellow': bool(bit_values[0] & (1 << 5)),
+                    't_lamp_green': bool(bit_values[0] & (1 << 6)),
+                    'touch_manual': bool(bit_values[0] & (1 << 7))
+                },
+                'cylinder_door_status': {
+                    'porta_cylinder': bool(bit_values[5] & (1 << 0)),
+                    'portb_cylinder': bool(bit_values[5] & (1 << 1)),
+                    'worker_door_open': bool(bit_values[5] & (1 << 2)),
+                    'worker_door_close': bool(bit_values[5] & (1 << 3))
+                }
+            }
+
+            return {
+                'plc_data': plc_data,
+                'bit_data': bit_data,
+                'timestamp': current_time
+            }
+        except Exception as e:
+            self.logger.error(f"Error formatting equipment data: {str(e)}")
+            raise
+
     def log_all_data(self):
         """모든 데이터 로깅"""
         with open("./log/stocker.log", "a") as f:
@@ -52,6 +176,70 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
             # PLC 데이터 영역
             f.write(f"{current_time} | =========Stocker plc_data 시작 =========\n")
             values = self.getValues(1, 120)  # 주소 1부터 읽기
+            
+            # DB에 저장할 데이터 구조화
+            plc_data = {
+                'bunker_id': values[0],
+                'stocker_id': values[1],
+                'gas_types': values[2:7],
+                'alarm_code': values[8],
+                'axis_data': {
+                    'x_position': values[10],
+                    'z_position': values[11],
+                    'cap_remove_torque': values[12],
+                    'cap_set_torque': values[13]
+                },
+                'barcodes': {
+                    'port_a': ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' 
+                                     for i in range(30, 60)]),
+                    'port_b': ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' 
+                                     for i in range(60, 90)])
+                },
+                'port_gas_types': {
+                    'port_a': values[90:95],
+                    'port_b': values[95:100]
+                }
+            }
+
+            # 비트 데이터 영역
+            bit_values = self.getValues(100, 18)
+            bit_data = {
+                'basic_signals': {
+                    'emg_signal': bool(bit_values[0] & (1 << 0)),
+                    'heart_bit': bool(bit_values[0] & (1 << 1)),
+                    'run_stop': bool(bit_values[0] & (1 << 2)),
+                    'server_connected': bool(bit_values[0] & (1 << 3)),
+                    't_lamp_red': bool(bit_values[0] & (1 << 4)),
+                    't_lamp_yellow': bool(bit_values[0] & (1 << 5)),
+                    't_lamp_green': bool(bit_values[0] & (1 << 6)),
+                    'touch_manual': bool(bit_values[0] & (1 << 7))
+                },
+                'cylinder_door_status': {
+                    'porta_cylinder': bool(bit_values[5] & (1 << 0)),
+                    'portb_cylinder': bool(bit_values[5] & (1 << 1)),
+                    'worker_door_open': bool(bit_values[5] & (1 << 2)),
+                    'worker_door_close': bool(bit_values[5] & (1 << 3))
+                }
+            }
+
+            # 통합 데이터 생성
+            equipment_data = {
+                'plc_data': plc_data,
+                'bit_data': bit_data,
+                'timestamp': current_time
+            }
+
+            try:
+                # DB 저장 (비동기로 처리)
+                asyncio.create_task(
+                    self.db_manager.update_data(
+                        'stocker',
+                        str(plc_data['stocker_id']),
+                        equipment_data
+                    )
+                )
+            except Exception as e:
+                f.write(f"{current_time} | DB 저장 오류: {str(e)}\n")
 
             # 기본 정보
             f.write(f"{current_time} | Bunker ID: {values[0]}\n")
