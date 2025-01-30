@@ -9,6 +9,8 @@ import asyncio, time, json, datetime
 import os
 from logging.handlers import TimedRotatingFileHandler
 from pymodbus.device import ModbusDeviceIdentification
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))
 from common.db_manager import DBManager
 from typing import Dict, Any
 

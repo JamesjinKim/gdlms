@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))
+
 from pymodbus.server import StartAsyncTcpServer
 from pymodbus.datastore import ModbusSequentialDataBlock, ModbusSlaveContext, ModbusServerContext
 import logging
@@ -10,6 +14,7 @@ from logging.handlers import TimedRotatingFileHandler
 from pymodbus.device import ModbusDeviceIdentification
 from copy import deepcopy
 import gc
+from common.db_manager import DBManager
 
 # 로그 파일 경로 설정
 log_dir = "./log"
@@ -33,39 +38,177 @@ logger.addHandler(logging.StreamHandler())
 
 class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
     def __init__(self, address, values):
-        # 메모리 명시적 초기화
-        self._values = [0] * len(values)  # 먼저 메모리 할당
-        gc.collect()  # 가비지 컬렉션 강제 실행
-        
-        # deepcopy를 사용하여 새로운 메모리 공간에 값 복사
-        self._values = deepcopy([0] * len(values))
-        
-        super().__init__(address, self._values)
+        super().__init__(address, values)
         self.last_log_time = 0
         self.LOG_INTERVAL = 1
         self._buffer = []
+        # DBManager 인스턴스 생성
+        self.db_manager = DBManager('gas_cabinet')
+        self.retry_count = 3  # DB 저장 재시도 횟수
 
     def setValues(self, address, values):
-        # 값을 설정하기 전에 메모리 정리
-        gc.collect()
-        
-        # 변경된 데이터를 버퍼에 추가
         self._buffer.append((address, deepcopy(values)))
         super().setValues(address, values)
         
         current_time = time.time()
         if current_time - self.last_log_time >= self.LOG_INTERVAL:
-            if self._buffer:  # 버퍼에 데이터가 있는 경우만 로깅
+            if self._buffer:
                 self.last_log_time = current_time
-                self.log_all_data()
-                self._buffer.clear()  # 버퍼 초기화
-                gc.collect()  # 버퍼 클리어 후 메모리 정리
+                self.log_all_data()  # 동기 함수로 호출
+                self._buffer.clear()
+                gc.collect()
+    
+    async def format_data_for_db(self, values):
+        """DB 저장을 위한 데이터 포맷팅"""
+        try:
+            # Barcode 데이터 처리
+            barcode_a = ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' for i in range(30, 60)])
+            barcode_b = ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' for i in range(60, 90)])
+            
+            # 데이터 구조화
+            status_data = {
+                "plc_data": {
+                    "bunker_id": values[0],
+                    "gas_cabinet_id": values[1],
+                    "gas_types": {
+                        "cabinet": [values[i] for i in range(2, 7)],
+                        "port_a": [values[i] for i in range(90, 95)],
+                        "port_b": [values[i] for i in range(95, 100)]
+                    },
+                    "alarm_code": values[8],
+                    "sensors": {
+                        "pressure": {
+                            "PT1A": values[10],
+                            "PT2A": values[11],
+                            "PT1B": values[12],
+                            "PT2B": values[13],
+                            "PT3": values[14],
+                            "PT4": values[15]
+                        },
+                        "weight": {
+                            "port_a": values[16],
+                            "port_b": values[17]
+                        }
+                    },
+                    "heaters": {
+                        "port_a": {
+                            "jacket": values[18],
+                            "line": values[19]
+                        },
+                        "port_b": {
+                            "jacket": values[20],
+                            "line": values[21]
+                        }
+                    },
+                    "torque_position": {
+                        "port_a": {
+                            "cga_torque": values[24],
+                            "cap_torque": values[25],
+                            "cylinder_position": values[26]
+                        },
+                        "port_b": {
+                            "cga_torque": values[27],
+                            "cap_torque": values[28],
+                            "cylinder_position": values[29]
+                        }
+                    },
+                    "barcodes": {
+                        "port_a": barcode_a.strip(),
+                        "port_b": barcode_b.strip()
+                    }
+                }
+            }
+            return status_data
+            
+        except Exception as e:
+            logger.error(f"Data formatting error: {e}")
+            return None
 
     def log_all_data(self):
         """모든 데이터 로깅"""
         with open("./log/gas_cabinet.log", "a") as f:
             current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                
+            values = self.getValues(1, 120)  # 주소 1부터 읽기
+            
+            # DB에 저장할 데이터 구조화
+            status_data = {
+                'plc_data': {
+                    'bunker_id': values[0],
+                    'gas_cabinet_id': values[1],
+                    'gas_types': {
+                        'cabinet': values[2:7],
+                        'port_a': values[90:95],
+                        'port_b': values[95:100]
+                    },
+                    'alarm_code': values[8],
+                    'sensors': {
+                        'pressure': {
+                            'PT1A': values[10],
+                            'PT2A': values[11],
+                            'PT1B': values[12],
+                            'PT2B': values[13],
+                            'PT3': values[14],
+                            'PT4': values[15]
+                        },
+                        'weight': {
+                            'port_a': values[16],
+                            'port_b': values[17]
+                        }
+                    },
+                    'heaters': {
+                        'port_a': {
+                            'jacket': values[18],
+                            'line': values[19]
+                        },
+                        'port_b': {
+                            'jacket': values[20],
+                            'line': values[21]
+                        }
+                    },
+                    'torque_position': {
+                        'port_a': {
+                            'cga_torque': values[24],
+                            'cap_torque': values[25],
+                            'cylinder_position': values[26]
+                        },
+                        'port_b': {
+                            'cga_torque': values[27],
+                            'cap_torque': values[28],
+                            'cylinder_position': values[29]
+                        }
+                    },
+                    'barcodes': {
+                        'port_a': ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' 
+                                       for i in range(30, 60)]).strip(),
+                        'port_b': ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' 
+                                       for i in range(60, 90)]).strip()
+                    }
+                }
+            }
+
+            try:
+                # DB 저장 (비동기로 처리)
+                asyncio.create_task(
+                    self.db_manager.update_data(
+                        f"gas_{values[1]}",  # Gas Cabinet ID를 사용
+                        status_data
+                    )
+                )
+
+                # 알람 코드 확인 및 저장
+                alarm_code = values[8]
+                if alarm_code > 0:
+                    asyncio.create_task(
+                        self.db_manager.save_alarm(
+                            f"gas_{values[1]}", 
+                            alarm_code, 
+                            f"Gas Cabinet {values[1]} Alarm: Code {alarm_code}"
+                        )
+                    )
+            except Exception as e:
+                f.write(f"{current_time} | DB 저장 오류: {str(e)}\n")
+                logger.error(f"DB 저장 실패: {e}", exc_info=True)
+
             # PLC 데이터 영역
             f.write(f"{current_time} | =========Gas Cabinet plc_data 시작 =========\n")
             values = self.getValues(1, 120)  # 주소 1부터 읽기
