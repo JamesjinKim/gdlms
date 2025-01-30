@@ -18,18 +18,28 @@ log_dir = "./log"
 os.makedirs(log_dir, exist_ok=True)
 log_file = os.path.join(log_dir, "stocker_server.log")
 
-# 로깅 설정
-log_handler = TimedRotatingFileHandler(
-    log_file, when="M", interval=1, backupCount=10
-)
-log_handler.setFormatter(logging.Formatter('%(asctime)s | %(message)s'))
-log_handler.setLevel(logging.INFO)
-
 # 로거 설정
 logger = logging.getLogger("StockerLogger")
 logger.setLevel(logging.INFO)
-logger.addHandler(log_handler)
-logger.addHandler(logging.StreamHandler())
+
+# 로거의 핸들러 중복 방지
+if not logger.handlers:
+    log_handler = TimedRotatingFileHandler(
+        log_file, when="M", interval=1, backupCount=10
+    )
+    log_handler = TimedRotatingFileHandler(
+        log_file, when="M", interval=1, backupCount=10
+    )
+    log_handler.setFormatter(logging.Formatter('%(asctime)s | %(message)s'))
+    log_handler.setLevel(logging.INFO)
+
+    # 로거 설정
+    logger = logging.getLogger("StockerLogger")
+    logger.setLevel(logging.INFO)
+    logger.addHandler(log_handler)
+    logger.addHandler(logging.StreamHandler())
+    logger.propagate = False  # 로그 전파 중지
+    logger.setLevel(logging.INFO)
 
 # Custom Data Block 클래스
 class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
@@ -375,6 +385,23 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
             for i, name in enumerate(b_port_progress):
                 value = bool(bit_values[16] & (1 << i))
                 f.write(f"{current_time} | {name}: {value}\n")
+
+            # 알람 코드 확인 및 저장
+            alarm_code = plc_data['alarm_code']
+            
+            if alarm_code > 0:
+                try:
+                    # 알람 저장 (중복 방지)
+                    asyncio.create_task(
+                        self.db_manager.save_alarm(
+                            f"stocker_{plc_data['stocker_id']}", 
+                            alarm_code, 
+                            f"Stocker {plc_data['stocker_id']} Alarm: Code {alarm_code}"
+                        )
+                    )
+                except Exception as e:
+                    f.write(f"{current_time} | Alarm save error: {str(e)}\n")
+                    logger.error(f"Alarm save failed: {e}", exc_info=True)
 
 # Custom Slave Context 클래스
 class CustomModbusSlaveContext(ModbusSlaveContext):

@@ -19,7 +19,7 @@ def generate_plc_data() -> list:
     data[1] = random.randint(1, 3)  # Stocker ID
     for i in range(2, 7):  # Gas Stocker 가스 종류
         data[i] = random.randint(1, 5)
-    data[8] = random.randint(0, 500)  # Stocker Alarm Code
+    data[8] = random.randint(0, 500)   # Stocker Alarm Code
     data[10] = random.randint(0, 100)  # X축 현재값
     data[11] = random.randint(0, 100)  # Z축 현재값
     data[12] = random.randint(0, 100)  # Cap Unit 축 보호캡 분리 Torque 설정값
