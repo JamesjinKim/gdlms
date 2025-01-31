@@ -248,7 +248,7 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
             # 비트 데이터 영역
             bit_values = self.getValues(100, 18)
             bit_data = {
-                'basic_signals': {
+                'basic_signals': { # Word 100
                     'emg_signal': bool(bit_values[0] & (1 << 0)),
                     'heart_bit': bool(bit_values[0] & (1 << 1)),
                     'run_stop': bool(bit_values[0] & (1 << 2)),
@@ -258,11 +258,27 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
                     't_lamp_green': bool(bit_values[0] & (1 << 6)),
                     'touch_manual': bool(bit_values[0] & (1 << 7))
                 },
-                'cylinder_door_status': {
+                'cylinder_door_status': { # Word 105
                     'porta_cylinder': bool(bit_values[5] & (1 << 0)),
                     'portb_cylinder': bool(bit_values[5] & (1 << 1)),
                     'worker_door_open': bool(bit_values[5] & (1 << 2)),
                     'worker_door_close': bool(bit_values[5] & (1 << 3))
+                },
+                'port_a_status': {  # Word 110
+                    f'signal_{i}': bool(bit_values[10] & (1 << i))
+                    for i in range(16)
+                },
+                'port_a_detail': {  # Word 111
+                    f'signal_{i}': bool(bit_values[11] & (1 << i))
+                    for i in range(10)
+                },
+                'port_b_status': {  # Word 115
+                    f'signal_{i}': bool(bit_values[15] & (1 << i))
+                    for i in range(16)
+                },
+                'port_b_detail': {  # Word 116
+                    f'signal_{i}': bool(bit_values[16] & (1 << i))
+                    for i in range(10)
                 }
             }
 
