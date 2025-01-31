@@ -1,0 +1,238 @@
+{
+    "plc_data": {
+      "bunker_id": 1,
+      "gas_cabinet_id": 2,
+      "gas_types": {
+        "cabinet_gas": [
+          1,
+          32,
+          40,
+          47,
+          43
+        ],
+        "port_a": [
+          4,
+          1,
+          5,
+          4,
+          1
+        ],
+        "port_b": [
+          2,
+          1,
+          2,
+          4,
+          5
+        ]
+      },
+      "alarm_code": 275,
+      "sensors": {
+        "pressure": {
+          "PT1A": 6,
+          "PT2A": 92,
+          "PT1B": 35,
+          "PT2B": 70,
+          "PT3": 25,
+          "PT4": 96
+        },
+        "weight": {
+          "port_a": 4,
+          "port_b": 94
+        }
+      },
+      "heaters": {
+        "port_a": {
+          "jacket": 7,
+          "line": 99
+        },
+        "port_b": {
+          "jacket": 24,
+          "line": 76
+        }
+      },
+      "torque_position": {
+        "port_a": {
+          "cga_torque": 12,
+          "cap_torque": 3,
+          "cylinder_position": 231
+        },
+        "port_b": {
+          "cga_torque": 35,
+          "cap_torque": 62,
+          "cylinder_position": 46
+        }
+      },
+      "barcodes": {
+        "port_a": "UNXSEWF7OGYKXDRNOB586EYPARQO1S",
+        "port_b": "QKVUJFIYDY0UE678H0J8WJZT2R1KT7"
+      }
+    },
+    "bit_data": {
+      // Word 100
+      "basic_signals": {
+        "emg_signal": true,
+        "heart_bit": false,
+        "run_stop": true,
+        "server_connected": false,
+        "t_lamp_red": false,
+        "t_lamp_yellow": false,
+        "t_lamp_green": false,
+        "touch_manual": false
+      },
+      // Word 101
+      "av_status": {
+        "port_a": {
+          "av1": true,
+          "av2": true,
+          "av3": true,
+          "av4": true,
+          "av5": false
+        },
+        "port_b": {
+          "av1": false,
+          "av2": true,
+          "av3": true,
+          "av4": false,
+          "av5": false
+        },
+        "common": {
+          "av7": false,
+          "av8": false,
+          "av9": false
+        }
+      },
+      // Word 102
+      "system_status": {
+        "heater_relay": {
+          "port_a": {
+            "jacket": true,
+            "line": false
+          },
+          "port_b": {
+            "jacket": false,
+            "line": false
+          }
+        },
+        "safety": {
+          "gas_leak_shutdown": false,
+          "vmb_stop_signal": true,
+          "uv_ir_sensor": false,
+          "high_temp_sensor": false,
+          "smoke_sensor": true
+        }
+      },
+
+      // Word 103
+      "port_operations": {
+        "port_a": {
+          "insert_request": false,
+          "insert_complete": true,
+          "remove_request": false,
+          "remove_complete": true
+        },
+        "port_b": {
+          "insert_request": false,
+          "insert_complete": true,
+          "remove_request": false,
+          "remove_complete": true
+        }
+      },
+
+      // Word 105
+      "port_status": {
+        "port_a": {
+          "cylinder_present": true
+        },
+        "port_b": {
+          "cylinder_present": true
+        },
+        "door": {
+          "open_complete": true,
+          "close_complete": true
+        }
+      },
+
+      // Word 110
+      "port_a_sequence": {
+        "cylinder_close": false,
+        "first_purge_before_exchange": false,
+        "decompression_test": true,
+        "second_purge_before_exchange": true,
+        "exchange_cylinder": false,
+        "first_purge_after_exchange": false,
+        "pressure_test": true,
+        "second_purge_after_exchange": true,
+        "purge_completed": true,
+        "prepare_to_supply": true,
+        "gas_supply_av3_choose": true,
+        "gas_supply": false,
+        "ready_to_supply": true
+      },
+
+      // Word 111
+      "port_a_status": {
+        "cylinder_ready": true,
+        "cga_disconnect_complete": true,
+        "cga_connect_complete": false,
+        "cylinder_valve_open_complete": true,
+        "cylinder_valve_close_complete": false,
+        "cylinder_valve_open_status": true,
+        "cylinder_lift_unit_ready": true,
+        "cylinder_lift_unit_moving_up": true,
+        "cylinder_lift_unit_moving_down": false,
+        "cga_separation_in_progress": false,
+        "cga_connection_in_progress": false,
+        "cylinder_cap_separation_in_progress": true,
+        "cylinder_valve_open_in_progress": false,
+        "cylinder_valve_close_in_progress": true,
+        "cylinder_alignment_in_progress": true,
+        "cylinder_turn_in_progress": true,
+        "cylinder_turn_complete": true,
+        "cylinder_clamp_complete": true,
+        "cga_connect_complete_status": false
+      },
+
+      // Word 115
+      "port_b_sequence": {
+        "cylinder_close": true,
+        "first_purge_before_exchange": false,
+        "decompression_test": true,
+        "second_purge_before_exchange": true,
+        "exchange_cylinder": false,
+        "first_purge_after_exchange": true,
+        "pressure_test": false,
+        "second_purge_after_exchange": false,
+        "purge_completed": true,
+        "prepare_to_supply": true,
+        "gas_supply_av3_choose": false,
+        "gas_supply": true,
+        "ready_to_supply": true
+      },
+
+      // Word 116
+      "port_b_status": {
+        "cylinder_ready": true,
+        "cga_disconnect_complete": false,
+        "cga_connect_complete": false,
+        "cylinder_valve_open_complete": false,
+        "cylinder_valve_close_complete": true,
+        "cylinder_valve_open_status": false,
+        "cylinder_lift_unit_ready": false,
+        "cylinder_lift_unit_moving_up": false,
+        "cylinder_lift_unit_moving_down": false,
+        "cga_separation_in_progress": false,
+        "cga_connection_in_progress": true,
+        "cylinder_cap_separation_in_progress": false,
+        "cylinder_valve_open_in_progress": false,
+        "cylinder_valve_close_in_progress": true,
+        "cylinder_alignment_in_progress": false,
+        "cylinder_turn_in_progress": true,
+
+        // Word 117
+        "cylinder_turn_complete": true,
+        "cylinder_clamp_complete": true,
+        "cga_connect_complete_status": true
+      }
+    },
+    "timestamp": "2025-01-31 13:15:50"
+  }
