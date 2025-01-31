@@ -6,11 +6,13 @@ import logging
 import asyncio
 import json
 import os
-from typing import Any, List, Dict, Optional
+from typing import Set, Dict
+from typing import Any, List, Optional
 from contextlib import asynccontextmanager
 from pymodbus.client import AsyncModbusTcpClient
 from datetime import datetime
 from gas_cabinet_alarm_code import gas_cabinet_alarm_code
+import uvicorn
 
 # 로깅 설정
 logging.basicConfig(
@@ -779,22 +781,65 @@ class ConnectionManager:
 
 manager = ConnectionManager()
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """애플리케이션 시작/종료 시 실행될 코드"""
-    # 시작 시
+# ModbusDataClient 인스턴스를 전역 변수로 설정
+modbus_client: Optional[ModbusDataClient] = None
+
+async def update_client_data(modbus_client: ModbusDataClient):
+    """주기적으로 Modbus 데이터를 가져와서 WebSocket 클라이언트들에게 전송"""
+    while True:
+        try:
+            if modbus_client and modbus_client.connected:
+                data = await modbus_client.get_data()
+                if data:
+                    await manager.broadcast(data)
+            await asyncio.sleep(0.5)  # 500ms 간격으로 업데이트
+        except Exception as e:
+            logger.error(f"데이터 업데이트 중 오류: {e}")
+            await asyncio.sleep(1)  # 오류 발생 시 1초 대기 후 재시도
+
+async def update_client_data(modbus_client: ModbusDataClient):
+    """주기적으로 Modbus 데이터를 가져와서 WebSocket 클라이언트들에게 전송"""
+    while True:
+        try:
+            if modbus_client and modbus_client.connected:
+                data = await modbus_client.get_data()
+                if data:
+                    await manager.broadcast(data)
+            await asyncio.sleep(0.5)
+        except Exception as e:
+            logger.error(f"데이터 업데이트 중 오류: {e}")
+            await asyncio.sleep(1)
+
+async def startup():
+    """애플리케이션 시작 시 실행될 코드"""
+    global modbus_client
     try:
-        server = await manager.setup_unix_socket()
-        asyncio.create_task(server.serve_forever())
-        logger.info("Unix socket server started")
-        yield
-    finally:
-        # 종료 시
-        await manager.cleanup()
-        logger.info("Unix socket server stopped and cleaned up")    
+        modbus_client = ModbusDataClient()
+        await modbus_client.connect()
+        # 데이터 업데이트 태스크 시작
+        asyncio.create_task(update_client_data(modbus_client))
+        logger.info("Modbus client started")
+    except Exception as e:
+        logger.error(f"Startup error: {e}")
 
-app = FastAPI(lifespan=lifespan)
+async def shutdown():
+    """애플리케이션 종료 시 실행될 코드"""
+    global modbus_client
+    if modbus_client:
+        await modbus_client.close()
+    logger.info("Application shutdown complete")
 
+app = FastAPI(
+    title="Gas Cabinet Web Server",
+    description="Gas Cabinet Monitoring System"
+)
+
+app = FastAPI(
+    title="Gas Cabinet Web Server",
+    description="Gas Cabinet Monitoring System"
+)
+
+# CORS 미들웨어 설정 유지
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -803,32 +848,46 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+@app.on_event("startup")
+async def on_startup():
+    await startup()
+
+@app.on_event("shutdown")
+async def on_shutdown():
+    await shutdown()    
+
 @app.get("/", response_class=HTMLResponse)
 async def get():
     return html
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    """웹소켓 연결 처리"""
-    await websocket.accept()  # 연결 승인 추가
+    await websocket.accept()
     await manager.connect(websocket)
     try:
         while True:
             try:
-                await websocket.receive_text()
-                await asyncio.sleep(0.1)
+                # ModbusClient에서 데이터 가져오기
+                if modbus_client:
+                    data = await modbus_client.get_data()
+                    if data:
+                        await websocket.send_json(data)
+                await asyncio.sleep(0.5)
             except WebSocketDisconnect:
+                break
+            except Exception as e:
+                logger.error(f"WebSocket error: {e}")
                 break
     finally:
         await manager.disconnect(websocket)
-
+        
 if __name__ == "__main__":
-    import uvicorn
-    logger.info("=== Gas Cabinet Web Server Starting ===")
-    
-    uvicorn.run(
-        app=app,
-        host="0.0.0.0",
-        port=5001,
-        log_level="info"
-    )
+    try:
+        uvicorn.run(
+            "gas_web_server:app",  # 이 부분이 중요: 모듈:app 형식으로 지정
+            host="0.0.0.0",
+            port=5001,
+            log_level="info"
+        )
+    except Exception as e:
+        logger.error(f"Server startup error: {e}")

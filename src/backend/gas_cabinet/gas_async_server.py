@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from typing import Set
 sys.path.append(str(Path(__file__).parent.parent))
 from pymodbus.server import StartAsyncTcpServer
 from pymodbus.datastore import ModbusSequentialDataBlock, ModbusSlaveContext, ModbusServerContext
@@ -14,6 +15,8 @@ from pymodbus.device import ModbusDeviceIdentification
 from copy import deepcopy
 import gc
 from common.db_manager import DBManager
+import websockets
+from websockets.server import WebSocketServerProtocol
 
 # 로그 파일 경로 설정
 log_dir = "./log"
@@ -660,6 +663,17 @@ class CustomModbusSlaveContext(ModbusSlaveContext):
         # 메모리 정리 후 시간 동기화
         gc.collect()
         self.update_time()
+        self.websocket_server = GasCabinetWebSocketServer()
+
+        # 소켓 통신 관련 초기화
+        self.socket_path = '/tmp/modbus_data.sock'
+        if os.path.exists(self.socket_path):
+            os.unlink(self.socket_path)
+        self.data_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        self.data_socket.bind(self.socket_path)
+        self.data_socket.listen(1)
+        self.data_socket.setblocking(False)
+
     
     def update_time(self):
         """현재 시간을 레지스터에 업데이트 (900-905 주소 사용)"""
@@ -677,24 +691,91 @@ class CustomModbusSlaveContext(ModbusSlaveContext):
         logger.info(f"시간 동기화 데이터 업데이트: {now.strftime('%Y-%m-%d %H:%M:%S')}")
         gc.collect()  # 시간 업데이트 후 메모리 정리
 
+class GasCabinetWebSocketServer:
+    def __init__(self, host: str = "localhost", port: int = 8765):
+        self.host = host
+        self.port = port
+        self.clients: Set[WebSocketServerProtocol] = set()
+        self.running = True
+        self.modbus_context = None
+
+    async def register(self, websocket: WebSocketServerProtocol):
+        """클라이언트 등록"""
+        self.clients.add(websocket)
+        logger.info(f"Client connected. Total clients: {len(self.clients)}")
+
+    async def unregister(self, websocket: WebSocketServerProtocol):
+        """클라이언트 등록 해제"""
+        self.clients.remove(websocket)
+        logger.info(f"Client disconnected. Total clients: {len(self.clients)}")
+
+    async def send_data_to_clients(self, data: dict):  # Dict를 dict로 변경
+        """모든 클라이언트에 데이터 전송"""
+        if not self.clients:
+            return
+        
+        message = json.dumps(data)
+        disconnected_clients = set()
+
+        for client in self.clients:
+            try:
+                await client.send(message)
+            except websockets.ConnectionClosed:
+                disconnected_clients.add(client)
+            except Exception as e:
+                logger.error(f"Error sending data to client: {e}")
+                disconnected_clients.add(client)
+
+        # 연결 끊긴 클라이언트 제거
+        for client in disconnected_clients:
+            await self.unregister(client)
+
+    async def handler(self, websocket: WebSocketServerProtocol, path: str):
+        """WebSocket 연결 처리"""
+        await self.register(websocket)
+        try:
+            async for message in websocket:
+                try:
+                    # 클라이언트로부터의 메시지 처리
+                    data = json.loads(message)
+                    # 필요한 경우 메시지 처리 로직 추가
+                except json.JSONDecodeError:
+                    logger.error("Invalid JSON received")
+        except websockets.ConnectionClosed:
+            pass
+        finally:
+            await self.unregister(websocket)
+
+    async def start_server(self):
+        """WebSocket 서버 시작"""
+        async with websockets.serve(self.handler, self.host, self.port):
+            logger.info(f"WebSocket server started on ws://{self.host}:{self.port}")
+            await asyncio.Future()  # 계속 실행
+            
 # 서버 실행 함수
 async def run_server():
     store = CustomModbusSlaveContext()
     context = ModbusServerContext(slaves=store, single=True)
+    # WebSocket 서버 시작
+    websocket_server = store.websocket_server
 
     identity = ModbusDeviceIdentification()
     identity.VendorName = 'Pymodbus'
     identity.ProductCode = 'GasCabiniet'
     identity.ModelName = 'GasCabinet Server'
     identity.MajorMinorRevision = '1.0'
-
+    
     logger.info("Starting Modbus TCP GasCabinet Server...")
-    await StartAsyncTcpServer(
-        context=context,
-        identity=identity,
-        address=("127.0.0.1", 5020)
+    # 두 서버를 동시에 실행
+    await asyncio.gather(
+        StartAsyncTcpServer(
+            context=context,
+            identity=identity,
+            address=("127.0.0.1", 5020)
+        ),
+        websocket_server.start_server()
     )
-
+    
 if __name__ == "__main__":
     try:
         asyncio.run(run_server())
