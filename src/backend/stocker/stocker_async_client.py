@@ -72,7 +72,7 @@ def generate_bit_data() -> list:
 async def run_client():
     client = None
     try:
-        client = AsyncModbusTcpClient('127.0.0.1', port=5020)
+        client = AsyncModbusTcpClient('127.0.0.1', port=5021)
         connected = await client.connect()
         if not connected:
             logger.error("Server connection failed!")

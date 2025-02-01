@@ -1,0 +1,221 @@
+{
+    "plc_data": {
+      "bunker_id": 1,
+      "gas_cabinet_id": 2,
+      "gas_types": {
+        "cabinet": [
+          35,
+          47,
+          41,
+          25,
+          20
+        ],
+        "port_a": [
+          5,
+          4,
+          2,
+          3,
+          3
+        ],
+        "port_b": [
+          1,
+          3,
+          5,
+          2,
+          2
+        ]
+      },
+      "alarm_code": 458,
+      "sensors": {
+        "pressure": {
+          "PT1A": 3,
+          "PT2A": 51,
+          "PT1B": 72,
+          "PT2B": 40,
+          "PT3": 5,
+          "PT4": 39
+        },
+        "weight": {
+          "port_a": 82,
+          "port_b": 12
+        }
+      },
+      "heaters": {
+        "port_a": {
+          "jacket": 1,
+          "line": 18
+        },
+        "port_b": {
+          "jacket": 11,
+          "line": 62
+        }
+      },
+      "torque_position": {
+        "port_a": {
+          "cga_torque": 58,
+          "cap_torque": 71,
+          "cylinder_position": 143
+        },
+        "port_b": {
+          "cga_torque": 78,
+          "cap_torque": 99,
+          "cylinder_position": 180
+        }
+      },
+      "barcodes": {
+        "port_a": "8M179RRTLGK58TA9P5GDZE0ANZYIU6",
+        "port_b": "HL24X3H6XFNUAIM8GP1ITAFX09JHVV"
+      }
+    },
+    "bit_data": {
+      "basic_signals": {
+        "emg_signal": false,
+        "heart_bit": true,
+        "run_stop": false,
+        "server_connected": false,
+        "t_lamp_red": false,
+        "t_lamp_yellow": false,
+        "t_lamp_green": false,
+        "touch_manual": false
+      },
+      "av_status": {
+        "port_a": {
+          "av1": false,
+          "av2": false,
+          "av3": false,
+          "av4": false,
+          "av5": true
+        },
+        "port_b": {
+          "av1": false,
+          "av2": true,
+          "av3": true,
+          "av4": false,
+          "av5": false
+        },
+        "common": {
+          "av7": false,
+          "av8": false,
+          "av9": false
+        }
+      },
+      "system_status": {
+        "heater_relay": {
+          "port_a": {
+            "jacket": true,
+            "line": true
+          },
+          "port_b": {
+            "jacket": false,
+            "line": false
+          }
+        },
+        "safety": {
+          "gas_leak_shutdown": true,
+          "vmb_stop_signal": false,
+          "uv_ir_sensor": false,
+          "high_temp_sensor": false,
+          "smoke_sensor": false
+        }
+      },
+      "port_operations": {
+        "port_a": {
+          "insert_request": true,
+          "insert_complete": false,
+          "remove_request": false,
+          "remove_complete": true
+        },
+        "port_b": {
+          "insert_request": true,
+          "insert_complete": true,
+          "remove_request": false,
+          "remove_complete": false
+        }
+      },
+      "port_status": {
+        "port_a": {
+          "cylinder_present": false
+        },
+        "port_b": {
+          "cylinder_present": true
+        },
+        "door": {
+          "open_complete": false,
+          "close_complete": true
+        }
+      },
+      "port_a_sequence": {
+        "cylinder_close": false,
+        "first_purge_before_exchange": false,
+        "decompression_test": true,
+        "second_purge_before_exchange": false,
+        "exchange_cylinder": false,
+        "first_purge_after_exchange": true,
+        "pressure_test": true,
+        "second_purge_after_exchange": false,
+        "purge_completed": false,
+        "prepare_to_supply": false,
+        "gas_supply_av3_choose": true,
+        "gas_supply": false,
+        "ready_to_supply": false
+      },
+      "port_a_status": {
+        "cylinder_ready": true,
+        "cga_disconnect_complete": false,
+        "cga_connect_complete": true,
+        "cylinder_valve_open_complete": true,
+        "cylinder_valve_close_complete": false,
+        "cylinder_valve_open_status": true,
+        "cylinder_lift_unit_ready": true,
+        "cylinder_lift_unit_moving_up": false,
+        "cylinder_lift_unit_moving_down": true,
+        "cga_separation_in_progress": true,
+        "cga_connection_in_progress": false,
+        "cylinder_cap_separation_in_progress": false,
+        "cylinder_valve_open_in_progress": true,
+        "cylinder_valve_close_in_progress": false,
+        "cylinder_alignment_in_progress": true,
+        "cylinder_turn_in_progress": false,
+        "cylinder_turn_complete": false,
+        "cylinder_clamp_complete": true,
+        "cga_connect_complete_status": true
+      },
+      "port_b_sequence": {
+        "cylinder_close": false,
+        "first_purge_before_exchange": true,
+        "decompression_test": false,
+        "second_purge_before_exchange": false,
+        "exchange_cylinder": false,
+        "first_purge_after_exchange": true,
+        "pressure_test": true,
+        "second_purge_after_exchange": false,
+        "purge_completed": true,
+        "prepare_to_supply": false,
+        "gas_supply_av3_choose": true,
+        "gas_supply": false,
+        "ready_to_supply": true
+      },
+      "port_b_status": {
+        "cylinder_ready": false,
+        "cga_disconnect_complete": false,
+        "cga_connect_complete": true,
+        "cylinder_valve_open_complete": true,
+        "cylinder_valve_close_complete": true,
+        "cylinder_valve_open_status": true,
+        "cylinder_lift_unit_ready": false,
+        "cylinder_lift_unit_moving_up": false,
+        "cylinder_lift_unit_moving_down": true,
+        "cga_separation_in_progress": false,
+        "cga_connection_in_progress": true,
+        "cylinder_cap_separation_in_progress": false,
+        "cylinder_valve_open_in_progress": false,
+        "cylinder_valve_close_in_progress": true,
+        "cylinder_alignment_in_progress": false,
+        "cylinder_turn_in_progress": true,
+        "cylinder_turn_complete": true,
+        "cylinder_clamp_complete": true,
+        "cga_connect_complete_status": true
+      }
+    },
+    "timestamp": "2025-02-01 09:25:27"
+  }

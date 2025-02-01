@@ -1,0 +1,119 @@
+{
+    "plc_data": {
+      "bunker_id": 1,
+      "stocker_id": 1,
+      "gas_types": [
+        2,
+        2,
+        5,
+        2,
+        3
+      ],
+      "alarm_code": 377,
+      "axis_data": {
+        "x_position": 36,
+        "z_position": 58,
+        "cap_remove_torque": 40,
+        "cap_set_torque": 34
+      },
+      "barcodes": {
+        "port_a": "18WNFK1OW4S1RU71NCGLF21CK90LS3",
+        "port_b": "1QXRL83AZDE2FF5E2410HN951HNOXF"
+      },
+      "port_gas_types": {
+        "port_a": [
+          1,
+          5,
+          1,
+          3,
+          1
+        ],
+        "port_b": [
+          1,
+          4,
+          2,
+          1,
+          2
+        ]
+      }
+    },
+    "bit_data": {
+      "basic_signals": {
+        "emg_signal": false,
+        "heart_bit": true,
+        "run_stop": false,
+        "server_connected": false,
+        "t_lamp_red": false,
+        "t_lamp_yellow": false,
+        "t_lamp_green": false,
+        "touch_manual": false
+      },
+      "cylinder_door_status": {
+        "porta_cylinder": true,
+        "portb_cylinder": true,
+        "worker_door_open": false,
+        "worker_door_close": false
+      },
+      "port_a_status": {
+        "signal_0": true,
+        "signal_1": true,
+        "signal_2": false,
+        "signal_3": false,
+        "signal_4": false,
+        "signal_5": true,
+        "signal_6": false,
+        "signal_7": false,
+        "signal_8": false,
+        "signal_9": false,
+        "signal_10": true,
+        "signal_11": true,
+        "signal_12": false,
+        "signal_13": false,
+        "signal_14": false,
+        "signal_15": false
+      },
+      "port_a_detail": {
+        "signal_0": true,
+        "signal_1": false,
+        "signal_2": true,
+        "signal_3": false,
+        "signal_4": true,
+        "signal_5": true,
+        "signal_6": false,
+        "signal_7": true,
+        "signal_8": true,
+        "signal_9": false
+      },
+      "port_b_status": {
+        "signal_0": true,
+        "signal_1": true,
+        "signal_2": true,
+        "signal_3": false,
+        "signal_4": false,
+        "signal_5": false,
+        "signal_6": true,
+        "signal_7": false,
+        "signal_8": false,
+        "signal_9": true,
+        "signal_10": true,
+        "signal_11": false,
+        "signal_12": true,
+        "signal_13": true,
+        "signal_14": true,
+        "signal_15": true
+      },
+      "port_b_detail": {
+        "signal_0": true,
+        "signal_1": true,
+        "signal_2": true,
+        "signal_3": true,
+        "signal_4": false,
+        "signal_5": true,
+        "signal_6": false,
+        "signal_7": true,
+        "signal_8": false,
+        "signal_9": false
+      }
+    },
+    "timestamp": "2025-02-01 09:10:00"
+  }

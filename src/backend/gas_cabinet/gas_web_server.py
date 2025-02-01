@@ -121,7 +121,7 @@ html = """
         </div>
 
         <script>
-            const ws = new WebSocket("ws://localhost:5001/ws");
+            const ws = new WebSocket("ws://localhost:5001/ws/gas");
             const status = document.getElementById('connection-status');
             const dataContainer = document.getElementById('data-container');
             const alarmContainer = document.getElementById('alarm-container');
@@ -492,195 +492,6 @@ class ModbusDataClient:
             self.connected = False
             return None
     
-    def _get_word_100_states(self, word: int) -> Dict[str, Any]:
-        """word_100 상태 비트 해석"""
-        bit_data = [word]
-        return {
-            "word_100": {
-                "raw": bit_data[0],
-                "states": {
-                    "EMG Signal": bool(bit_data[0] & (1 << 0)),
-                    "Heart Bit": bool(bit_data[0] & (1 << 1)),
-                    "Run/Stop Signal": bool(bit_data[0] & (1 << 2)),
-                    "Server Connected Bit": bool(bit_data[0] & (1 << 3)),
-                    "T-LAMP RED": bool(bit_data[0] & (1 << 4)),
-                    "T-LAMP YELLOW": bool(bit_data[0] & (1 << 5)),
-                    "T-LAMP GREEN": bool(bit_data[0] & (1 << 6)),
-                    "Touch 수동동작中 Signal": bool(bit_data[0] & (1 << 7))
-                }
-            }
-        }
-    
-    def _get_word_102_states(self, word: int) -> Dict[str, Any]:
-        """word_102 상태 비트 해석"""
-        bit_data = [0, 0, word]
-        return {
-            "word_102": {
-                "raw": bit_data[2],
-                "states": {
-                    "JACKET HEATER A RELAY": bool(bit_data[2] & (1 << 0)),
-                    "LINE HEATER A RELAY": bool(bit_data[2] & (1 << 1)),
-                    "JACKET HEATER B RELAY": bool(bit_data[2] & (1 << 2)),
-                    "LINE HEATER B RELAY": bool(bit_data[2] & (1 << 3)),
-                    "GAS LEAK SHUT DOWN": bool(bit_data[2] & (1 << 4)),
-                    "VMB STOP SIGNAL": bool(bit_data[2] & (1 << 5)),
-                    "UV/IR SENSOR": bool(bit_data[2] & (1 << 6)),
-                    "HIGH TEMP SENSOR": bool(bit_data[2] & (1 << 7)),
-                    "SMOKE SENSOR": bool(bit_data[2] & (1 << 8))
-                }
-            }
-        }
-
-    def _get_word_103_states(self, word: int) -> Dict[str, Any]:
-        """word_103 상태 비트 해석"""
-        bit_data = [0, 0, 0, word]
-        return {
-            "word_103": {
-                "raw": bit_data[3],
-                "states": {
-                    "[A] Port Insert Request": bool(bit_data[3] & (1 << 0)),
-                    "[A] Port Insert Complete": bool(bit_data[3] & (1 << 1)),
-                    "[A] Port Remove Request": bool(bit_data[3] & (1 << 2)),
-                    "[A] Port Remove Complete": bool(bit_data[3] & (1 << 3)),
-                    "[B] Port Insert Request": bool(bit_data[3] & (1 << 8)),
-                    "[B] Port Insert Complete": bool(bit_data[3] & (1 << 9)),
-                    "[B] Port Remove Request": bool(bit_data[3] & (1 << 10)),
-                    "[B] Port Remove Complete": bool(bit_data[3] & (1 << 11))
-                }
-            }
-        }
-    
-    def _get_word_105_states(self, word: int) -> Dict[str, Any]:
-        """word_105 상태 비트 해석"""
-        bit_data = [0, 0, 0, 0, 0, word]
-        return {
-            "word_105": {
-                "raw": bit_data[5],
-                "states": {
-                    "[A] Port 실린더 유무": bool(bit_data[5] & (1 << 0)),
-                    "[B] Port 실린더 유무": bool(bit_data[5] & (1 << 1)),
-                    "Door Open 완료": bool(bit_data[5] & (1 << 2)),
-                    "Door Close 완료": bool(bit_data[5] & (1 << 3))
-                }
-            }
-        }
-    
-    def _get_word_110_states(self, word: int) -> Dict[str, Any]:
-        """word_110 상태 비트 해석"""
-        bit_data = [0] * 10 + [word]
-        return {
-            "word_110": {
-                "raw": bit_data[10],
-                "states": {
-                    "[A] Close the Cylinder": bool(bit_data[10] & (1 << 0)),
-                    "[A] 1st Purge before Exchange": bool(bit_data[10] & (1 << 1)),
-                    "[A] Decompression Test": bool(bit_data[10] & (1 << 2)),
-                    "[A] 2nd Purge before Exchange": bool(bit_data[10] & (1 << 3)),
-                    "[A] Exchange Cylinder": bool(bit_data[10] & (1 << 4)),
-                    "[A] 1st Purge after Exchange": bool(bit_data[10] & (1 << 5)),
-                    "[A] Pressure Test": bool(bit_data[10] & (1 << 6)),
-                    "[A] 2nd Purge after Exchange": bool(bit_data[10] & (1 << 7)),
-                    "[A] Purge Completed": bool(bit_data[10] & (1 << 8)),
-                    "[A] Prepare to Supply": bool(bit_data[10] & (1 << 9)),
-                    "[A] Gas Supply AV3 Open/Close Choose": bool(bit_data[10] & (1 << 10)),
-                    "[A] Gas Supply": bool(bit_data[10] & (1 << 11)),
-                    "[A] Ready to Supply": bool(bit_data[10] & (1 << 12))
-                }
-            }
-        }
-    
-    def _get_word_111_states(self, word: int) -> Dict[str, Any]:
-        """word_111 상태 비트 해석"""
-        bit_data = [0] * 10 + [word]
-        return {
-            "word_111": {
-                "raw": bit_data[10],
-                "states": {
-                    "[A] Cyclinder Ready": bool(bit_data[10] & (1 << 0)),
-                    "[A] CGA Disconnect Complete": bool(bit_data[10] & (1 << 1)),
-                    "[A] CGA Connect Complete": bool(bit_data[10] & (1 << 2)),
-                    "[A] Cylinder Valve Open Complete": bool(bit_data[10] & (1 << 3)),
-                    "[A] Cylinder Valve Close Complete": bool(bit_data[10] & (1 << 4)),
-                    "[A] Cylinder Valve Open Status": bool(bit_data[10] & (1 << 5)),
-                    "[A] Cylinder Lift Unit Ready": bool(bit_data[10] & (1 << 6)),
-                    "[A] Cylinder Lift Unit Moving Up": bool(bit_data[10] & (1 << 7)),
-                    "[A] Cylinder Lift Unit Moving Down": bool(bit_data[10] & (1 << 8)),
-                    "[A] CGA Separation In Progress": bool(bit_data[10] & (1 << 9)),
-                    "[A] CGA Connection In Progress": bool(bit_data[10] & (1 << 10)),
-                    "[A] Cylinder Cap Separation In Progress": bool(bit_data[10] & (1 << 11)),
-                    "[A] Cylinder Valve Open In Progress": bool(bit_data[10] & (1 << 12)),
-                    "[A] Cylinder Valve Close In Progress": bool(bit_data[10] & (1 << 13)),
-                    "[A] Cylinder Alignment In Progress": bool(bit_data[10] & (1 << 14)),
-                    "[A] Cylinder Turn In Progress": bool(bit_data[10] & (1 << 15))
-                }
-            }
-        }
-
-    def _get_word_115_states(self, word: int) -> Dict[str, Any]:
-        """word_115 상태 비트 해석"""
-        bit_data = [0] * 15 + [word]
-        return {
-            "word_115": {
-                "raw": bit_data[15],
-                "states": {
-                    "[B] Close the Cylinder": bool(bit_data[15] & (1 << 0)),
-                    "[B] 1st Purge before Exchange": bool(bit_data[15] & (1 << 1)),
-                    "[B] Decompression Test": bool(bit_data[15] & (1 << 2)),
-                    "[B] 2nd Purge before Exchange": bool(bit_data[15] & (1 << 3)),
-                    "[B] Exchange Cylinder": bool(bit_data[15] & (1 << 4)),
-                    "[B] 1st Purge after Exchange": bool(bit_data[15] & (1 << 5)),
-                    "[B] Pressure Test": bool(bit_data[15] & (1 << 6)),
-                    "[B] 2nd Purge after Exchange": bool(bit_data[15] & (1 << 7)),
-                    "[B] Purge Completed": bool(bit_data[15] & (1 << 8)),
-                    "[B] Prepare to Supply": bool(bit_data[15] & (1 << 9)),
-                    "[B] Gas Supply AV3 Open/Close Choose": bool(bit_data[15] & (1 << 10)),
-                    "[B] Gas Supply": bool(bit_data[15] & (1 << 11)),
-                    "[B] Ready to Supply": bool(bit_data[15] & (1 << 12))
-                }
-            }
-        }
-
-    def _get_word_116_states(self, word: int) -> Dict[str, Any]:
-        """word_116 상태 비트 해석"""
-        bit_data = [0] * 16 + [word]
-        return {
-            "word_116": {
-                "raw": bit_data[16],
-                "states": {
-                    "[B] Cylinder Ready": bool(bit_data[16] & (1 << 0)),
-                    "[B] CGA Disconnect Complete": bool(bit_data[16] & (1 << 1)),
-                    "[B] CGA Connect Complete": bool(bit_data[16] & (1 << 2)),
-                    "[B] Cylinder Valve Open Complete": bool(bit_data[16] & (1 << 3)),
-                    "[B] Cylinder Valve Close Complete": bool(bit_data[16] & (1 << 4)),
-                    "[B] Cylinder Valve Open Status": bool(bit_data[16] & (1 << 5)),
-                    "[B] Cylinder Lift Unit Ready": bool(bit_data[16] & (1 << 6)),
-                    "[B] Cylinder Lift Unit Moving Up": bool(bit_data[16] & (1 << 7)),
-                    "[B] Cylinder Lift Unit Moving Down": bool(bit_data[16] & (1 << 8)),
-                    "[B] CGA Separation In Progress": bool(bit_data[16] & (1 << 9)),
-                    "[B] CGA Connection In Progress": bool(bit_data[16] & (1 << 10)),
-                    "[B] Cylinder Cap Separation In Progress": bool(bit_data[16] & (1 << 11)),
-                    "[B] Cylinder Valve Open In Progress": bool(bit_data[16] & (1 << 12)),
-                    "[B] Cylinder Valve Close In Progress": bool(bit_data[16] & (1 << 13)),
-                    "[B] Cylinder Alignment In Progress": bool(bit_data[16] & (1 << 14)),
-                    "[B] Cylinder Turn In Progress": bool(bit_data[16] & (1 << 15))
-                }
-            }
-        }
-
-    def _get_word_117_states(self, word: int) -> Dict[str, Any]:
-        """word_117 상태 비트 해석"""
-        bit_data = [0] * 17 + [word]
-        return {
-            "word_117": {
-                "raw": bit_data[17],
-                "states": {
-                    "[B] Cylinder Turn Complete": bool(bit_data[17] & (1 << 0)),
-                    "[B] Cylinder Clamp Complete": bool(bit_data[17] & (1 << 1)),
-                    "[B] CGA Connect Complete Status": bool(bit_data[17] & (1 << 2))
-                }
-            }
-        }
-    
     async def close(self):
         try:
             self.running = False  # 실행 상태 플래그 해제
@@ -767,19 +578,6 @@ manager = ConnectionManager()
 # ModbusDataClient 인스턴스를 전역 변수로 설정
 modbus_client: Optional[ModbusDataClient] = None
 
-async def update_client_data(modbus_client: ModbusDataClient):
-    """주기적으로 Modbus 데이터를 가져와서 WebSocket 클라이언트들에게 전송"""
-    while True:
-        try:
-            if modbus_client and modbus_client.connected:
-                data = await modbus_client.get_data()
-                if data:
-                    await manager.broadcast(data)
-            await asyncio.sleep(0.5)  # 500ms 간격으로 업데이트
-        except Exception as e:
-            logger.error(f"데이터 업데이트 중 오류: {e}")
-            await asyncio.sleep(1)  # 오류 발생 시 1초 대기 후 재시도
-
 async def startup():
     """애플리케이션 시작 시 실행될 코드"""
     global modbus_client
@@ -825,7 +623,7 @@ async def on_shutdown():
 async def get():
     return html
 
-@app.websocket("/ws")
+@app.websocket("/ws/gas")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     await manager.connect(websocket)
