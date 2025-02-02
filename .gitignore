@@ -1,0 +1,13 @@
+# Environments
+.env
+.venv
+env/
+venv/
+mvenv/
+
+#DB
+*.DB
+*.db
+
+#LOG
+*.log
