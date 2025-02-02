@@ -1,0 +1,2424 @@
+2025-02-02 21:14:47,224 Server stopped by user
+2025-02-02 21:15:41,888 시간 동기화 데이터 업데이트: 2025-02-02 21:15:41
+2025-02-02 21:15:41,896 Starting Modbus TCP GasCabinet Server...
+2025-02-02 21:15:41,902 WebSocket server started on ws://localhost:8765
+2025-02-02 21:16:04 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:04 | Bunker ID: 1
+2025-02-02 21:16:04 | Gas Cabinet ID: 1
+2025-02-02 21:16:04 | Gas Cabinet 가스 종류 1: 11
+2025-02-02 21:16:04 | Gas Cabinet 가스 종류 2: 12
+2025-02-02 21:16:04 | Gas Cabinet 가스 종류 3: 36
+2025-02-02 21:16:04 | Gas Cabinet 가스 종류 4: 49
+2025-02-02 21:16:04 | Gas Cabinet 가스 종류 5: 21
+2025-02-02 21:16:04 | Gas Cabinet Alarm Code: 314
+2025-02-02 21:16:04 | PT1A: 61 PSI
+2025-02-02 21:16:04 | PT2A: 32 PSI
+2025-02-02 21:16:04 | PT1B: 44 PSI
+2025-02-02 21:16:04 | PT2B: 38 PSI
+2025-02-02 21:16:04 | PT3: 88 PSI
+2025-02-02 21:16:04 | PT4: 1 PSI
+2025-02-02 21:16:04 | WA (A Port Weight): 76 kg
+2025-02-02 21:16:04 | WB (B Port Weight): 40 kg
+2025-02-02 21:16:04 | [A] JACKET HEATER: 10°C
+2025-02-02 21:16:04 | [A] LINE HEATER: 83°C
+2025-02-02 21:16:04 | [B] JACKET HEATER: 76°C
+2025-02-02 21:16:04 | [B] LINE HEATER: 49°C
+2025-02-02 21:16:04 | [A] CGA 체결 Torque: 60 kgf·cm
+2025-02-02 21:16:04 | [A] CAP 체결 Torque: 50 kgf·cm
+2025-02-02 21:16:04 | [A] 실린더 Up/Down Pos: 132 mm
+2025-02-02 21:16:04 | [B] CGA 체결 Torque: 99 kgf·cm
+2025-02-02 21:16:04 | [B] CAP 체결 Torque: 57 kgf·cm
+2025-02-02 21:16:04 | [B] 실린더 Up/Down Pos: 67 mm
+2025-02-02 21:16:04 | [A] Port Barcode: BWP38QVGY0WQUXIADMAMQV3J1LIZ4S
+2025-02-02 21:16:04 | [B] Port Barcode: R60C5OQRA7W6BZNAPD1SXH64UCD092
+2025-02-02 21:16:04 | [A] Port 가스 종류 1: 4
+2025-02-02 21:16:04 | [A] Port 가스 종류 2: 1
+2025-02-02 21:16:04 | [A] Port 가스 종류 3: 1
+2025-02-02 21:16:04 | [A] Port 가스 종류 4: 1
+2025-02-02 21:16:04 | [A] Port 가스 종류 5: 1
+2025-02-02 21:16:04 | [B] Port 가스 종류 1: 3
+2025-02-02 21:16:04 | [B] Port 가스 종류 2: 1
+2025-02-02 21:16:04 | [B] Port 가스 종류 3: 1
+2025-02-02 21:16:04 | [B] Port 가스 종류 4: 1
+2025-02-02 21:16:04 | [B] Port 가스 종류 5: 3
+2025-02-02 21:16:04 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:04 | EMG Signal: True
+2025-02-02 21:16:04 | Heart Bit: True
+2025-02-02 21:16:04 | Run/Stop Signal: False
+2025-02-02 21:16:04 | Server Connected Bit: False
+2025-02-02 21:16:04 | T-LAMP RED: False
+2025-02-02 21:16:04 | T-LAMP YELLOW: False
+2025-02-02 21:16:04 | T-LAMP GREEN: False
+2025-02-02 21:16:04 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:04 | [A] Port 실린더 유무: False
+2025-02-02 21:16:04 | [B] Port 실린더 유무: False
+2025-02-02 21:16:04 | [A] Worker Door Open: False
+2025-02-02 21:16:04 | [A] Worker Door Close: False
+2025-02-02 21:16:04 | [A] Bunker Door Open: False
+2025-02-02 21:16:04 | [A] Bunker Door Close: False
+2025-02-02 21:16:04 | [B] Worker Door Open: False
+2025-02-02 21:16:04 | [B] Worker Door Close: False
+2025-02-02 21:16:04 | [B] Bunker Door Open: False
+2025-02-02 21:16:04 | [B] Bunker Door Close: False
+2025-02-02 21:16:04 | [A] Port 보호캡 분리 완료: False
+2025-02-02 21:16:04 | [A] Port 보호캡 체결 완료: False
+2025-02-02 21:16:04 | [A] Worker Door Open 완료: False
+2025-02-02 21:16:04 | [A] Worker Door Close 완료: False
+2025-02-02 21:16:04 | [A] Worker 투입 Ready: False
+2025-02-02 21:16:04 | [A] Worker 투입 Complete: False
+2025-02-02 21:16:04 | [A] Worker 배출 Ready: False
+2025-02-02 21:16:04 | [A] Worker 배출 Comlete: False
+2025-02-02 21:16:04 | [A] Bunker Door Open 완료: False
+2025-02-02 21:16:04 | [A] Bunker Door Close 완료: False
+2025-02-02 21:16:04 | [A] Bunker 투입 Ready: False
+2025-02-02 21:16:04 | [A] Bunker 투입 Complete: False
+2025-02-02 21:16:04 | [A] Bunker 배출 Ready: False
+2025-02-02 21:16:04 | [A] Bunker 배출 Comlete: False
+2025-02-02 21:16:04 | [A] Cylinder Align 진행중: False
+2025-02-02 21:16:04 | [A] Cylinder Align 완료: False
+2025-02-02 21:16:04 | [A] Cap Open 진행중: False
+2025-02-02 21:16:04 | [A] Cap Close 진행중: False
+2025-02-02 21:16:04 | [A] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:04 | [A] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:04 | [A] Cap 위치 찾는중: False
+2025-02-02 21:16:04 | [A] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:04 | [A] Worker door Open 진행중: False
+2025-02-02 21:16:04 | [A] Worker door Close 진행중: False
+2025-02-02 21:16:04 | [A] Bunker door Open 진행중: False
+2025-02-02 21:16:04 | [A] Bunker door Close 진행중: False
+2025-02-02 21:16:04 | [B] Port 보호캡 분리 완료: False
+2025-02-02 21:16:04 | [B] Port 보호캡 체결 완료: False
+2025-02-02 21:16:04 | [B] Worker Door Open 완료: False
+2025-02-02 21:16:04 | [B] Worker Door Close 완료: False
+2025-02-02 21:16:04 | [B] Worker 투입 Ready: False
+2025-02-02 21:16:04 | [B] Worker 투입 Complete: False
+2025-02-02 21:16:04 | [B] Worker 배출 Ready: False
+2025-02-02 21:16:04 | [B] Worker 배출 Comlete: False
+2025-02-02 21:16:04 | [B] Bunker Door Open 완료: False
+2025-02-02 21:16:04 | [B] Bunker Door Close 완료: False
+2025-02-02 21:16:04 | [B] Bunker 투입 Ready: False
+2025-02-02 21:16:04 | [B] Bunker 투입 Complete: False
+2025-02-02 21:16:04 | [B] Bunker 배출 Ready: False
+2025-02-02 21:16:04 | [B] Bunker 배출 Comlete: False
+2025-02-02 21:16:04 | [B] Cylinder Align 진행중: False
+2025-02-02 21:16:04 | [B] Cylinder Align 완료: False
+2025-02-02 21:16:04 | [B] Cap Open 진행중: False
+2025-02-02 21:16:04 | [B] Cap Close 진행중: False
+2025-02-02 21:16:04 | [B] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:04 | [B] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:04 | [B] Cap 위치 찾는중: False
+2025-02-02 21:16:04 | [B] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:04 | [B] Worker door Open 진행중: False
+2025-02-02 21:16:04 | [B] Worker door Close 진행중: False
+2025-02-02 21:16:04 | [B] Bunker door Open 진행중: False
+2025-02-02 21:16:04 | [B] Bunker door Close 진행중: False
+2025-02-02 21:16:05 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:05 | Bunker ID: 1
+2025-02-02 21:16:05 | Gas Cabinet ID: 1
+2025-02-02 21:16:05 | Gas Cabinet 가스 종류 1: 41
+2025-02-02 21:16:05 | Gas Cabinet 가스 종류 2: 35
+2025-02-02 21:16:05 | Gas Cabinet 가스 종류 3: 5
+2025-02-02 21:16:05 | Gas Cabinet 가스 종류 4: 27
+2025-02-02 21:16:05 | Gas Cabinet 가스 종류 5: 2
+2025-02-02 21:16:05 | Gas Cabinet Alarm Code: 165
+2025-02-02 21:16:05 | PT1A: 54 PSI
+2025-02-02 21:16:05 | PT2A: 20 PSI
+2025-02-02 21:16:05 | PT1B: 28 PSI
+2025-02-02 21:16:05 | PT2B: 36 PSI
+2025-02-02 21:16:05 | PT3: 15 PSI
+2025-02-02 21:16:05 | PT4: 86 PSI
+2025-02-02 21:16:05 | WA (A Port Weight): 5 kg
+2025-02-02 21:16:05 | WB (B Port Weight): 25 kg
+2025-02-02 21:16:05 | [A] JACKET HEATER: 29°C
+2025-02-02 21:16:05 | [A] LINE HEATER: 3°C
+2025-02-02 21:16:05 | [B] JACKET HEATER: 60°C
+2025-02-02 21:16:05 | [B] LINE HEATER: 14°C
+2025-02-02 21:16:05 | [A] CGA 체결 Torque: 12 kgf·cm
+2025-02-02 21:16:05 | [A] CAP 체결 Torque: 22 kgf·cm
+2025-02-02 21:16:05 | [A] 실린더 Up/Down Pos: 13 mm
+2025-02-02 21:16:05 | [B] CGA 체결 Torque: 17 kgf·cm
+2025-02-02 21:16:05 | [B] CAP 체결 Torque: 72 kgf·cm
+2025-02-02 21:16:05 | [B] 실린더 Up/Down Pos: 169 mm
+2025-02-02 21:16:05 | [A] Port Barcode: T1VMV6GNBYIFQDCXET0COCI9HYCE5T
+2025-02-02 21:16:05 | [B] Port Barcode: YLX2OL0FKTYF96V7UY59SQRFQH1X07
+2025-02-02 21:16:05 | [A] Port 가스 종류 1: 5
+2025-02-02 21:16:05 | [A] Port 가스 종류 2: 3
+2025-02-02 21:16:05 | [A] Port 가스 종류 3: 4
+2025-02-02 21:16:05 | [A] Port 가스 종류 4: 3
+2025-02-02 21:16:05 | [A] Port 가스 종류 5: 4
+2025-02-02 21:16:05 | [B] Port 가스 종류 1: 3
+2025-02-02 21:16:05 | [B] Port 가스 종류 2: 5
+2025-02-02 21:16:05 | [B] Port 가스 종류 3: 2
+2025-02-02 21:16:05 | [B] Port 가스 종류 4: 1
+2025-02-02 21:16:05 | [B] Port 가스 종류 5: 3
+2025-02-02 21:16:05 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:05 | EMG Signal: True
+2025-02-02 21:16:05 | Heart Bit: True
+2025-02-02 21:16:05 | Run/Stop Signal: False
+2025-02-02 21:16:05 | Server Connected Bit: False
+2025-02-02 21:16:05 | T-LAMP RED: False
+2025-02-02 21:16:05 | T-LAMP YELLOW: False
+2025-02-02 21:16:05 | T-LAMP GREEN: False
+2025-02-02 21:16:05 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:05 | [A] Port 실린더 유무: False
+2025-02-02 21:16:05 | [B] Port 실린더 유무: False
+2025-02-02 21:16:05 | [A] Worker Door Open: True
+2025-02-02 21:16:05 | [A] Worker Door Close: False
+2025-02-02 21:16:05 | [A] Bunker Door Open: True
+2025-02-02 21:16:05 | [A] Bunker Door Close: True
+2025-02-02 21:16:05 | [B] Worker Door Open: False
+2025-02-02 21:16:05 | [B] Worker Door Close: True
+2025-02-02 21:16:05 | [B] Bunker Door Open: True
+2025-02-02 21:16:05 | [B] Bunker Door Close: False
+2025-02-02 21:16:05 | [A] Port 보호캡 분리 완료: True
+2025-02-02 21:16:05 | [A] Port 보호캡 체결 완료: False
+2025-02-02 21:16:05 | [A] Worker Door Open 완료: True
+2025-02-02 21:16:05 | [A] Worker Door Close 완료: True
+2025-02-02 21:16:05 | [A] Worker 투입 Ready: False
+2025-02-02 21:16:05 | [A] Worker 투입 Complete: False
+2025-02-02 21:16:05 | [A] Worker 배출 Ready: False
+2025-02-02 21:16:05 | [A] Worker 배출 Comlete: True
+2025-02-02 21:16:05 | [A] Bunker Door Open 완료: True
+2025-02-02 21:16:05 | [A] Bunker Door Close 완료: True
+2025-02-02 21:16:05 | [A] Bunker 투입 Ready: False
+2025-02-02 21:16:05 | [A] Bunker 투입 Complete: False
+2025-02-02 21:16:05 | [A] Bunker 배출 Ready: False
+2025-02-02 21:16:05 | [A] Bunker 배출 Comlete: False
+2025-02-02 21:16:05 | [A] Cylinder Align 진행중: False
+2025-02-02 21:16:05 | [A] Cylinder Align 완료: True
+2025-02-02 21:16:05 | [A] Cap Open 진행중: True
+2025-02-02 21:16:05 | [A] Cap Close 진행중: False
+2025-02-02 21:16:05 | [A] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:05 | [A] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:05 | [A] Cap 위치 찾는중: True
+2025-02-02 21:16:05 | [A] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:05 | [A] Worker door Open 진행중: False
+2025-02-02 21:16:05 | [A] Worker door Close 진행중: False
+2025-02-02 21:16:05 | [A] Bunker door Open 진행중: True
+2025-02-02 21:16:05 | [A] Bunker door Close 진행중: True
+2025-02-02 21:16:05 | [B] Port 보호캡 분리 완료: False
+2025-02-02 21:16:05 | [B] Port 보호캡 체결 완료: True
+2025-02-02 21:16:05 | [B] Worker Door Open 완료: True
+2025-02-02 21:16:05 | [B] Worker Door Close 완료: False
+2025-02-02 21:16:05 | [B] Worker 투입 Ready: True
+2025-02-02 21:16:05 | [B] Worker 투입 Complete: True
+2025-02-02 21:16:05 | [B] Worker 배출 Ready: False
+2025-02-02 21:16:05 | [B] Worker 배출 Comlete: True
+2025-02-02 21:16:05 | [B] Bunker Door Open 완료: True
+2025-02-02 21:16:05 | [B] Bunker Door Close 완료: True
+2025-02-02 21:16:05 | [B] Bunker 투입 Ready: False
+2025-02-02 21:16:05 | [B] Bunker 투입 Complete: False
+2025-02-02 21:16:05 | [B] Bunker 배출 Ready: True
+2025-02-02 21:16:05 | [B] Bunker 배출 Comlete: False
+2025-02-02 21:16:05 | [B] Cylinder Align 진행중: False
+2025-02-02 21:16:05 | [B] Cylinder Align 완료: False
+2025-02-02 21:16:05 | [B] Cap Open 진행중: True
+2025-02-02 21:16:05 | [B] Cap Close 진행중: False
+2025-02-02 21:16:05 | [B] Cylinder 위치로 X축 이동중: True
+2025-02-02 21:16:05 | [B] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:05 | [B] Cap 위치 찾는중: False
+2025-02-02 21:16:05 | [B] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:05 | [B] Worker door Open 진행중: False
+2025-02-02 21:16:05 | [B] Worker door Close 진행중: True
+2025-02-02 21:16:05 | [B] Bunker door Open 진행중: False
+2025-02-02 21:16:05 | [B] Bunker door Close 진행중: True
+2025-02-02 21:16:06 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:06 | Bunker ID: 1
+2025-02-02 21:16:06 | Gas Cabinet ID: 1
+2025-02-02 21:16:06 | Gas Cabinet 가스 종류 1: 49
+2025-02-02 21:16:06 | Gas Cabinet 가스 종류 2: 15
+2025-02-02 21:16:06 | Gas Cabinet 가스 종류 3: 9
+2025-02-02 21:16:06 | Gas Cabinet 가스 종류 4: 24
+2025-02-02 21:16:06 | Gas Cabinet 가스 종류 5: 45
+2025-02-02 21:16:06 | Gas Cabinet Alarm Code: 40
+2025-02-02 21:16:06 | PT1A: 10 PSI
+2025-02-02 21:16:06 | PT2A: 69 PSI
+2025-02-02 21:16:06 | PT1B: 85 PSI
+2025-02-02 21:16:06 | PT2B: 13 PSI
+2025-02-02 21:16:06 | PT3: 57 PSI
+2025-02-02 21:16:06 | PT4: 27 PSI
+2025-02-02 21:16:06 | WA (A Port Weight): 100 kg
+2025-02-02 21:16:06 | WB (B Port Weight): 57 kg
+2025-02-02 21:16:06 | [A] JACKET HEATER: 54°C
+2025-02-02 21:16:06 | [A] LINE HEATER: 44°C
+2025-02-02 21:16:06 | [B] JACKET HEATER: 60°C
+2025-02-02 21:16:06 | [B] LINE HEATER: 83°C
+2025-02-02 21:16:06 | [A] CGA 체결 Torque: 58 kgf·cm
+2025-02-02 21:16:06 | [A] CAP 체결 Torque: 27 kgf·cm
+2025-02-02 21:16:06 | [A] 실린더 Up/Down Pos: 2 mm
+2025-02-02 21:16:06 | [B] CGA 체결 Torque: 5 kgf·cm
+2025-02-02 21:16:06 | [B] CAP 체결 Torque: 27 kgf·cm
+2025-02-02 21:16:06 | [B] 실린더 Up/Down Pos: 111 mm
+2025-02-02 21:16:06 | [A] Port Barcode: 35N130N9L7CD86I9276I0WMU09FG3B
+2025-02-02 21:16:06 | [B] Port Barcode: WIPWG32VGLB5WH2CY3XE5RHLNTR0ZR
+2025-02-02 21:16:06 | [A] Port 가스 종류 1: 3
+2025-02-02 21:16:06 | [A] Port 가스 종류 2: 3
+2025-02-02 21:16:06 | [A] Port 가스 종류 3: 3
+2025-02-02 21:16:06 | [A] Port 가스 종류 4: 2
+2025-02-02 21:16:06 | [A] Port 가스 종류 5: 1
+2025-02-02 21:16:06 | [B] Port 가스 종류 1: 3
+2025-02-02 21:16:06 | [B] Port 가스 종류 2: 3
+2025-02-02 21:16:06 | [B] Port 가스 종류 3: 1
+2025-02-02 21:16:06 | [B] Port 가스 종류 4: 4
+2025-02-02 21:16:06 | [B] Port 가스 종류 5: 4
+2025-02-02 21:16:06 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:06 | EMG Signal: False
+2025-02-02 21:16:06 | Heart Bit: False
+2025-02-02 21:16:06 | Run/Stop Signal: True
+2025-02-02 21:16:06 | Server Connected Bit: False
+2025-02-02 21:16:06 | T-LAMP RED: False
+2025-02-02 21:16:06 | T-LAMP YELLOW: False
+2025-02-02 21:16:06 | T-LAMP GREEN: False
+2025-02-02 21:16:06 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:06 | [A] Port 실린더 유무: True
+2025-02-02 21:16:06 | [B] Port 실린더 유무: True
+2025-02-02 21:16:06 | [A] Worker Door Open: False
+2025-02-02 21:16:06 | [A] Worker Door Close: False
+2025-02-02 21:16:06 | [A] Bunker Door Open: False
+2025-02-02 21:16:06 | [A] Bunker Door Close: False
+2025-02-02 21:16:06 | [B] Worker Door Open: True
+2025-02-02 21:16:06 | [B] Worker Door Close: True
+2025-02-02 21:16:06 | [B] Bunker Door Open: True
+2025-02-02 21:16:06 | [B] Bunker Door Close: False
+2025-02-02 21:16:06 | [A] Port 보호캡 분리 완료: True
+2025-02-02 21:16:06 | [A] Port 보호캡 체결 완료: False
+2025-02-02 21:16:06 | [A] Worker Door Open 완료: False
+2025-02-02 21:16:06 | [A] Worker Door Close 완료: False
+2025-02-02 21:16:06 | [A] Worker 투입 Ready: False
+2025-02-02 21:16:06 | [A] Worker 투입 Complete: False
+2025-02-02 21:16:06 | [A] Worker 배출 Ready: True
+2025-02-02 21:16:06 | [A] Worker 배출 Comlete: True
+2025-02-02 21:16:06 | [A] Bunker Door Open 완료: False
+2025-02-02 21:16:06 | [A] Bunker Door Close 완료: True
+2025-02-02 21:16:06 | [A] Bunker 투입 Ready: False
+2025-02-02 21:16:06 | [A] Bunker 투입 Complete: False
+2025-02-02 21:16:06 | [A] Bunker 배출 Ready: True
+2025-02-02 21:16:06 | [A] Bunker 배출 Comlete: True
+2025-02-02 21:16:06 | [A] Cylinder Align 진행중: True
+2025-02-02 21:16:06 | [A] Cylinder Align 완료: True
+2025-02-02 21:16:06 | [A] Cap Open 진행중: False
+2025-02-02 21:16:06 | [A] Cap Close 진행중: True
+2025-02-02 21:16:06 | [A] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:06 | [A] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:06 | [A] Cap 위치 찾는중: False
+2025-02-02 21:16:06 | [A] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:06 | [A] Worker door Open 진행중: False
+2025-02-02 21:16:06 | [A] Worker door Close 진행중: True
+2025-02-02 21:16:06 | [A] Bunker door Open 진행중: True
+2025-02-02 21:16:06 | [A] Bunker door Close 진행중: False
+2025-02-02 21:16:06 | [B] Port 보호캡 분리 완료: True
+2025-02-02 21:16:06 | [B] Port 보호캡 체결 완료: True
+2025-02-02 21:16:06 | [B] Worker Door Open 완료: True
+2025-02-02 21:16:06 | [B] Worker Door Close 완료: True
+2025-02-02 21:16:06 | [B] Worker 투입 Ready: True
+2025-02-02 21:16:06 | [B] Worker 투입 Complete: True
+2025-02-02 21:16:06 | [B] Worker 배출 Ready: True
+2025-02-02 21:16:06 | [B] Worker 배출 Comlete: True
+2025-02-02 21:16:06 | [B] Bunker Door Open 완료: True
+2025-02-02 21:16:06 | [B] Bunker Door Close 완료: True
+2025-02-02 21:16:06 | [B] Bunker 투입 Ready: True
+2025-02-02 21:16:06 | [B] Bunker 투입 Complete: True
+2025-02-02 21:16:06 | [B] Bunker 배출 Ready: False
+2025-02-02 21:16:06 | [B] Bunker 배출 Comlete: False
+2025-02-02 21:16:06 | [B] Cylinder Align 진행중: False
+2025-02-02 21:16:06 | [B] Cylinder Align 완료: False
+2025-02-02 21:16:06 | [B] Cap Open 진행중: False
+2025-02-02 21:16:06 | [B] Cap Close 진행중: False
+2025-02-02 21:16:06 | [B] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:06 | [B] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:06 | [B] Cap 위치 찾는중: False
+2025-02-02 21:16:06 | [B] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:06 | [B] Worker door Open 진행중: False
+2025-02-02 21:16:06 | [B] Worker door Close 진행중: True
+2025-02-02 21:16:06 | [B] Bunker door Open 진행중: False
+2025-02-02 21:16:06 | [B] Bunker door Close 진행중: True
+2025-02-02 21:16:07 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:07 | Bunker ID: 1
+2025-02-02 21:16:07 | Gas Cabinet ID: 1
+2025-02-02 21:16:07 | Gas Cabinet 가스 종류 1: 4
+2025-02-02 21:16:07 | Gas Cabinet 가스 종류 2: 9
+2025-02-02 21:16:07 | Gas Cabinet 가스 종류 3: 19
+2025-02-02 21:16:07 | Gas Cabinet 가스 종류 4: 22
+2025-02-02 21:16:07 | Gas Cabinet 가스 종류 5: 13
+2025-02-02 21:16:07 | Gas Cabinet Alarm Code: 135
+2025-02-02 21:16:07 | PT1A: 59 PSI
+2025-02-02 21:16:07 | PT2A: 39 PSI
+2025-02-02 21:16:07 | PT1B: 55 PSI
+2025-02-02 21:16:07 | PT2B: 47 PSI
+2025-02-02 21:16:07 | PT3: 18 PSI
+2025-02-02 21:16:07 | PT4: 13 PSI
+2025-02-02 21:16:07 | WA (A Port Weight): 15 kg
+2025-02-02 21:16:07 | WB (B Port Weight): 14 kg
+2025-02-02 21:16:07 | [A] JACKET HEATER: 59°C
+2025-02-02 21:16:07 | [A] LINE HEATER: 53°C
+2025-02-02 21:16:07 | [B] JACKET HEATER: 96°C
+2025-02-02 21:16:07 | [B] LINE HEATER: 43°C
+2025-02-02 21:16:07 | [A] CGA 체결 Torque: 67 kgf·cm
+2025-02-02 21:16:07 | [A] CAP 체결 Torque: 91 kgf·cm
+2025-02-02 21:16:07 | [A] 실린더 Up/Down Pos: 22 mm
+2025-02-02 21:16:07 | [B] CGA 체결 Torque: 41 kgf·cm
+2025-02-02 21:16:07 | [B] CAP 체결 Torque: 14 kgf·cm
+2025-02-02 21:16:07 | [B] 실린더 Up/Down Pos: 35 mm
+2025-02-02 21:16:07 | [A] Port Barcode: 88CR1FQ096R2XNOUZEMBZ7UZBGD46L
+2025-02-02 21:16:07 | [B] Port Barcode: KSOGVI06WPG11CD9GTM9QZ4FQT97TJ
+2025-02-02 21:16:07 | [A] Port 가스 종류 1: 1
+2025-02-02 21:16:07 | [A] Port 가스 종류 2: 3
+2025-02-02 21:16:07 | [A] Port 가스 종류 3: 2
+2025-02-02 21:16:07 | [A] Port 가스 종류 4: 4
+2025-02-02 21:16:07 | [A] Port 가스 종류 5: 5
+2025-02-02 21:16:07 | [B] Port 가스 종류 1: 5
+2025-02-02 21:16:07 | [B] Port 가스 종류 2: 2
+2025-02-02 21:16:07 | [B] Port 가스 종류 3: 2
+2025-02-02 21:16:07 | [B] Port 가스 종류 4: 2
+2025-02-02 21:16:07 | [B] Port 가스 종류 5: 2
+2025-02-02 21:16:07 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:07 | EMG Signal: False
+2025-02-02 21:16:07 | Heart Bit: True
+2025-02-02 21:16:07 | Run/Stop Signal: False
+2025-02-02 21:16:07 | Server Connected Bit: False
+2025-02-02 21:16:07 | T-LAMP RED: False
+2025-02-02 21:16:07 | T-LAMP YELLOW: False
+2025-02-02 21:16:07 | T-LAMP GREEN: False
+2025-02-02 21:16:07 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:07 | [A] Port 실린더 유무: True
+2025-02-02 21:16:07 | [B] Port 실린더 유무: True
+2025-02-02 21:16:07 | [A] Worker Door Open: False
+2025-02-02 21:16:07 | [A] Worker Door Close: True
+2025-02-02 21:16:07 | [A] Bunker Door Open: True
+2025-02-02 21:16:07 | [A] Bunker Door Close: True
+2025-02-02 21:16:07 | [B] Worker Door Open: False
+2025-02-02 21:16:07 | [B] Worker Door Close: False
+2025-02-02 21:16:07 | [B] Bunker Door Open: False
+2025-02-02 21:16:07 | [B] Bunker Door Close: True
+2025-02-02 21:16:07 | [A] Port 보호캡 분리 완료: True
+2025-02-02 21:16:07 | [A] Port 보호캡 체결 완료: True
+2025-02-02 21:16:07 | [A] Worker Door Open 완료: True
+2025-02-02 21:16:07 | [A] Worker Door Close 완료: True
+2025-02-02 21:16:07 | [A] Worker 투입 Ready: False
+2025-02-02 21:16:07 | [A] Worker 투입 Complete: False
+2025-02-02 21:16:07 | [A] Worker 배출 Ready: False
+2025-02-02 21:16:07 | [A] Worker 배출 Comlete: True
+2025-02-02 21:16:07 | [A] Bunker Door Open 완료: False
+2025-02-02 21:16:07 | [A] Bunker Door Close 완료: True
+2025-02-02 21:16:07 | [A] Bunker 투입 Ready: True
+2025-02-02 21:16:07 | [A] Bunker 투입 Complete: False
+2025-02-02 21:16:07 | [A] Bunker 배출 Ready: True
+2025-02-02 21:16:07 | [A] Bunker 배출 Comlete: True
+2025-02-02 21:16:07 | [A] Cylinder Align 진행중: True
+2025-02-02 21:16:07 | [A] Cylinder Align 완료: False
+2025-02-02 21:16:07 | [A] Cap Open 진행중: False
+2025-02-02 21:16:07 | [A] Cap Close 진행중: False
+2025-02-02 21:16:07 | [A] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:07 | [A] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:07 | [A] Cap 위치 찾는중: True
+2025-02-02 21:16:07 | [A] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:07 | [A] Worker door Open 진행중: True
+2025-02-02 21:16:07 | [A] Worker door Close 진행중: False
+2025-02-02 21:16:07 | [A] Bunker door Open 진행중: False
+2025-02-02 21:16:07 | [A] Bunker door Close 진행중: True
+2025-02-02 21:16:07 | [B] Port 보호캡 분리 완료: False
+2025-02-02 21:16:07 | [B] Port 보호캡 체결 완료: True
+2025-02-02 21:16:07 | [B] Worker Door Open 완료: True
+2025-02-02 21:16:07 | [B] Worker Door Close 완료: True
+2025-02-02 21:16:07 | [B] Worker 투입 Ready: True
+2025-02-02 21:16:07 | [B] Worker 투입 Complete: False
+2025-02-02 21:16:07 | [B] Worker 배출 Ready: False
+2025-02-02 21:16:07 | [B] Worker 배출 Comlete: True
+2025-02-02 21:16:07 | [B] Bunker Door Open 완료: False
+2025-02-02 21:16:07 | [B] Bunker Door Close 완료: False
+2025-02-02 21:16:07 | [B] Bunker 투입 Ready: False
+2025-02-02 21:16:07 | [B] Bunker 투입 Complete: True
+2025-02-02 21:16:07 | [B] Bunker 배출 Ready: False
+2025-02-02 21:16:07 | [B] Bunker 배출 Comlete: False
+2025-02-02 21:16:07 | [B] Cylinder Align 진행중: False
+2025-02-02 21:16:07 | [B] Cylinder Align 완료: False
+2025-02-02 21:16:07 | [B] Cap Open 진행중: True
+2025-02-02 21:16:07 | [B] Cap Close 진행중: True
+2025-02-02 21:16:07 | [B] Cylinder 위치로 X축 이동중: True
+2025-02-02 21:16:07 | [B] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:07 | [B] Cap 위치 찾는중: True
+2025-02-02 21:16:07 | [B] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:07 | [B] Worker door Open 진행중: False
+2025-02-02 21:16:07 | [B] Worker door Close 진행중: False
+2025-02-02 21:16:07 | [B] Bunker door Open 진행중: True
+2025-02-02 21:16:07 | [B] Bunker door Close 진행중: True
+2025-02-02 21:16:08 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:08 | Bunker ID: 1
+2025-02-02 21:16:08 | Gas Cabinet ID: 1
+2025-02-02 21:16:08 | Gas Cabinet 가스 종류 1: 27
+2025-02-02 21:16:08 | Gas Cabinet 가스 종류 2: 5
+2025-02-02 21:16:08 | Gas Cabinet 가스 종류 3: 18
+2025-02-02 21:16:08 | Gas Cabinet 가스 종류 4: 15
+2025-02-02 21:16:08 | Gas Cabinet 가스 종류 5: 29
+2025-02-02 21:16:08 | Gas Cabinet Alarm Code: 173
+2025-02-02 21:16:08 | PT1A: 80 PSI
+2025-02-02 21:16:08 | PT2A: 76 PSI
+2025-02-02 21:16:08 | PT1B: 35 PSI
+2025-02-02 21:16:08 | PT2B: 81 PSI
+2025-02-02 21:16:08 | PT3: 89 PSI
+2025-02-02 21:16:08 | PT4: 51 PSI
+2025-02-02 21:16:08 | WA (A Port Weight): 8 kg
+2025-02-02 21:16:08 | WB (B Port Weight): 9 kg
+2025-02-02 21:16:08 | [A] JACKET HEATER: 60°C
+2025-02-02 21:16:08 | [A] LINE HEATER: 37°C
+2025-02-02 21:16:08 | [B] JACKET HEATER: 87°C
+2025-02-02 21:16:08 | [B] LINE HEATER: 20°C
+2025-02-02 21:16:08 | [A] CGA 체결 Torque: 80 kgf·cm
+2025-02-02 21:16:08 | [A] CAP 체결 Torque: 88 kgf·cm
+2025-02-02 21:16:08 | [A] 실린더 Up/Down Pos: 147 mm
+2025-02-02 21:16:08 | [B] CGA 체결 Torque: 68 kgf·cm
+2025-02-02 21:16:08 | [B] CAP 체결 Torque: 23 kgf·cm
+2025-02-02 21:16:08 | [B] 실린더 Up/Down Pos: 189 mm
+2025-02-02 21:16:08 | [A] Port Barcode: MXYYL3AHSXP0HZ8OY6B5J4V2F8F105
+2025-02-02 21:16:08 | [B] Port Barcode: 1WQZW8F27LWJE6IP0H3OPURTF14IMH
+2025-02-02 21:16:08 | [A] Port 가스 종류 1: 2
+2025-02-02 21:16:08 | [A] Port 가스 종류 2: 5
+2025-02-02 21:16:08 | [A] Port 가스 종류 3: 3
+2025-02-02 21:16:08 | [A] Port 가스 종류 4: 3
+2025-02-02 21:16:08 | [A] Port 가스 종류 5: 5
+2025-02-02 21:16:08 | [B] Port 가스 종류 1: 2
+2025-02-02 21:16:08 | [B] Port 가스 종류 2: 1
+2025-02-02 21:16:08 | [B] Port 가스 종류 3: 5
+2025-02-02 21:16:08 | [B] Port 가스 종류 4: 5
+2025-02-02 21:16:08 | [B] Port 가스 종류 5: 2
+2025-02-02 21:16:08 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:08 | EMG Signal: False
+2025-02-02 21:16:08 | Heart Bit: True
+2025-02-02 21:16:08 | Run/Stop Signal: False
+2025-02-02 21:16:08 | Server Connected Bit: False
+2025-02-02 21:16:08 | T-LAMP RED: False
+2025-02-02 21:16:08 | T-LAMP YELLOW: False
+2025-02-02 21:16:08 | T-LAMP GREEN: False
+2025-02-02 21:16:08 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:08 | [A] Port 실린더 유무: True
+2025-02-02 21:16:08 | [B] Port 실린더 유무: True
+2025-02-02 21:16:08 | [A] Worker Door Open: True
+2025-02-02 21:16:08 | [A] Worker Door Close: True
+2025-02-02 21:16:08 | [A] Bunker Door Open: True
+2025-02-02 21:16:08 | [A] Bunker Door Close: False
+2025-02-02 21:16:08 | [B] Worker Door Open: False
+2025-02-02 21:16:08 | [B] Worker Door Close: False
+2025-02-02 21:16:08 | [B] Bunker Door Open: False
+2025-02-02 21:16:08 | [B] Bunker Door Close: True
+2025-02-02 21:16:08 | [A] Port 보호캡 분리 완료: True
+2025-02-02 21:16:08 | [A] Port 보호캡 체결 완료: False
+2025-02-02 21:16:08 | [A] Worker Door Open 완료: False
+2025-02-02 21:16:08 | [A] Worker Door Close 완료: False
+2025-02-02 21:16:08 | [A] Worker 투입 Ready: False
+2025-02-02 21:16:08 | [A] Worker 투입 Complete: True
+2025-02-02 21:16:08 | [A] Worker 배출 Ready: True
+2025-02-02 21:16:08 | [A] Worker 배출 Comlete: True
+2025-02-02 21:16:08 | [A] Bunker Door Open 완료: True
+2025-02-02 21:16:08 | [A] Bunker Door Close 완료: False
+2025-02-02 21:16:08 | [A] Bunker 투입 Ready: True
+2025-02-02 21:16:08 | [A] Bunker 투입 Complete: False
+2025-02-02 21:16:08 | [A] Bunker 배출 Ready: True
+2025-02-02 21:16:08 | [A] Bunker 배출 Comlete: False
+2025-02-02 21:16:08 | [A] Cylinder Align 진행중: False
+2025-02-02 21:16:08 | [A] Cylinder Align 완료: True
+2025-02-02 21:16:08 | [A] Cap Open 진행중: True
+2025-02-02 21:16:08 | [A] Cap Close 진행중: True
+2025-02-02 21:16:08 | [A] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:08 | [A] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:08 | [A] Cap 위치 찾는중: True
+2025-02-02 21:16:08 | [A] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:08 | [A] Worker door Open 진행중: False
+2025-02-02 21:16:08 | [A] Worker door Close 진행중: True
+2025-02-02 21:16:08 | [A] Bunker door Open 진행중: True
+2025-02-02 21:16:08 | [A] Bunker door Close 진행중: True
+2025-02-02 21:16:08 | [B] Port 보호캡 분리 완료: True
+2025-02-02 21:16:08 | [B] Port 보호캡 체결 완료: True
+2025-02-02 21:16:08 | [B] Worker Door Open 완료: False
+2025-02-02 21:16:08 | [B] Worker Door Close 완료: True
+2025-02-02 21:16:08 | [B] Worker 투입 Ready: False
+2025-02-02 21:16:08 | [B] Worker 투입 Complete: True
+2025-02-02 21:16:08 | [B] Worker 배출 Ready: False
+2025-02-02 21:16:08 | [B] Worker 배출 Comlete: True
+2025-02-02 21:16:08 | [B] Bunker Door Open 완료: False
+2025-02-02 21:16:08 | [B] Bunker Door Close 완료: False
+2025-02-02 21:16:08 | [B] Bunker 투입 Ready: False
+2025-02-02 21:16:08 | [B] Bunker 투입 Complete: True
+2025-02-02 21:16:08 | [B] Bunker 배출 Ready: True
+2025-02-02 21:16:08 | [B] Bunker 배출 Comlete: True
+2025-02-02 21:16:08 | [B] Cylinder Align 진행중: False
+2025-02-02 21:16:08 | [B] Cylinder Align 완료: True
+2025-02-02 21:16:08 | [B] Cap Open 진행중: True
+2025-02-02 21:16:08 | [B] Cap Close 진행중: False
+2025-02-02 21:16:08 | [B] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:08 | [B] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:08 | [B] Cap 위치 찾는중: True
+2025-02-02 21:16:08 | [B] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:08 | [B] Worker door Open 진행중: True
+2025-02-02 21:16:08 | [B] Worker door Close 진행중: True
+2025-02-02 21:16:08 | [B] Bunker door Open 진행중: False
+2025-02-02 21:16:08 | [B] Bunker door Close 진행중: True
+2025-02-02 21:16:10 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:10 | Bunker ID: 1
+2025-02-02 21:16:10 | Gas Cabinet ID: 1
+2025-02-02 21:16:10 | Gas Cabinet 가스 종류 1: 38
+2025-02-02 21:16:10 | Gas Cabinet 가스 종류 2: 28
+2025-02-02 21:16:10 | Gas Cabinet 가스 종류 3: 31
+2025-02-02 21:16:10 | Gas Cabinet 가스 종류 4: 35
+2025-02-02 21:16:10 | Gas Cabinet 가스 종류 5: 4
+2025-02-02 21:16:10 | Gas Cabinet Alarm Code: 290
+2025-02-02 21:16:10 | PT1A: 49 PSI
+2025-02-02 21:16:10 | PT2A: 46 PSI
+2025-02-02 21:16:10 | PT1B: 51 PSI
+2025-02-02 21:16:10 | PT2B: 42 PSI
+2025-02-02 21:16:10 | PT3: 0 PSI
+2025-02-02 21:16:10 | PT4: 61 PSI
+2025-02-02 21:16:10 | WA (A Port Weight): 28 kg
+2025-02-02 21:16:10 | WB (B Port Weight): 24 kg
+2025-02-02 21:16:10 | [A] JACKET HEATER: 9°C
+2025-02-02 21:16:10 | [A] LINE HEATER: 19°C
+2025-02-02 21:16:10 | [B] JACKET HEATER: 17°C
+2025-02-02 21:16:10 | [B] LINE HEATER: 43°C
+2025-02-02 21:16:10 | [A] CGA 체결 Torque: 31 kgf·cm
+2025-02-02 21:16:10 | [A] CAP 체결 Torque: 87 kgf·cm
+2025-02-02 21:16:10 | [A] 실린더 Up/Down Pos: 64 mm
+2025-02-02 21:16:10 | [B] CGA 체결 Torque: 53 kgf·cm
+2025-02-02 21:16:10 | [B] CAP 체결 Torque: 51 kgf·cm
+2025-02-02 21:16:10 | [B] 실린더 Up/Down Pos: 25 mm
+2025-02-02 21:16:10 | [A] Port Barcode: 3SU8W3IS135SXBIG5W0JKKPYIBVU7R
+2025-02-02 21:16:10 | [B] Port Barcode: AVF1VIENA43B0L73QVGQ6OR5FA5NEH
+2025-02-02 21:16:10 | [A] Port 가스 종류 1: 4
+2025-02-02 21:16:10 | [A] Port 가스 종류 2: 1
+2025-02-02 21:16:10 | [A] Port 가스 종류 3: 2
+2025-02-02 21:16:10 | [A] Port 가스 종류 4: 4
+2025-02-02 21:16:10 | [A] Port 가스 종류 5: 4
+2025-02-02 21:16:10 | [B] Port 가스 종류 1: 4
+2025-02-02 21:16:10 | [B] Port 가스 종류 2: 3
+2025-02-02 21:16:10 | [B] Port 가스 종류 3: 4
+2025-02-02 21:16:10 | [B] Port 가스 종류 4: 5
+2025-02-02 21:16:10 | [B] Port 가스 종류 5: 5
+2025-02-02 21:16:10 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:10 | EMG Signal: True
+2025-02-02 21:16:10 | Heart Bit: False
+2025-02-02 21:16:10 | Run/Stop Signal: True
+2025-02-02 21:16:10 | Server Connected Bit: False
+2025-02-02 21:16:10 | T-LAMP RED: False
+2025-02-02 21:16:10 | T-LAMP YELLOW: False
+2025-02-02 21:16:10 | T-LAMP GREEN: False
+2025-02-02 21:16:10 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:10 | [A] Port 실린더 유무: False
+2025-02-02 21:16:10 | [B] Port 실린더 유무: True
+2025-02-02 21:16:10 | [A] Worker Door Open: True
+2025-02-02 21:16:10 | [A] Worker Door Close: True
+2025-02-02 21:16:10 | [A] Bunker Door Open: False
+2025-02-02 21:16:10 | [A] Bunker Door Close: False
+2025-02-02 21:16:10 | [B] Worker Door Open: True
+2025-02-02 21:16:10 | [B] Worker Door Close: False
+2025-02-02 21:16:10 | [B] Bunker Door Open: True
+2025-02-02 21:16:10 | [B] Bunker Door Close: True
+2025-02-02 21:16:10 | [A] Port 보호캡 분리 완료: True
+2025-02-02 21:16:10 | [A] Port 보호캡 체결 완료: False
+2025-02-02 21:16:10 | [A] Worker Door Open 완료: True
+2025-02-02 21:16:10 | [A] Worker Door Close 완료: True
+2025-02-02 21:16:10 | [A] Worker 투입 Ready: True
+2025-02-02 21:16:10 | [A] Worker 투입 Complete: False
+2025-02-02 21:16:10 | [A] Worker 배출 Ready: True
+2025-02-02 21:16:10 | [A] Worker 배출 Comlete: True
+2025-02-02 21:16:10 | [A] Bunker Door Open 완료: True
+2025-02-02 21:16:10 | [A] Bunker Door Close 완료: False
+2025-02-02 21:16:10 | [A] Bunker 투입 Ready: True
+2025-02-02 21:16:10 | [A] Bunker 투입 Complete: True
+2025-02-02 21:16:10 | [A] Bunker 배출 Ready: False
+2025-02-02 21:16:10 | [A] Bunker 배출 Comlete: True
+2025-02-02 21:16:10 | [A] Cylinder Align 진행중: False
+2025-02-02 21:16:10 | [A] Cylinder Align 완료: False
+2025-02-02 21:16:10 | [A] Cap Open 진행중: False
+2025-02-02 21:16:10 | [A] Cap Close 진행중: False
+2025-02-02 21:16:10 | [A] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:10 | [A] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:10 | [A] Cap 위치 찾는중: False
+2025-02-02 21:16:10 | [A] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:10 | [A] Worker door Open 진행중: True
+2025-02-02 21:16:10 | [A] Worker door Close 진행중: True
+2025-02-02 21:16:10 | [A] Bunker door Open 진행중: False
+2025-02-02 21:16:10 | [A] Bunker door Close 진행중: True
+2025-02-02 21:16:10 | [B] Port 보호캡 분리 완료: False
+2025-02-02 21:16:10 | [B] Port 보호캡 체결 완료: False
+2025-02-02 21:16:10 | [B] Worker Door Open 완료: False
+2025-02-02 21:16:10 | [B] Worker Door Close 완료: True
+2025-02-02 21:16:10 | [B] Worker 투입 Ready: True
+2025-02-02 21:16:10 | [B] Worker 투입 Complete: False
+2025-02-02 21:16:10 | [B] Worker 배출 Ready: False
+2025-02-02 21:16:10 | [B] Worker 배출 Comlete: True
+2025-02-02 21:16:10 | [B] Bunker Door Open 완료: False
+2025-02-02 21:16:10 | [B] Bunker Door Close 완료: True
+2025-02-02 21:16:10 | [B] Bunker 투입 Ready: True
+2025-02-02 21:16:10 | [B] Bunker 투입 Complete: True
+2025-02-02 21:16:10 | [B] Bunker 배출 Ready: False
+2025-02-02 21:16:10 | [B] Bunker 배출 Comlete: True
+2025-02-02 21:16:10 | [B] Cylinder Align 진행중: False
+2025-02-02 21:16:10 | [B] Cylinder Align 완료: False
+2025-02-02 21:16:10 | [B] Cap Open 진행중: True
+2025-02-02 21:16:10 | [B] Cap Close 진행중: False
+2025-02-02 21:16:10 | [B] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:10 | [B] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:10 | [B] Cap 위치 찾는중: True
+2025-02-02 21:16:10 | [B] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:10 | [B] Worker door Open 진행중: True
+2025-02-02 21:16:10 | [B] Worker door Close 진행중: False
+2025-02-02 21:16:10 | [B] Bunker door Open 진행중: True
+2025-02-02 21:16:10 | [B] Bunker door Close 진행중: False
+2025-02-02 21:16:11 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:11 | Bunker ID: 1
+2025-02-02 21:16:11 | Gas Cabinet ID: 1
+2025-02-02 21:16:11 | Gas Cabinet 가스 종류 1: 24
+2025-02-02 21:16:11 | Gas Cabinet 가스 종류 2: 28
+2025-02-02 21:16:11 | Gas Cabinet 가스 종류 3: 33
+2025-02-02 21:16:11 | Gas Cabinet 가스 종류 4: 43
+2025-02-02 21:16:11 | Gas Cabinet 가스 종류 5: 47
+2025-02-02 21:16:11 | Gas Cabinet Alarm Code: 143
+2025-02-02 21:16:11 | PT1A: 41 PSI
+2025-02-02 21:16:11 | PT2A: 37 PSI
+2025-02-02 21:16:11 | PT1B: 62 PSI
+2025-02-02 21:16:11 | PT2B: 100 PSI
+2025-02-02 21:16:11 | PT3: 74 PSI
+2025-02-02 21:16:11 | PT4: 41 PSI
+2025-02-02 21:16:11 | WA (A Port Weight): 35 kg
+2025-02-02 21:16:11 | WB (B Port Weight): 18 kg
+2025-02-02 21:16:11 | [A] JACKET HEATER: 80°C
+2025-02-02 21:16:11 | [A] LINE HEATER: 12°C
+2025-02-02 21:16:11 | [B] JACKET HEATER: 48°C
+2025-02-02 21:16:11 | [B] LINE HEATER: 20°C
+2025-02-02 21:16:11 | [A] CGA 체결 Torque: 13 kgf·cm
+2025-02-02 21:16:11 | [A] CAP 체결 Torque: 24 kgf·cm
+2025-02-02 21:16:11 | [A] 실린더 Up/Down Pos: 36 mm
+2025-02-02 21:16:11 | [B] CGA 체결 Torque: 25 kgf·cm
+2025-02-02 21:16:11 | [B] CAP 체결 Torque: 3 kgf·cm
+2025-02-02 21:16:11 | [B] 실린더 Up/Down Pos: 88 mm
+2025-02-02 21:16:11 | [A] Port Barcode: FEGX2ZDLC65Y6OKP4ERDEKP34MN9BD
+2025-02-02 21:16:11 | [B] Port Barcode: O0YWHN2SY7HG81M53QJTNK7MTZD5E9
+2025-02-02 21:16:11 | [A] Port 가스 종류 1: 5
+2025-02-02 21:16:11 | [A] Port 가스 종류 2: 5
+2025-02-02 21:16:11 | [A] Port 가스 종류 3: 2
+2025-02-02 21:16:11 | [A] Port 가스 종류 4: 4
+2025-02-02 21:16:11 | [A] Port 가스 종류 5: 5
+2025-02-02 21:16:11 | [B] Port 가스 종류 1: 2
+2025-02-02 21:16:11 | [B] Port 가스 종류 2: 3
+2025-02-02 21:16:11 | [B] Port 가스 종류 3: 5
+2025-02-02 21:16:11 | [B] Port 가스 종류 4: 4
+2025-02-02 21:16:11 | [B] Port 가스 종류 5: 1
+2025-02-02 21:16:11 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:11 | EMG Signal: True
+2025-02-02 21:16:11 | Heart Bit: False
+2025-02-02 21:16:11 | Run/Stop Signal: False
+2025-02-02 21:16:11 | Server Connected Bit: False
+2025-02-02 21:16:11 | T-LAMP RED: False
+2025-02-02 21:16:11 | T-LAMP YELLOW: False
+2025-02-02 21:16:11 | T-LAMP GREEN: False
+2025-02-02 21:16:11 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:11 | [A] Port 실린더 유무: False
+2025-02-02 21:16:11 | [B] Port 실린더 유무: False
+2025-02-02 21:16:11 | [A] Worker Door Open: False
+2025-02-02 21:16:11 | [A] Worker Door Close: True
+2025-02-02 21:16:11 | [A] Bunker Door Open: True
+2025-02-02 21:16:11 | [A] Bunker Door Close: True
+2025-02-02 21:16:11 | [B] Worker Door Open: True
+2025-02-02 21:16:11 | [B] Worker Door Close: True
+2025-02-02 21:16:11 | [B] Bunker Door Open: True
+2025-02-02 21:16:11 | [B] Bunker Door Close: False
+2025-02-02 21:16:11 | [A] Port 보호캡 분리 완료: False
+2025-02-02 21:16:11 | [A] Port 보호캡 체결 완료: True
+2025-02-02 21:16:11 | [A] Worker Door Open 완료: True
+2025-02-02 21:16:11 | [A] Worker Door Close 완료: True
+2025-02-02 21:16:11 | [A] Worker 투입 Ready: False
+2025-02-02 21:16:11 | [A] Worker 투입 Complete: False
+2025-02-02 21:16:11 | [A] Worker 배출 Ready: False
+2025-02-02 21:16:11 | [A] Worker 배출 Comlete: False
+2025-02-02 21:16:11 | [A] Bunker Door Open 완료: True
+2025-02-02 21:16:11 | [A] Bunker Door Close 완료: True
+2025-02-02 21:16:11 | [A] Bunker 투입 Ready: True
+2025-02-02 21:16:11 | [A] Bunker 투입 Complete: True
+2025-02-02 21:16:11 | [A] Bunker 배출 Ready: True
+2025-02-02 21:16:11 | [A] Bunker 배출 Comlete: True
+2025-02-02 21:16:11 | [A] Cylinder Align 진행중: True
+2025-02-02 21:16:11 | [A] Cylinder Align 완료: True
+2025-02-02 21:16:11 | [A] Cap Open 진행중: False
+2025-02-02 21:16:11 | [A] Cap Close 진행중: True
+2025-02-02 21:16:11 | [A] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:11 | [A] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:11 | [A] Cap 위치 찾는중: True
+2025-02-02 21:16:11 | [A] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:11 | [A] Worker door Open 진행중: True
+2025-02-02 21:16:11 | [A] Worker door Close 진행중: True
+2025-02-02 21:16:11 | [A] Bunker door Open 진행중: True
+2025-02-02 21:16:11 | [A] Bunker door Close 진행중: False
+2025-02-02 21:16:11 | [B] Port 보호캡 분리 완료: True
+2025-02-02 21:16:11 | [B] Port 보호캡 체결 완료: False
+2025-02-02 21:16:11 | [B] Worker Door Open 완료: False
+2025-02-02 21:16:11 | [B] Worker Door Close 완료: False
+2025-02-02 21:16:11 | [B] Worker 투입 Ready: False
+2025-02-02 21:16:11 | [B] Worker 투입 Complete: True
+2025-02-02 21:16:11 | [B] Worker 배출 Ready: False
+2025-02-02 21:16:11 | [B] Worker 배출 Comlete: True
+2025-02-02 21:16:11 | [B] Bunker Door Open 완료: True
+2025-02-02 21:16:11 | [B] Bunker Door Close 완료: False
+2025-02-02 21:16:11 | [B] Bunker 투입 Ready: False
+2025-02-02 21:16:11 | [B] Bunker 투입 Complete: True
+2025-02-02 21:16:11 | [B] Bunker 배출 Ready: False
+2025-02-02 21:16:11 | [B] Bunker 배출 Comlete: True
+2025-02-02 21:16:11 | [B] Cylinder Align 진행중: True
+2025-02-02 21:16:11 | [B] Cylinder Align 완료: True
+2025-02-02 21:16:11 | [B] Cap Open 진행중: False
+2025-02-02 21:16:11 | [B] Cap Close 진행중: False
+2025-02-02 21:16:11 | [B] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:11 | [B] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:11 | [B] Cap 위치 찾는중: True
+2025-02-02 21:16:11 | [B] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:11 | [B] Worker door Open 진행중: True
+2025-02-02 21:16:11 | [B] Worker door Close 진행중: False
+2025-02-02 21:16:11 | [B] Bunker door Open 진행중: False
+2025-02-02 21:16:11 | [B] Bunker door Close 진행중: False
+2025-02-02 21:16:12 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:12 | Bunker ID: 1
+2025-02-02 21:16:12 | Gas Cabinet ID: 1
+2025-02-02 21:16:12 | Gas Cabinet 가스 종류 1: 34
+2025-02-02 21:16:12 | Gas Cabinet 가스 종류 2: 36
+2025-02-02 21:16:12 | Gas Cabinet 가스 종류 3: 29
+2025-02-02 21:16:12 | Gas Cabinet 가스 종류 4: 10
+2025-02-02 21:16:12 | Gas Cabinet 가스 종류 5: 3
+2025-02-02 21:16:12 | Gas Cabinet Alarm Code: 136
+2025-02-02 21:16:12 | PT1A: 9 PSI
+2025-02-02 21:16:12 | PT2A: 11 PSI
+2025-02-02 21:16:12 | PT1B: 2 PSI
+2025-02-02 21:16:12 | PT2B: 71 PSI
+2025-02-02 21:16:12 | PT3: 79 PSI
+2025-02-02 21:16:12 | PT4: 11 PSI
+2025-02-02 21:16:12 | WA (A Port Weight): 61 kg
+2025-02-02 21:16:12 | WB (B Port Weight): 65 kg
+2025-02-02 21:16:12 | [A] JACKET HEATER: 7°C
+2025-02-02 21:16:12 | [A] LINE HEATER: 97°C
+2025-02-02 21:16:12 | [B] JACKET HEATER: 65°C
+2025-02-02 21:16:12 | [B] LINE HEATER: 14°C
+2025-02-02 21:16:12 | [A] CGA 체결 Torque: 57 kgf·cm
+2025-02-02 21:16:12 | [A] CAP 체결 Torque: 63 kgf·cm
+2025-02-02 21:16:12 | [A] 실린더 Up/Down Pos: 196 mm
+2025-02-02 21:16:12 | [B] CGA 체결 Torque: 98 kgf·cm
+2025-02-02 21:16:12 | [B] CAP 체결 Torque: 77 kgf·cm
+2025-02-02 21:16:12 | [B] 실린더 Up/Down Pos: 77 mm
+2025-02-02 21:16:12 | [A] Port Barcode: A832BDXSVL8REJ68SEKHDLCMBQ2GJX
+2025-02-02 21:16:12 | [B] Port Barcode: YXJZOYD4KD8M1B40E336YCQ1EPJBWJ
+2025-02-02 21:16:12 | [A] Port 가스 종류 1: 4
+2025-02-02 21:16:12 | [A] Port 가스 종류 2: 3
+2025-02-02 21:16:12 | [A] Port 가스 종류 3: 2
+2025-02-02 21:16:12 | [A] Port 가스 종류 4: 2
+2025-02-02 21:16:12 | [A] Port 가스 종류 5: 4
+2025-02-02 21:16:12 | [B] Port 가스 종류 1: 4
+2025-02-02 21:16:12 | [B] Port 가스 종류 2: 1
+2025-02-02 21:16:12 | [B] Port 가스 종류 3: 4
+2025-02-02 21:16:12 | [B] Port 가스 종류 4: 2
+2025-02-02 21:16:12 | [B] Port 가스 종류 5: 5
+2025-02-02 21:16:12 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:12 | EMG Signal: True
+2025-02-02 21:16:12 | Heart Bit: False
+2025-02-02 21:16:12 | Run/Stop Signal: True
+2025-02-02 21:16:12 | Server Connected Bit: False
+2025-02-02 21:16:12 | T-LAMP RED: False
+2025-02-02 21:16:12 | T-LAMP YELLOW: False
+2025-02-02 21:16:12 | T-LAMP GREEN: False
+2025-02-02 21:16:12 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:12 | [A] Port 실린더 유무: True
+2025-02-02 21:16:12 | [B] Port 실린더 유무: True
+2025-02-02 21:16:12 | [A] Worker Door Open: False
+2025-02-02 21:16:12 | [A] Worker Door Close: True
+2025-02-02 21:16:12 | [A] Bunker Door Open: True
+2025-02-02 21:16:12 | [A] Bunker Door Close: False
+2025-02-02 21:16:12 | [B] Worker Door Open: False
+2025-02-02 21:16:12 | [B] Worker Door Close: True
+2025-02-02 21:16:12 | [B] Bunker Door Open: True
+2025-02-02 21:16:12 | [B] Bunker Door Close: True
+2025-02-02 21:16:12 | [A] Port 보호캡 분리 완료: True
+2025-02-02 21:16:12 | [A] Port 보호캡 체결 완료: False
+2025-02-02 21:16:12 | [A] Worker Door Open 완료: True
+2025-02-02 21:16:12 | [A] Worker Door Close 완료: False
+2025-02-02 21:16:12 | [A] Worker 투입 Ready: True
+2025-02-02 21:16:12 | [A] Worker 투입 Complete: False
+2025-02-02 21:16:12 | [A] Worker 배출 Ready: False
+2025-02-02 21:16:12 | [A] Worker 배출 Comlete: False
+2025-02-02 21:16:12 | [A] Bunker Door Open 완료: False
+2025-02-02 21:16:12 | [A] Bunker Door Close 완료: False
+2025-02-02 21:16:12 | [A] Bunker 투입 Ready: True
+2025-02-02 21:16:12 | [A] Bunker 투입 Complete: False
+2025-02-02 21:16:12 | [A] Bunker 배출 Ready: True
+2025-02-02 21:16:12 | [A] Bunker 배출 Comlete: True
+2025-02-02 21:16:12 | [A] Cylinder Align 진행중: False
+2025-02-02 21:16:12 | [A] Cylinder Align 완료: False
+2025-02-02 21:16:12 | [A] Cap Open 진행중: False
+2025-02-02 21:16:12 | [A] Cap Close 진행중: True
+2025-02-02 21:16:12 | [A] Cylinder 위치로 X축 이동중: True
+2025-02-02 21:16:12 | [A] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:12 | [A] Cap 위치 찾는중: False
+2025-02-02 21:16:12 | [A] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:12 | [A] Worker door Open 진행중: False
+2025-02-02 21:16:12 | [A] Worker door Close 진행중: False
+2025-02-02 21:16:12 | [A] Bunker door Open 진행중: True
+2025-02-02 21:16:12 | [A] Bunker door Close 진행중: True
+2025-02-02 21:16:12 | [B] Port 보호캡 분리 완료: True
+2025-02-02 21:16:12 | [B] Port 보호캡 체결 완료: False
+2025-02-02 21:16:12 | [B] Worker Door Open 완료: False
+2025-02-02 21:16:12 | [B] Worker Door Close 완료: True
+2025-02-02 21:16:12 | [B] Worker 투입 Ready: True
+2025-02-02 21:16:12 | [B] Worker 투입 Complete: False
+2025-02-02 21:16:12 | [B] Worker 배출 Ready: True
+2025-02-02 21:16:12 | [B] Worker 배출 Comlete: True
+2025-02-02 21:16:12 | [B] Bunker Door Open 완료: True
+2025-02-02 21:16:12 | [B] Bunker Door Close 완료: False
+2025-02-02 21:16:12 | [B] Bunker 투입 Ready: True
+2025-02-02 21:16:12 | [B] Bunker 투입 Complete: True
+2025-02-02 21:16:12 | [B] Bunker 배출 Ready: False
+2025-02-02 21:16:12 | [B] Bunker 배출 Comlete: False
+2025-02-02 21:16:12 | [B] Cylinder Align 진행중: False
+2025-02-02 21:16:12 | [B] Cylinder Align 완료: True
+2025-02-02 21:16:12 | [B] Cap Open 진행중: True
+2025-02-02 21:16:12 | [B] Cap Close 진행중: True
+2025-02-02 21:16:12 | [B] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:12 | [B] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:12 | [B] Cap 위치 찾는중: True
+2025-02-02 21:16:12 | [B] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:12 | [B] Worker door Open 진행중: True
+2025-02-02 21:16:12 | [B] Worker door Close 진행중: True
+2025-02-02 21:16:12 | [B] Bunker door Open 진행중: False
+2025-02-02 21:16:12 | [B] Bunker door Close 진행중: False
+2025-02-02 21:16:13 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:13 | Bunker ID: 1
+2025-02-02 21:16:13 | Gas Cabinet ID: 1
+2025-02-02 21:16:13 | Gas Cabinet 가스 종류 1: 37
+2025-02-02 21:16:13 | Gas Cabinet 가스 종류 2: 35
+2025-02-02 21:16:13 | Gas Cabinet 가스 종류 3: 10
+2025-02-02 21:16:13 | Gas Cabinet 가스 종류 4: 25
+2025-02-02 21:16:13 | Gas Cabinet 가스 종류 5: 33
+2025-02-02 21:16:13 | Gas Cabinet Alarm Code: 257
+2025-02-02 21:16:13 | PT1A: 94 PSI
+2025-02-02 21:16:13 | PT2A: 68 PSI
+2025-02-02 21:16:13 | PT1B: 87 PSI
+2025-02-02 21:16:13 | PT2B: 17 PSI
+2025-02-02 21:16:13 | PT3: 10 PSI
+2025-02-02 21:16:13 | PT4: 42 PSI
+2025-02-02 21:16:13 | WA (A Port Weight): 36 kg
+2025-02-02 21:16:13 | WB (B Port Weight): 28 kg
+2025-02-02 21:16:13 | [A] JACKET HEATER: 72°C
+2025-02-02 21:16:13 | [A] LINE HEATER: 56°C
+2025-02-02 21:16:13 | [B] JACKET HEATER: 11°C
+2025-02-02 21:16:13 | [B] LINE HEATER: 27°C
+2025-02-02 21:16:13 | [A] CGA 체결 Torque: 15 kgf·cm
+2025-02-02 21:16:13 | [A] CAP 체결 Torque: 31 kgf·cm
+2025-02-02 21:16:13 | [A] 실린더 Up/Down Pos: 29 mm
+2025-02-02 21:16:13 | [B] CGA 체결 Torque: 66 kgf·cm
+2025-02-02 21:16:13 | [B] CAP 체결 Torque: 68 kgf·cm
+2025-02-02 21:16:13 | [B] 실린더 Up/Down Pos: 62 mm
+2025-02-02 21:16:13 | [A] Port Barcode: WAF86OANWRQLHI0AML4WQP1B7Z5703
+2025-02-02 21:16:13 | [B] Port Barcode: OSGKZI0DVKHO3H0AOM4ZRV93SVK2LO
+2025-02-02 21:16:13 | [A] Port 가스 종류 1: 3
+2025-02-02 21:16:13 | [A] Port 가스 종류 2: 2
+2025-02-02 21:16:13 | [A] Port 가스 종류 3: 1
+2025-02-02 21:16:13 | [A] Port 가스 종류 4: 2
+2025-02-02 21:16:13 | [A] Port 가스 종류 5: 1
+2025-02-02 21:16:13 | [B] Port 가스 종류 1: 3
+2025-02-02 21:16:13 | [B] Port 가스 종류 2: 2
+2025-02-02 21:16:13 | [B] Port 가스 종류 3: 3
+2025-02-02 21:16:13 | [B] Port 가스 종류 4: 3
+2025-02-02 21:16:13 | [B] Port 가스 종류 5: 5
+2025-02-02 21:16:13 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:13 | EMG Signal: True
+2025-02-02 21:16:13 | Heart Bit: False
+2025-02-02 21:16:13 | Run/Stop Signal: True
+2025-02-02 21:16:13 | Server Connected Bit: False
+2025-02-02 21:16:13 | T-LAMP RED: False
+2025-02-02 21:16:13 | T-LAMP YELLOW: False
+2025-02-02 21:16:13 | T-LAMP GREEN: False
+2025-02-02 21:16:13 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:13 | [A] Port 실린더 유무: True
+2025-02-02 21:16:13 | [B] Port 실린더 유무: True
+2025-02-02 21:16:13 | [A] Worker Door Open: False
+2025-02-02 21:16:13 | [A] Worker Door Close: True
+2025-02-02 21:16:13 | [A] Bunker Door Open: False
+2025-02-02 21:16:13 | [A] Bunker Door Close: True
+2025-02-02 21:16:13 | [B] Worker Door Open: False
+2025-02-02 21:16:13 | [B] Worker Door Close: False
+2025-02-02 21:16:13 | [B] Bunker Door Open: True
+2025-02-02 21:16:13 | [B] Bunker Door Close: False
+2025-02-02 21:16:13 | [A] Port 보호캡 분리 완료: False
+2025-02-02 21:16:13 | [A] Port 보호캡 체결 완료: False
+2025-02-02 21:16:13 | [A] Worker Door Open 완료: True
+2025-02-02 21:16:13 | [A] Worker Door Close 완료: True
+2025-02-02 21:16:13 | [A] Worker 투입 Ready: False
+2025-02-02 21:16:13 | [A] Worker 투입 Complete: True
+2025-02-02 21:16:13 | [A] Worker 배출 Ready: True
+2025-02-02 21:16:13 | [A] Worker 배출 Comlete: True
+2025-02-02 21:16:13 | [A] Bunker Door Open 완료: True
+2025-02-02 21:16:13 | [A] Bunker Door Close 완료: True
+2025-02-02 21:16:13 | [A] Bunker 투입 Ready: True
+2025-02-02 21:16:13 | [A] Bunker 투입 Complete: True
+2025-02-02 21:16:13 | [A] Bunker 배출 Ready: False
+2025-02-02 21:16:13 | [A] Bunker 배출 Comlete: False
+2025-02-02 21:16:13 | [A] Cylinder Align 진행중: False
+2025-02-02 21:16:13 | [A] Cylinder Align 완료: False
+2025-02-02 21:16:13 | [A] Cap Open 진행중: True
+2025-02-02 21:16:13 | [A] Cap Close 진행중: True
+2025-02-02 21:16:13 | [A] Cylinder 위치로 X축 이동중: True
+2025-02-02 21:16:13 | [A] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:13 | [A] Cap 위치 찾는중: True
+2025-02-02 21:16:13 | [A] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:13 | [A] Worker door Open 진행중: False
+2025-02-02 21:16:13 | [A] Worker door Close 진행중: True
+2025-02-02 21:16:13 | [A] Bunker door Open 진행중: True
+2025-02-02 21:16:13 | [A] Bunker door Close 진행중: False
+2025-02-02 21:16:13 | [B] Port 보호캡 분리 완료: False
+2025-02-02 21:16:13 | [B] Port 보호캡 체결 완료: False
+2025-02-02 21:16:13 | [B] Worker Door Open 완료: True
+2025-02-02 21:16:13 | [B] Worker Door Close 완료: True
+2025-02-02 21:16:13 | [B] Worker 투입 Ready: True
+2025-02-02 21:16:13 | [B] Worker 투입 Complete: True
+2025-02-02 21:16:13 | [B] Worker 배출 Ready: True
+2025-02-02 21:16:13 | [B] Worker 배출 Comlete: True
+2025-02-02 21:16:13 | [B] Bunker Door Open 완료: True
+2025-02-02 21:16:13 | [B] Bunker Door Close 완료: True
+2025-02-02 21:16:13 | [B] Bunker 투입 Ready: True
+2025-02-02 21:16:13 | [B] Bunker 투입 Complete: False
+2025-02-02 21:16:13 | [B] Bunker 배출 Ready: False
+2025-02-02 21:16:13 | [B] Bunker 배출 Comlete: False
+2025-02-02 21:16:13 | [B] Cylinder Align 진행중: False
+2025-02-02 21:16:13 | [B] Cylinder Align 완료: False
+2025-02-02 21:16:13 | [B] Cap Open 진행중: True
+2025-02-02 21:16:13 | [B] Cap Close 진행중: True
+2025-02-02 21:16:13 | [B] Cylinder 위치로 X축 이동중: True
+2025-02-02 21:16:13 | [B] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:13 | [B] Cap 위치 찾는중: True
+2025-02-02 21:16:13 | [B] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:13 | [B] Worker door Open 진행중: False
+2025-02-02 21:16:13 | [B] Worker door Close 진행중: False
+2025-02-02 21:16:13 | [B] Bunker door Open 진행중: False
+2025-02-02 21:16:13 | [B] Bunker door Close 진행중: False
+2025-02-02 21:16:14 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:14 | Bunker ID: 1
+2025-02-02 21:16:14 | Gas Cabinet ID: 1
+2025-02-02 21:16:14 | Gas Cabinet 가스 종류 1: 49
+2025-02-02 21:16:14 | Gas Cabinet 가스 종류 2: 4
+2025-02-02 21:16:14 | Gas Cabinet 가스 종류 3: 46
+2025-02-02 21:16:14 | Gas Cabinet 가스 종류 4: 31
+2025-02-02 21:16:14 | Gas Cabinet 가스 종류 5: 8
+2025-02-02 21:16:14 | Gas Cabinet Alarm Code: 478
+2025-02-02 21:16:14 | PT1A: 58 PSI
+2025-02-02 21:16:14 | PT2A: 24 PSI
+2025-02-02 21:16:14 | PT1B: 67 PSI
+2025-02-02 21:16:14 | PT2B: 75 PSI
+2025-02-02 21:16:14 | PT3: 68 PSI
+2025-02-02 21:16:14 | PT4: 8 PSI
+2025-02-02 21:16:14 | WA (A Port Weight): 3 kg
+2025-02-02 21:16:14 | WB (B Port Weight): 57 kg
+2025-02-02 21:16:14 | [A] JACKET HEATER: 43°C
+2025-02-02 21:16:14 | [A] LINE HEATER: 70°C
+2025-02-02 21:16:14 | [B] JACKET HEATER: 91°C
+2025-02-02 21:16:14 | [B] LINE HEATER: 58°C
+2025-02-02 21:16:14 | [A] CGA 체결 Torque: 33 kgf·cm
+2025-02-02 21:16:14 | [A] CAP 체결 Torque: 6 kgf·cm
+2025-02-02 21:16:14 | [A] 실린더 Up/Down Pos: 45 mm
+2025-02-02 21:16:14 | [B] CGA 체결 Torque: 87 kgf·cm
+2025-02-02 21:16:14 | [B] CAP 체결 Torque: 52 kgf·cm
+2025-02-02 21:16:14 | [B] 실린더 Up/Down Pos: 17 mm
+2025-02-02 21:16:14 | [A] Port Barcode: QN3VZJITT106C5P6XZAYTOM757VKA5
+2025-02-02 21:16:14 | [B] Port Barcode: MBG5UBDHAT1DU8YHPLP03VF0HRJPHH
+2025-02-02 21:16:14 | [A] Port 가스 종류 1: 5
+2025-02-02 21:16:14 | [A] Port 가스 종류 2: 2
+2025-02-02 21:16:14 | [A] Port 가스 종류 3: 2
+2025-02-02 21:16:14 | [A] Port 가스 종류 4: 5
+2025-02-02 21:16:14 | [A] Port 가스 종류 5: 3
+2025-02-02 21:16:14 | [B] Port 가스 종류 1: 4
+2025-02-02 21:16:14 | [B] Port 가스 종류 2: 1
+2025-02-02 21:16:14 | [B] Port 가스 종류 3: 1
+2025-02-02 21:16:14 | [B] Port 가스 종류 4: 5
+2025-02-02 21:16:14 | [B] Port 가스 종류 5: 2
+2025-02-02 21:16:14 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:14 | EMG Signal: False
+2025-02-02 21:16:14 | Heart Bit: True
+2025-02-02 21:16:14 | Run/Stop Signal: False
+2025-02-02 21:16:14 | Server Connected Bit: False
+2025-02-02 21:16:14 | T-LAMP RED: False
+2025-02-02 21:16:14 | T-LAMP YELLOW: False
+2025-02-02 21:16:14 | T-LAMP GREEN: False
+2025-02-02 21:16:14 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:14 | [A] Port 실린더 유무: True
+2025-02-02 21:16:14 | [B] Port 실린더 유무: False
+2025-02-02 21:16:14 | [A] Worker Door Open: False
+2025-02-02 21:16:14 | [A] Worker Door Close: False
+2025-02-02 21:16:14 | [A] Bunker Door Open: False
+2025-02-02 21:16:14 | [A] Bunker Door Close: True
+2025-02-02 21:16:14 | [B] Worker Door Open: True
+2025-02-02 21:16:14 | [B] Worker Door Close: True
+2025-02-02 21:16:14 | [B] Bunker Door Open: False
+2025-02-02 21:16:14 | [B] Bunker Door Close: False
+2025-02-02 21:16:14 | [A] Port 보호캡 분리 완료: True
+2025-02-02 21:16:14 | [A] Port 보호캡 체결 완료: True
+2025-02-02 21:16:14 | [A] Worker Door Open 완료: True
+2025-02-02 21:16:14 | [A] Worker Door Close 완료: False
+2025-02-02 21:16:14 | [A] Worker 투입 Ready: False
+2025-02-02 21:16:14 | [A] Worker 투입 Complete: False
+2025-02-02 21:16:14 | [A] Worker 배출 Ready: True
+2025-02-02 21:16:14 | [A] Worker 배출 Comlete: True
+2025-02-02 21:16:14 | [A] Bunker Door Open 완료: True
+2025-02-02 21:16:14 | [A] Bunker Door Close 완료: True
+2025-02-02 21:16:14 | [A] Bunker 투입 Ready: True
+2025-02-02 21:16:14 | [A] Bunker 투입 Complete: False
+2025-02-02 21:16:14 | [A] Bunker 배출 Ready: True
+2025-02-02 21:16:14 | [A] Bunker 배출 Comlete: False
+2025-02-02 21:16:14 | [A] Cylinder Align 진행중: False
+2025-02-02 21:16:14 | [A] Cylinder Align 완료: False
+2025-02-02 21:16:14 | [A] Cap Open 진행중: False
+2025-02-02 21:16:14 | [A] Cap Close 진행중: False
+2025-02-02 21:16:14 | [A] Cylinder 위치로 X축 이동중: True
+2025-02-02 21:16:14 | [A] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:14 | [A] Cap 위치 찾는중: True
+2025-02-02 21:16:14 | [A] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:14 | [A] Worker door Open 진행중: False
+2025-02-02 21:16:14 | [A] Worker door Close 진행중: False
+2025-02-02 21:16:14 | [A] Bunker door Open 진행중: False
+2025-02-02 21:16:14 | [A] Bunker door Close 진행중: True
+2025-02-02 21:16:14 | [B] Port 보호캡 분리 완료: True
+2025-02-02 21:16:14 | [B] Port 보호캡 체결 완료: True
+2025-02-02 21:16:14 | [B] Worker Door Open 완료: True
+2025-02-02 21:16:14 | [B] Worker Door Close 완료: True
+2025-02-02 21:16:14 | [B] Worker 투입 Ready: False
+2025-02-02 21:16:14 | [B] Worker 투입 Complete: False
+2025-02-02 21:16:14 | [B] Worker 배출 Ready: True
+2025-02-02 21:16:14 | [B] Worker 배출 Comlete: False
+2025-02-02 21:16:14 | [B] Bunker Door Open 완료: False
+2025-02-02 21:16:14 | [B] Bunker Door Close 완료: True
+2025-02-02 21:16:14 | [B] Bunker 투입 Ready: True
+2025-02-02 21:16:14 | [B] Bunker 투입 Complete: False
+2025-02-02 21:16:14 | [B] Bunker 배출 Ready: False
+2025-02-02 21:16:14 | [B] Bunker 배출 Comlete: False
+2025-02-02 21:16:14 | [B] Cylinder Align 진행중: False
+2025-02-02 21:16:14 | [B] Cylinder Align 완료: False
+2025-02-02 21:16:14 | [B] Cap Open 진행중: True
+2025-02-02 21:16:14 | [B] Cap Close 진행중: True
+2025-02-02 21:16:14 | [B] Cylinder 위치로 X축 이동중: True
+2025-02-02 21:16:14 | [B] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:14 | [B] Cap 위치 찾는중: False
+2025-02-02 21:16:14 | [B] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:14 | [B] Worker door Open 진행중: False
+2025-02-02 21:16:14 | [B] Worker door Close 진행중: False
+2025-02-02 21:16:14 | [B] Bunker door Open 진행중: False
+2025-02-02 21:16:14 | [B] Bunker door Close 진행중: True
+2025-02-02 21:16:15 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:15 | Bunker ID: 1
+2025-02-02 21:16:15 | Gas Cabinet ID: 1
+2025-02-02 21:16:15 | Gas Cabinet 가스 종류 1: 4
+2025-02-02 21:16:15 | Gas Cabinet 가스 종류 2: 7
+2025-02-02 21:16:15 | Gas Cabinet 가스 종류 3: 32
+2025-02-02 21:16:15 | Gas Cabinet 가스 종류 4: 11
+2025-02-02 21:16:15 | Gas Cabinet 가스 종류 5: 13
+2025-02-02 21:16:15 | Gas Cabinet Alarm Code: 295
+2025-02-02 21:16:15 | PT1A: 33 PSI
+2025-02-02 21:16:15 | PT2A: 36 PSI
+2025-02-02 21:16:15 | PT1B: 12 PSI
+2025-02-02 21:16:15 | PT2B: 13 PSI
+2025-02-02 21:16:15 | PT3: 83 PSI
+2025-02-02 21:16:15 | PT4: 29 PSI
+2025-02-02 21:16:15 | WA (A Port Weight): 41 kg
+2025-02-02 21:16:15 | WB (B Port Weight): 8 kg
+2025-02-02 21:16:15 | [A] JACKET HEATER: 95°C
+2025-02-02 21:16:15 | [A] LINE HEATER: 94°C
+2025-02-02 21:16:15 | [B] JACKET HEATER: 34°C
+2025-02-02 21:16:15 | [B] LINE HEATER: 81°C
+2025-02-02 21:16:15 | [A] CGA 체결 Torque: 55 kgf·cm
+2025-02-02 21:16:15 | [A] CAP 체결 Torque: 70 kgf·cm
+2025-02-02 21:16:15 | [A] 실린더 Up/Down Pos: 126 mm
+2025-02-02 21:16:15 | [B] CGA 체결 Torque: 72 kgf·cm
+2025-02-02 21:16:15 | [B] CAP 체결 Torque: 56 kgf·cm
+2025-02-02 21:16:15 | [B] 실린더 Up/Down Pos: 191 mm
+2025-02-02 21:16:15 | [A] Port Barcode: 7A2967SHDKA4PJFG6ICMCYXZCBM9US
+2025-02-02 21:16:15 | [B] Port Barcode: L9ZFER9M4SUFT24ZQA1DDBZ7XD4H1U
+2025-02-02 21:16:15 | [A] Port 가스 종류 1: 5
+2025-02-02 21:16:15 | [A] Port 가스 종류 2: 5
+2025-02-02 21:16:15 | [A] Port 가스 종류 3: 4
+2025-02-02 21:16:15 | [A] Port 가스 종류 4: 2
+2025-02-02 21:16:15 | [A] Port 가스 종류 5: 2
+2025-02-02 21:16:15 | [B] Port 가스 종류 1: 4
+2025-02-02 21:16:15 | [B] Port 가스 종류 2: 3
+2025-02-02 21:16:15 | [B] Port 가스 종류 3: 1
+2025-02-02 21:16:15 | [B] Port 가스 종류 4: 1
+2025-02-02 21:16:15 | [B] Port 가스 종류 5: 1
+2025-02-02 21:16:15 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:15 | EMG Signal: True
+2025-02-02 21:16:15 | Heart Bit: False
+2025-02-02 21:16:15 | Run/Stop Signal: False
+2025-02-02 21:16:15 | Server Connected Bit: False
+2025-02-02 21:16:15 | T-LAMP RED: False
+2025-02-02 21:16:15 | T-LAMP YELLOW: False
+2025-02-02 21:16:15 | T-LAMP GREEN: False
+2025-02-02 21:16:15 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:15 | [A] Port 실린더 유무: True
+2025-02-02 21:16:15 | [B] Port 실린더 유무: False
+2025-02-02 21:16:15 | [A] Worker Door Open: True
+2025-02-02 21:16:15 | [A] Worker Door Close: True
+2025-02-02 21:16:15 | [A] Bunker Door Open: True
+2025-02-02 21:16:15 | [A] Bunker Door Close: False
+2025-02-02 21:16:15 | [B] Worker Door Open: True
+2025-02-02 21:16:15 | [B] Worker Door Close: True
+2025-02-02 21:16:15 | [B] Bunker Door Open: True
+2025-02-02 21:16:15 | [B] Bunker Door Close: True
+2025-02-02 21:16:15 | [A] Port 보호캡 분리 완료: True
+2025-02-02 21:16:15 | [A] Port 보호캡 체결 완료: True
+2025-02-02 21:16:15 | [A] Worker Door Open 완료: True
+2025-02-02 21:16:15 | [A] Worker Door Close 완료: True
+2025-02-02 21:16:15 | [A] Worker 투입 Ready: True
+2025-02-02 21:16:15 | [A] Worker 투입 Complete: False
+2025-02-02 21:16:15 | [A] Worker 배출 Ready: False
+2025-02-02 21:16:15 | [A] Worker 배출 Comlete: True
+2025-02-02 21:16:15 | [A] Bunker Door Open 완료: True
+2025-02-02 21:16:15 | [A] Bunker Door Close 완료: True
+2025-02-02 21:16:15 | [A] Bunker 투입 Ready: True
+2025-02-02 21:16:15 | [A] Bunker 투입 Complete: False
+2025-02-02 21:16:15 | [A] Bunker 배출 Ready: True
+2025-02-02 21:16:15 | [A] Bunker 배출 Comlete: True
+2025-02-02 21:16:15 | [A] Cylinder Align 진행중: True
+2025-02-02 21:16:15 | [A] Cylinder Align 완료: False
+2025-02-02 21:16:15 | [A] Cap Open 진행중: False
+2025-02-02 21:16:15 | [A] Cap Close 진행중: False
+2025-02-02 21:16:15 | [A] Cylinder 위치로 X축 이동중: True
+2025-02-02 21:16:15 | [A] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:15 | [A] Cap 위치 찾는중: True
+2025-02-02 21:16:15 | [A] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:15 | [A] Worker door Open 진행중: True
+2025-02-02 21:16:15 | [A] Worker door Close 진행중: False
+2025-02-02 21:16:15 | [A] Bunker door Open 진행중: False
+2025-02-02 21:16:15 | [A] Bunker door Close 진행중: True
+2025-02-02 21:16:15 | [B] Port 보호캡 분리 완료: False
+2025-02-02 21:16:15 | [B] Port 보호캡 체결 완료: True
+2025-02-02 21:16:15 | [B] Worker Door Open 완료: True
+2025-02-02 21:16:15 | [B] Worker Door Close 완료: False
+2025-02-02 21:16:15 | [B] Worker 투입 Ready: False
+2025-02-02 21:16:15 | [B] Worker 투입 Complete: False
+2025-02-02 21:16:15 | [B] Worker 배출 Ready: True
+2025-02-02 21:16:15 | [B] Worker 배출 Comlete: False
+2025-02-02 21:16:15 | [B] Bunker Door Open 완료: False
+2025-02-02 21:16:15 | [B] Bunker Door Close 완료: True
+2025-02-02 21:16:15 | [B] Bunker 투입 Ready: False
+2025-02-02 21:16:15 | [B] Bunker 투입 Complete: True
+2025-02-02 21:16:15 | [B] Bunker 배출 Ready: False
+2025-02-02 21:16:15 | [B] Bunker 배출 Comlete: False
+2025-02-02 21:16:15 | [B] Cylinder Align 진행중: True
+2025-02-02 21:16:15 | [B] Cylinder Align 완료: True
+2025-02-02 21:16:15 | [B] Cap Open 진행중: True
+2025-02-02 21:16:15 | [B] Cap Close 진행중: True
+2025-02-02 21:16:15 | [B] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:15 | [B] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:15 | [B] Cap 위치 찾는중: True
+2025-02-02 21:16:15 | [B] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:15 | [B] Worker door Open 진행중: True
+2025-02-02 21:16:15 | [B] Worker door Close 진행중: False
+2025-02-02 21:16:15 | [B] Bunker door Open 진행중: False
+2025-02-02 21:16:15 | [B] Bunker door Close 진행중: False
+2025-02-02 21:16:16 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:16 | Bunker ID: 1
+2025-02-02 21:16:16 | Gas Cabinet ID: 1
+2025-02-02 21:16:16 | Gas Cabinet 가스 종류 1: 45
+2025-02-02 21:16:16 | Gas Cabinet 가스 종류 2: 28
+2025-02-02 21:16:16 | Gas Cabinet 가스 종류 3: 31
+2025-02-02 21:16:16 | Gas Cabinet 가스 종류 4: 8
+2025-02-02 21:16:16 | Gas Cabinet 가스 종류 5: 16
+2025-02-02 21:16:16 | Gas Cabinet Alarm Code: 80
+2025-02-02 21:16:16 | PT1A: 31 PSI
+2025-02-02 21:16:16 | PT2A: 39 PSI
+2025-02-02 21:16:16 | PT1B: 26 PSI
+2025-02-02 21:16:16 | PT2B: 28 PSI
+2025-02-02 21:16:16 | PT3: 44 PSI
+2025-02-02 21:16:16 | PT4: 32 PSI
+2025-02-02 21:16:16 | WA (A Port Weight): 85 kg
+2025-02-02 21:16:16 | WB (B Port Weight): 60 kg
+2025-02-02 21:16:16 | [A] JACKET HEATER: 91°C
+2025-02-02 21:16:16 | [A] LINE HEATER: 77°C
+2025-02-02 21:16:16 | [B] JACKET HEATER: 46°C
+2025-02-02 21:16:16 | [B] LINE HEATER: 29°C
+2025-02-02 21:16:16 | [A] CGA 체결 Torque: 85 kgf·cm
+2025-02-02 21:16:16 | [A] CAP 체결 Torque: 34 kgf·cm
+2025-02-02 21:16:16 | [A] 실린더 Up/Down Pos: 19 mm
+2025-02-02 21:16:16 | [B] CGA 체결 Torque: 66 kgf·cm
+2025-02-02 21:16:16 | [B] CAP 체결 Torque: 73 kgf·cm
+2025-02-02 21:16:16 | [B] 실린더 Up/Down Pos: 185 mm
+2025-02-02 21:16:16 | [A] Port Barcode: R25ZGXLTL3MTQERIE4XPFPBLHRIW6D
+2025-02-02 21:16:16 | [B] Port Barcode: J8FQL6FXAYKVFLDTUQOB4FLXPGZC53
+2025-02-02 21:16:16 | [A] Port 가스 종류 1: 4
+2025-02-02 21:16:16 | [A] Port 가스 종류 2: 3
+2025-02-02 21:16:16 | [A] Port 가스 종류 3: 1
+2025-02-02 21:16:16 | [A] Port 가스 종류 4: 2
+2025-02-02 21:16:16 | [A] Port 가스 종류 5: 2
+2025-02-02 21:16:16 | [B] Port 가스 종류 1: 1
+2025-02-02 21:16:16 | [B] Port 가스 종류 2: 4
+2025-02-02 21:16:16 | [B] Port 가스 종류 3: 4
+2025-02-02 21:16:16 | [B] Port 가스 종류 4: 1
+2025-02-02 21:16:16 | [B] Port 가스 종류 5: 3
+2025-02-02 21:16:16 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:16 | EMG Signal: True
+2025-02-02 21:16:16 | Heart Bit: True
+2025-02-02 21:16:16 | Run/Stop Signal: False
+2025-02-02 21:16:16 | Server Connected Bit: False
+2025-02-02 21:16:16 | T-LAMP RED: False
+2025-02-02 21:16:16 | T-LAMP YELLOW: False
+2025-02-02 21:16:16 | T-LAMP GREEN: False
+2025-02-02 21:16:16 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:16 | [A] Port 실린더 유무: True
+2025-02-02 21:16:16 | [B] Port 실린더 유무: True
+2025-02-02 21:16:16 | [A] Worker Door Open: False
+2025-02-02 21:16:16 | [A] Worker Door Close: False
+2025-02-02 21:16:16 | [A] Bunker Door Open: True
+2025-02-02 21:16:16 | [A] Bunker Door Close: True
+2025-02-02 21:16:16 | [B] Worker Door Open: False
+2025-02-02 21:16:16 | [B] Worker Door Close: False
+2025-02-02 21:16:16 | [B] Bunker Door Open: True
+2025-02-02 21:16:16 | [B] Bunker Door Close: False
+2025-02-02 21:16:16 | [A] Port 보호캡 분리 완료: False
+2025-02-02 21:16:16 | [A] Port 보호캡 체결 완료: False
+2025-02-02 21:16:16 | [A] Worker Door Open 완료: True
+2025-02-02 21:16:16 | [A] Worker Door Close 완료: False
+2025-02-02 21:16:16 | [A] Worker 투입 Ready: False
+2025-02-02 21:16:16 | [A] Worker 투입 Complete: False
+2025-02-02 21:16:16 | [A] Worker 배출 Ready: True
+2025-02-02 21:16:16 | [A] Worker 배출 Comlete: True
+2025-02-02 21:16:16 | [A] Bunker Door Open 완료: True
+2025-02-02 21:16:16 | [A] Bunker Door Close 완료: False
+2025-02-02 21:16:16 | [A] Bunker 투입 Ready: False
+2025-02-02 21:16:16 | [A] Bunker 투입 Complete: False
+2025-02-02 21:16:16 | [A] Bunker 배출 Ready: False
+2025-02-02 21:16:16 | [A] Bunker 배출 Comlete: False
+2025-02-02 21:16:16 | [A] Cylinder Align 진행중: True
+2025-02-02 21:16:16 | [A] Cylinder Align 완료: True
+2025-02-02 21:16:16 | [A] Cap Open 진행중: False
+2025-02-02 21:16:16 | [A] Cap Close 진행중: True
+2025-02-02 21:16:16 | [A] Cylinder 위치로 X축 이동중: True
+2025-02-02 21:16:16 | [A] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:16 | [A] Cap 위치 찾는중: True
+2025-02-02 21:16:16 | [A] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:16 | [A] Worker door Open 진행중: False
+2025-02-02 21:16:16 | [A] Worker door Close 진행중: False
+2025-02-02 21:16:16 | [A] Bunker door Open 진행중: True
+2025-02-02 21:16:16 | [A] Bunker door Close 진행중: True
+2025-02-02 21:16:16 | [B] Port 보호캡 분리 완료: False
+2025-02-02 21:16:16 | [B] Port 보호캡 체결 완료: False
+2025-02-02 21:16:16 | [B] Worker Door Open 완료: True
+2025-02-02 21:16:16 | [B] Worker Door Close 완료: True
+2025-02-02 21:16:16 | [B] Worker 투입 Ready: False
+2025-02-02 21:16:16 | [B] Worker 투입 Complete: False
+2025-02-02 21:16:16 | [B] Worker 배출 Ready: True
+2025-02-02 21:16:16 | [B] Worker 배출 Comlete: False
+2025-02-02 21:16:16 | [B] Bunker Door Open 완료: True
+2025-02-02 21:16:16 | [B] Bunker Door Close 완료: True
+2025-02-02 21:16:16 | [B] Bunker 투입 Ready: False
+2025-02-02 21:16:16 | [B] Bunker 투입 Complete: False
+2025-02-02 21:16:16 | [B] Bunker 배출 Ready: True
+2025-02-02 21:16:16 | [B] Bunker 배출 Comlete: True
+2025-02-02 21:16:16 | [B] Cylinder Align 진행중: False
+2025-02-02 21:16:16 | [B] Cylinder Align 완료: True
+2025-02-02 21:16:16 | [B] Cap Open 진행중: False
+2025-02-02 21:16:16 | [B] Cap Close 진행중: False
+2025-02-02 21:16:16 | [B] Cylinder 위치로 X축 이동중: True
+2025-02-02 21:16:16 | [B] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:16 | [B] Cap 위치 찾는중: False
+2025-02-02 21:16:16 | [B] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:16 | [B] Worker door Open 진행중: True
+2025-02-02 21:16:16 | [B] Worker door Close 진행중: False
+2025-02-02 21:16:16 | [B] Bunker door Open 진행중: True
+2025-02-02 21:16:16 | [B] Bunker door Close 진행중: False
+2025-02-02 21:16:17 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:17 | Bunker ID: 1
+2025-02-02 21:16:17 | Gas Cabinet ID: 2
+2025-02-02 21:16:17 | Gas Cabinet 가스 종류 1: 21
+2025-02-02 21:16:17 | Gas Cabinet 가스 종류 2: 36
+2025-02-02 21:16:17 | Gas Cabinet 가스 종류 3: 49
+2025-02-02 21:16:17 | Gas Cabinet 가스 종류 4: 18
+2025-02-02 21:16:17 | Gas Cabinet 가스 종류 5: 45
+2025-02-02 21:16:17 | Gas Cabinet Alarm Code: 391
+2025-02-02 21:16:17 | PT1A: 42 PSI
+2025-02-02 21:16:17 | PT2A: 96 PSI
+2025-02-02 21:16:17 | PT1B: 4 PSI
+2025-02-02 21:16:17 | PT2B: 83 PSI
+2025-02-02 21:16:17 | PT3: 10 PSI
+2025-02-02 21:16:17 | PT4: 83 PSI
+2025-02-02 21:16:17 | WA (A Port Weight): 8 kg
+2025-02-02 21:16:17 | WB (B Port Weight): 83 kg
+2025-02-02 21:16:17 | [A] JACKET HEATER: 89°C
+2025-02-02 21:16:17 | [A] LINE HEATER: 88°C
+2025-02-02 21:16:17 | [B] JACKET HEATER: 30°C
+2025-02-02 21:16:17 | [B] LINE HEATER: 75°C
+2025-02-02 21:16:17 | [A] CGA 체결 Torque: 58 kgf·cm
+2025-02-02 21:16:17 | [A] CAP 체결 Torque: 39 kgf·cm
+2025-02-02 21:16:17 | [A] 실린더 Up/Down Pos: 109 mm
+2025-02-02 21:16:17 | [B] CGA 체결 Torque: 66 kgf·cm
+2025-02-02 21:16:17 | [B] CAP 체결 Torque: 12 kgf·cm
+2025-02-02 21:16:17 | [B] 실린더 Up/Down Pos: 36 mm
+2025-02-02 21:16:17 | [A] Port Barcode: APZR9GLEEKYB2XMY2DD9CI1NMK8QOD
+2025-02-02 21:16:17 | [B] Port Barcode: 555BE3OUKVPA5IXUAVKOW5QAVZK0AQ
+2025-02-02 21:16:17 | [A] Port 가스 종류 1: 5
+2025-02-02 21:16:17 | [A] Port 가스 종류 2: 1
+2025-02-02 21:16:17 | [A] Port 가스 종류 3: 5
+2025-02-02 21:16:17 | [A] Port 가스 종류 4: 2
+2025-02-02 21:16:17 | [A] Port 가스 종류 5: 5
+2025-02-02 21:16:17 | [B] Port 가스 종류 1: 2
+2025-02-02 21:16:17 | [B] Port 가스 종류 2: 5
+2025-02-02 21:16:17 | [B] Port 가스 종류 3: 2
+2025-02-02 21:16:17 | [B] Port 가스 종류 4: 5
+2025-02-02 21:16:17 | [B] Port 가스 종류 5: 2
+2025-02-02 21:16:17 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:17 | EMG Signal: False
+2025-02-02 21:16:17 | Heart Bit: True
+2025-02-02 21:16:17 | Run/Stop Signal: False
+2025-02-02 21:16:17 | Server Connected Bit: False
+2025-02-02 21:16:17 | T-LAMP RED: False
+2025-02-02 21:16:17 | T-LAMP YELLOW: False
+2025-02-02 21:16:17 | T-LAMP GREEN: False
+2025-02-02 21:16:17 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:17 | [A] Port 실린더 유무: False
+2025-02-02 21:16:17 | [B] Port 실린더 유무: False
+2025-02-02 21:16:17 | [A] Worker Door Open: False
+2025-02-02 21:16:17 | [A] Worker Door Close: False
+2025-02-02 21:16:17 | [A] Bunker Door Open: False
+2025-02-02 21:16:17 | [A] Bunker Door Close: True
+2025-02-02 21:16:17 | [B] Worker Door Open: False
+2025-02-02 21:16:17 | [B] Worker Door Close: True
+2025-02-02 21:16:17 | [B] Bunker Door Open: True
+2025-02-02 21:16:17 | [B] Bunker Door Close: False
+2025-02-02 21:16:17 | [A] Port 보호캡 분리 완료: False
+2025-02-02 21:16:17 | [A] Port 보호캡 체결 완료: True
+2025-02-02 21:16:17 | [A] Worker Door Open 완료: False
+2025-02-02 21:16:17 | [A] Worker Door Close 완료: False
+2025-02-02 21:16:17 | [A] Worker 투입 Ready: True
+2025-02-02 21:16:17 | [A] Worker 투입 Complete: True
+2025-02-02 21:16:17 | [A] Worker 배출 Ready: True
+2025-02-02 21:16:17 | [A] Worker 배출 Comlete: False
+2025-02-02 21:16:17 | [A] Bunker Door Open 완료: False
+2025-02-02 21:16:17 | [A] Bunker Door Close 완료: True
+2025-02-02 21:16:17 | [A] Bunker 투입 Ready: True
+2025-02-02 21:16:17 | [A] Bunker 투입 Complete: False
+2025-02-02 21:16:17 | [A] Bunker 배출 Ready: False
+2025-02-02 21:16:17 | [A] Bunker 배출 Comlete: True
+2025-02-02 21:16:17 | [A] Cylinder Align 진행중: False
+2025-02-02 21:16:17 | [A] Cylinder Align 완료: True
+2025-02-02 21:16:17 | [A] Cap Open 진행중: True
+2025-02-02 21:16:17 | [A] Cap Close 진행중: True
+2025-02-02 21:16:17 | [A] Cylinder 위치로 X축 이동중: True
+2025-02-02 21:16:17 | [A] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:17 | [A] Cap 위치 찾는중: False
+2025-02-02 21:16:17 | [A] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:17 | [A] Worker door Open 진행중: True
+2025-02-02 21:16:17 | [A] Worker door Close 진행중: True
+2025-02-02 21:16:17 | [A] Bunker door Open 진행중: False
+2025-02-02 21:16:17 | [A] Bunker door Close 진행중: True
+2025-02-02 21:16:17 | [B] Port 보호캡 분리 완료: True
+2025-02-02 21:16:17 | [B] Port 보호캡 체결 완료: False
+2025-02-02 21:16:17 | [B] Worker Door Open 완료: True
+2025-02-02 21:16:17 | [B] Worker Door Close 완료: True
+2025-02-02 21:16:17 | [B] Worker 투입 Ready: True
+2025-02-02 21:16:17 | [B] Worker 투입 Complete: False
+2025-02-02 21:16:17 | [B] Worker 배출 Ready: False
+2025-02-02 21:16:17 | [B] Worker 배출 Comlete: True
+2025-02-02 21:16:17 | [B] Bunker Door Open 완료: True
+2025-02-02 21:16:17 | [B] Bunker Door Close 완료: True
+2025-02-02 21:16:17 | [B] Bunker 투입 Ready: False
+2025-02-02 21:16:17 | [B] Bunker 투입 Complete: True
+2025-02-02 21:16:17 | [B] Bunker 배출 Ready: False
+2025-02-02 21:16:17 | [B] Bunker 배출 Comlete: False
+2025-02-02 21:16:17 | [B] Cylinder Align 진행중: True
+2025-02-02 21:16:17 | [B] Cylinder Align 완료: False
+2025-02-02 21:16:17 | [B] Cap Open 진행중: True
+2025-02-02 21:16:17 | [B] Cap Close 진행중: True
+2025-02-02 21:16:17 | [B] Cylinder 위치로 X축 이동중: True
+2025-02-02 21:16:17 | [B] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:17 | [B] Cap 위치 찾는중: False
+2025-02-02 21:16:17 | [B] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:17 | [B] Worker door Open 진행중: True
+2025-02-02 21:16:17 | [B] Worker door Close 진행중: False
+2025-02-02 21:16:17 | [B] Bunker door Open 진행중: True
+2025-02-02 21:16:17 | [B] Bunker door Close 진행중: False
+2025-02-02 21:16:18 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:18 | Bunker ID: 1
+2025-02-02 21:16:18 | Gas Cabinet ID: 2
+2025-02-02 21:16:18 | Gas Cabinet 가스 종류 1: 38
+2025-02-02 21:16:18 | Gas Cabinet 가스 종류 2: 43
+2025-02-02 21:16:18 | Gas Cabinet 가스 종류 3: 41
+2025-02-02 21:16:18 | Gas Cabinet 가스 종류 4: 45
+2025-02-02 21:16:18 | Gas Cabinet 가스 종류 5: 9
+2025-02-02 21:16:18 | Gas Cabinet Alarm Code: 121
+2025-02-02 21:16:18 | PT1A: 31 PSI
+2025-02-02 21:16:18 | PT2A: 69 PSI
+2025-02-02 21:16:18 | PT1B: 60 PSI
+2025-02-02 21:16:18 | PT2B: 37 PSI
+2025-02-02 21:16:18 | PT3: 17 PSI
+2025-02-02 21:16:18 | PT4: 67 PSI
+2025-02-02 21:16:18 | WA (A Port Weight): 27 kg
+2025-02-02 21:16:18 | WB (B Port Weight): 32 kg
+2025-02-02 21:16:18 | [A] JACKET HEATER: 97°C
+2025-02-02 21:16:18 | [A] LINE HEATER: 1°C
+2025-02-02 21:16:18 | [B] JACKET HEATER: 32°C
+2025-02-02 21:16:18 | [B] LINE HEATER: 22°C
+2025-02-02 21:16:18 | [A] CGA 체결 Torque: 41 kgf·cm
+2025-02-02 21:16:18 | [A] CAP 체결 Torque: 12 kgf·cm
+2025-02-02 21:16:18 | [A] 실린더 Up/Down Pos: 231 mm
+2025-02-02 21:16:18 | [B] CGA 체결 Torque: 2 kgf·cm
+2025-02-02 21:16:18 | [B] CAP 체결 Torque: 1 kgf·cm
+2025-02-02 21:16:18 | [B] 실린더 Up/Down Pos: 98 mm
+2025-02-02 21:16:18 | [A] Port Barcode: 9R9IXA0RE1K1PAEUEF64NAMRDV9XWH
+2025-02-02 21:16:18 | [B] Port Barcode: U08JGOD1T4IFJS88RN7UYJOFDXK11P
+2025-02-02 21:16:18 | [A] Port 가스 종류 1: 5
+2025-02-02 21:16:18 | [A] Port 가스 종류 2: 1
+2025-02-02 21:16:18 | [A] Port 가스 종류 3: 4
+2025-02-02 21:16:18 | [A] Port 가스 종류 4: 1
+2025-02-02 21:16:18 | [A] Port 가스 종류 5: 4
+2025-02-02 21:16:18 | [B] Port 가스 종류 1: 1
+2025-02-02 21:16:18 | [B] Port 가스 종류 2: 2
+2025-02-02 21:16:18 | [B] Port 가스 종류 3: 3
+2025-02-02 21:16:18 | [B] Port 가스 종류 4: 3
+2025-02-02 21:16:18 | [B] Port 가스 종류 5: 5
+2025-02-02 21:16:18 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:18 | EMG Signal: True
+2025-02-02 21:16:18 | Heart Bit: False
+2025-02-02 21:16:18 | Run/Stop Signal: True
+2025-02-02 21:16:18 | Server Connected Bit: False
+2025-02-02 21:16:18 | T-LAMP RED: False
+2025-02-02 21:16:18 | T-LAMP YELLOW: False
+2025-02-02 21:16:18 | T-LAMP GREEN: False
+2025-02-02 21:16:18 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:18 | [A] Port 실린더 유무: False
+2025-02-02 21:16:18 | [B] Port 실린더 유무: True
+2025-02-02 21:16:18 | [A] Worker Door Open: True
+2025-02-02 21:16:18 | [A] Worker Door Close: False
+2025-02-02 21:16:18 | [A] Bunker Door Open: False
+2025-02-02 21:16:18 | [A] Bunker Door Close: True
+2025-02-02 21:16:18 | [B] Worker Door Open: True
+2025-02-02 21:16:18 | [B] Worker Door Close: True
+2025-02-02 21:16:18 | [B] Bunker Door Open: True
+2025-02-02 21:16:18 | [B] Bunker Door Close: False
+2025-02-02 21:16:18 | [A] Port 보호캡 분리 완료: True
+2025-02-02 21:16:18 | [A] Port 보호캡 체결 완료: False
+2025-02-02 21:16:18 | [A] Worker Door Open 완료: True
+2025-02-02 21:16:18 | [A] Worker Door Close 완료: False
+2025-02-02 21:16:18 | [A] Worker 투입 Ready: False
+2025-02-02 21:16:18 | [A] Worker 투입 Complete: False
+2025-02-02 21:16:18 | [A] Worker 배출 Ready: False
+2025-02-02 21:16:18 | [A] Worker 배출 Comlete: True
+2025-02-02 21:16:18 | [A] Bunker Door Open 완료: True
+2025-02-02 21:16:18 | [A] Bunker Door Close 완료: False
+2025-02-02 21:16:18 | [A] Bunker 투입 Ready: False
+2025-02-02 21:16:18 | [A] Bunker 투입 Complete: True
+2025-02-02 21:16:18 | [A] Bunker 배출 Ready: False
+2025-02-02 21:16:18 | [A] Bunker 배출 Comlete: False
+2025-02-02 21:16:18 | [A] Cylinder Align 진행중: False
+2025-02-02 21:16:18 | [A] Cylinder Align 완료: True
+2025-02-02 21:16:18 | [A] Cap Open 진행중: False
+2025-02-02 21:16:18 | [A] Cap Close 진행중: True
+2025-02-02 21:16:18 | [A] Cylinder 위치로 X축 이동중: True
+2025-02-02 21:16:18 | [A] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:18 | [A] Cap 위치 찾는중: True
+2025-02-02 21:16:18 | [A] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:18 | [A] Worker door Open 진행중: False
+2025-02-02 21:16:18 | [A] Worker door Close 진행중: False
+2025-02-02 21:16:18 | [A] Bunker door Open 진행중: False
+2025-02-02 21:16:18 | [A] Bunker door Close 진행중: False
+2025-02-02 21:16:18 | [B] Port 보호캡 분리 완료: True
+2025-02-02 21:16:18 | [B] Port 보호캡 체결 완료: False
+2025-02-02 21:16:18 | [B] Worker Door Open 완료: False
+2025-02-02 21:16:18 | [B] Worker Door Close 완료: True
+2025-02-02 21:16:18 | [B] Worker 투입 Ready: True
+2025-02-02 21:16:18 | [B] Worker 투입 Complete: False
+2025-02-02 21:16:18 | [B] Worker 배출 Ready: False
+2025-02-02 21:16:18 | [B] Worker 배출 Comlete: False
+2025-02-02 21:16:18 | [B] Bunker Door Open 완료: False
+2025-02-02 21:16:18 | [B] Bunker Door Close 완료: False
+2025-02-02 21:16:18 | [B] Bunker 투입 Ready: False
+2025-02-02 21:16:18 | [B] Bunker 투입 Complete: False
+2025-02-02 21:16:18 | [B] Bunker 배출 Ready: True
+2025-02-02 21:16:18 | [B] Bunker 배출 Comlete: True
+2025-02-02 21:16:18 | [B] Cylinder Align 진행중: False
+2025-02-02 21:16:18 | [B] Cylinder Align 완료: True
+2025-02-02 21:16:18 | [B] Cap Open 진행중: True
+2025-02-02 21:16:18 | [B] Cap Close 진행중: True
+2025-02-02 21:16:18 | [B] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:18 | [B] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:18 | [B] Cap 위치 찾는중: False
+2025-02-02 21:16:18 | [B] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:18 | [B] Worker door Open 진행중: False
+2025-02-02 21:16:18 | [B] Worker door Close 진행중: False
+2025-02-02 21:16:18 | [B] Bunker door Open 진행중: True
+2025-02-02 21:16:18 | [B] Bunker door Close 진행중: True
+2025-02-02 21:16:19 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:19 | Bunker ID: 1
+2025-02-02 21:16:19 | Gas Cabinet ID: 2
+2025-02-02 21:16:19 | Gas Cabinet 가스 종류 1: 6
+2025-02-02 21:16:19 | Gas Cabinet 가스 종류 2: 37
+2025-02-02 21:16:19 | Gas Cabinet 가스 종류 3: 32
+2025-02-02 21:16:19 | Gas Cabinet 가스 종류 4: 33
+2025-02-02 21:16:19 | Gas Cabinet 가스 종류 5: 6
+2025-02-02 21:16:19 | Gas Cabinet Alarm Code: 316
+2025-02-02 21:16:19 | PT1A: 87 PSI
+2025-02-02 21:16:19 | PT2A: 20 PSI
+2025-02-02 21:16:19 | PT1B: 29 PSI
+2025-02-02 21:16:19 | PT2B: 5 PSI
+2025-02-02 21:16:19 | PT3: 22 PSI
+2025-02-02 21:16:19 | PT4: 21 PSI
+2025-02-02 21:16:19 | WA (A Port Weight): 23 kg
+2025-02-02 21:16:19 | WB (B Port Weight): 31 kg
+2025-02-02 21:16:19 | [A] JACKET HEATER: 62°C
+2025-02-02 21:16:19 | [A] LINE HEATER: 11°C
+2025-02-02 21:16:19 | [B] JACKET HEATER: 83°C
+2025-02-02 21:16:19 | [B] LINE HEATER: 93°C
+2025-02-02 21:16:19 | [A] CGA 체결 Torque: 0 kgf·cm
+2025-02-02 21:16:19 | [A] CAP 체결 Torque: 31 kgf·cm
+2025-02-02 21:16:19 | [A] 실린더 Up/Down Pos: 200 mm
+2025-02-02 21:16:19 | [B] CGA 체결 Torque: 69 kgf·cm
+2025-02-02 21:16:19 | [B] CAP 체결 Torque: 26 kgf·cm
+2025-02-02 21:16:19 | [B] 실린더 Up/Down Pos: 8 mm
+2025-02-02 21:16:19 | [A] Port Barcode: V4Z2TS8ONIUB5ZP0G21DLTD5OBSK82
+2025-02-02 21:16:19 | [B] Port Barcode: PXB5ZLA08MPLJZ7PPZY1OCXBGG1HHA
+2025-02-02 21:16:19 | [A] Port 가스 종류 1: 3
+2025-02-02 21:16:19 | [A] Port 가스 종류 2: 1
+2025-02-02 21:16:19 | [A] Port 가스 종류 3: 3
+2025-02-02 21:16:19 | [A] Port 가스 종류 4: 2
+2025-02-02 21:16:19 | [A] Port 가스 종류 5: 2
+2025-02-02 21:16:19 | [B] Port 가스 종류 1: 5
+2025-02-02 21:16:19 | [B] Port 가스 종류 2: 3
+2025-02-02 21:16:19 | [B] Port 가스 종류 3: 3
+2025-02-02 21:16:19 | [B] Port 가스 종류 4: 3
+2025-02-02 21:16:19 | [B] Port 가스 종류 5: 3
+2025-02-02 21:16:19 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:19 | EMG Signal: True
+2025-02-02 21:16:19 | Heart Bit: True
+2025-02-02 21:16:19 | Run/Stop Signal: False
+2025-02-02 21:16:19 | Server Connected Bit: False
+2025-02-02 21:16:19 | T-LAMP RED: False
+2025-02-02 21:16:19 | T-LAMP YELLOW: False
+2025-02-02 21:16:19 | T-LAMP GREEN: False
+2025-02-02 21:16:19 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:19 | [A] Port 실린더 유무: True
+2025-02-02 21:16:19 | [B] Port 실린더 유무: True
+2025-02-02 21:16:19 | [A] Worker Door Open: True
+2025-02-02 21:16:19 | [A] Worker Door Close: False
+2025-02-02 21:16:19 | [A] Bunker Door Open: False
+2025-02-02 21:16:19 | [A] Bunker Door Close: True
+2025-02-02 21:16:19 | [B] Worker Door Open: True
+2025-02-02 21:16:19 | [B] Worker Door Close: True
+2025-02-02 21:16:19 | [B] Bunker Door Open: True
+2025-02-02 21:16:19 | [B] Bunker Door Close: False
+2025-02-02 21:16:19 | [A] Port 보호캡 분리 완료: True
+2025-02-02 21:16:19 | [A] Port 보호캡 체결 완료: True
+2025-02-02 21:16:19 | [A] Worker Door Open 완료: False
+2025-02-02 21:16:19 | [A] Worker Door Close 완료: False
+2025-02-02 21:16:19 | [A] Worker 투입 Ready: True
+2025-02-02 21:16:19 | [A] Worker 투입 Complete: True
+2025-02-02 21:16:19 | [A] Worker 배출 Ready: False
+2025-02-02 21:16:19 | [A] Worker 배출 Comlete: True
+2025-02-02 21:16:19 | [A] Bunker Door Open 완료: True
+2025-02-02 21:16:19 | [A] Bunker Door Close 완료: True
+2025-02-02 21:16:19 | [A] Bunker 투입 Ready: True
+2025-02-02 21:16:19 | [A] Bunker 투입 Complete: False
+2025-02-02 21:16:19 | [A] Bunker 배출 Ready: False
+2025-02-02 21:16:19 | [A] Bunker 배출 Comlete: True
+2025-02-02 21:16:19 | [A] Cylinder Align 진행중: True
+2025-02-02 21:16:19 | [A] Cylinder Align 완료: True
+2025-02-02 21:16:19 | [A] Cap Open 진행중: True
+2025-02-02 21:16:19 | [A] Cap Close 진행중: False
+2025-02-02 21:16:19 | [A] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:19 | [A] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:19 | [A] Cap 위치 찾는중: False
+2025-02-02 21:16:19 | [A] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:19 | [A] Worker door Open 진행중: False
+2025-02-02 21:16:19 | [A] Worker door Close 진행중: False
+2025-02-02 21:16:19 | [A] Bunker door Open 진행중: False
+2025-02-02 21:16:19 | [A] Bunker door Close 진행중: True
+2025-02-02 21:16:19 | [B] Port 보호캡 분리 완료: False
+2025-02-02 21:16:19 | [B] Port 보호캡 체결 완료: False
+2025-02-02 21:16:19 | [B] Worker Door Open 완료: False
+2025-02-02 21:16:19 | [B] Worker Door Close 완료: True
+2025-02-02 21:16:19 | [B] Worker 투입 Ready: False
+2025-02-02 21:16:19 | [B] Worker 투입 Complete: True
+2025-02-02 21:16:19 | [B] Worker 배출 Ready: True
+2025-02-02 21:16:19 | [B] Worker 배출 Comlete: True
+2025-02-02 21:16:19 | [B] Bunker Door Open 완료: False
+2025-02-02 21:16:19 | [B] Bunker Door Close 완료: True
+2025-02-02 21:16:19 | [B] Bunker 투입 Ready: False
+2025-02-02 21:16:19 | [B] Bunker 투입 Complete: False
+2025-02-02 21:16:19 | [B] Bunker 배출 Ready: False
+2025-02-02 21:16:19 | [B] Bunker 배출 Comlete: True
+2025-02-02 21:16:19 | [B] Cylinder Align 진행중: False
+2025-02-02 21:16:19 | [B] Cylinder Align 완료: False
+2025-02-02 21:16:19 | [B] Cap Open 진행중: False
+2025-02-02 21:16:19 | [B] Cap Close 진행중: True
+2025-02-02 21:16:19 | [B] Cylinder 위치로 X축 이동중: True
+2025-02-02 21:16:19 | [B] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:19 | [B] Cap 위치 찾는중: True
+2025-02-02 21:16:19 | [B] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:19 | [B] Worker door Open 진행중: True
+2025-02-02 21:16:19 | [B] Worker door Close 진행중: True
+2025-02-02 21:16:19 | [B] Bunker door Open 진행중: False
+2025-02-02 21:16:19 | [B] Bunker door Close 진행중: True
+2025-02-02 21:16:20 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:20 | Bunker ID: 1
+2025-02-02 21:16:20 | Gas Cabinet ID: 2
+2025-02-02 21:16:20 | Gas Cabinet 가스 종류 1: 6
+2025-02-02 21:16:20 | Gas Cabinet 가스 종류 2: 37
+2025-02-02 21:16:20 | Gas Cabinet 가스 종류 3: 6
+2025-02-02 21:16:20 | Gas Cabinet 가스 종류 4: 5
+2025-02-02 21:16:20 | Gas Cabinet 가스 종류 5: 45
+2025-02-02 21:16:20 | Gas Cabinet Alarm Code: 40
+2025-02-02 21:16:20 | PT1A: 14 PSI
+2025-02-02 21:16:20 | PT2A: 95 PSI
+2025-02-02 21:16:20 | PT1B: 34 PSI
+2025-02-02 21:16:20 | PT2B: 28 PSI
+2025-02-02 21:16:20 | PT3: 95 PSI
+2025-02-02 21:16:20 | PT4: 36 PSI
+2025-02-02 21:16:20 | WA (A Port Weight): 58 kg
+2025-02-02 21:16:20 | WB (B Port Weight): 38 kg
+2025-02-02 21:16:20 | [A] JACKET HEATER: 29°C
+2025-02-02 21:16:20 | [A] LINE HEATER: 51°C
+2025-02-02 21:16:20 | [B] JACKET HEATER: 93°C
+2025-02-02 21:16:20 | [B] LINE HEATER: 90°C
+2025-02-02 21:16:20 | [A] CGA 체결 Torque: 0 kgf·cm
+2025-02-02 21:16:20 | [A] CAP 체결 Torque: 22 kgf·cm
+2025-02-02 21:16:20 | [A] 실린더 Up/Down Pos: 95 mm
+2025-02-02 21:16:20 | [B] CGA 체결 Torque: 67 kgf·cm
+2025-02-02 21:16:20 | [B] CAP 체결 Torque: 34 kgf·cm
+2025-02-02 21:16:20 | [B] 실린더 Up/Down Pos: 61 mm
+2025-02-02 21:16:20 | [A] Port Barcode: YYFWX7Q7X3TNEUXMIIF25JTK1ZDXRI
+2025-02-02 21:16:20 | [B] Port Barcode: JJ1LJSXIWEFSIFRRE4RBIJJHHORL53
+2025-02-02 21:16:20 | [A] Port 가스 종류 1: 1
+2025-02-02 21:16:20 | [A] Port 가스 종류 2: 5
+2025-02-02 21:16:20 | [A] Port 가스 종류 3: 1
+2025-02-02 21:16:20 | [A] Port 가스 종류 4: 3
+2025-02-02 21:16:20 | [A] Port 가스 종류 5: 4
+2025-02-02 21:16:20 | [B] Port 가스 종류 1: 5
+2025-02-02 21:16:20 | [B] Port 가스 종류 2: 5
+2025-02-02 21:16:20 | [B] Port 가스 종류 3: 2
+2025-02-02 21:16:20 | [B] Port 가스 종류 4: 1
+2025-02-02 21:16:20 | [B] Port 가스 종류 5: 2
+2025-02-02 21:16:20 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:20 | EMG Signal: False
+2025-02-02 21:16:20 | Heart Bit: True
+2025-02-02 21:16:20 | Run/Stop Signal: False
+2025-02-02 21:16:20 | Server Connected Bit: False
+2025-02-02 21:16:20 | T-LAMP RED: False
+2025-02-02 21:16:20 | T-LAMP YELLOW: False
+2025-02-02 21:16:20 | T-LAMP GREEN: False
+2025-02-02 21:16:20 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:20 | [A] Port 실린더 유무: False
+2025-02-02 21:16:20 | [B] Port 실린더 유무: True
+2025-02-02 21:16:20 | [A] Worker Door Open: True
+2025-02-02 21:16:20 | [A] Worker Door Close: False
+2025-02-02 21:16:20 | [A] Bunker Door Open: True
+2025-02-02 21:16:20 | [A] Bunker Door Close: True
+2025-02-02 21:16:20 | [B] Worker Door Open: False
+2025-02-02 21:16:20 | [B] Worker Door Close: False
+2025-02-02 21:16:20 | [B] Bunker Door Open: False
+2025-02-02 21:16:20 | [B] Bunker Door Close: True
+2025-02-02 21:16:20 | [A] Port 보호캡 분리 완료: False
+2025-02-02 21:16:20 | [A] Port 보호캡 체결 완료: True
+2025-02-02 21:16:20 | [A] Worker Door Open 완료: True
+2025-02-02 21:16:20 | [A] Worker Door Close 완료: True
+2025-02-02 21:16:20 | [A] Worker 투입 Ready: False
+2025-02-02 21:16:20 | [A] Worker 투입 Complete: True
+2025-02-02 21:16:20 | [A] Worker 배출 Ready: False
+2025-02-02 21:16:20 | [A] Worker 배출 Comlete: False
+2025-02-02 21:16:20 | [A] Bunker Door Open 완료: False
+2025-02-02 21:16:20 | [A] Bunker Door Close 완료: True
+2025-02-02 21:16:20 | [A] Bunker 투입 Ready: False
+2025-02-02 21:16:20 | [A] Bunker 투입 Complete: True
+2025-02-02 21:16:20 | [A] Bunker 배출 Ready: True
+2025-02-02 21:16:20 | [A] Bunker 배출 Comlete: True
+2025-02-02 21:16:20 | [A] Cylinder Align 진행중: False
+2025-02-02 21:16:20 | [A] Cylinder Align 완료: True
+2025-02-02 21:16:20 | [A] Cap Open 진행중: True
+2025-02-02 21:16:20 | [A] Cap Close 진행중: False
+2025-02-02 21:16:20 | [A] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:20 | [A] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:20 | [A] Cap 위치 찾는중: False
+2025-02-02 21:16:20 | [A] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:20 | [A] Worker door Open 진행중: False
+2025-02-02 21:16:20 | [A] Worker door Close 진행중: True
+2025-02-02 21:16:20 | [A] Bunker door Open 진행중: False
+2025-02-02 21:16:20 | [A] Bunker door Close 진행중: True
+2025-02-02 21:16:20 | [B] Port 보호캡 분리 완료: True
+2025-02-02 21:16:20 | [B] Port 보호캡 체결 완료: True
+2025-02-02 21:16:20 | [B] Worker Door Open 완료: False
+2025-02-02 21:16:20 | [B] Worker Door Close 완료: True
+2025-02-02 21:16:20 | [B] Worker 투입 Ready: True
+2025-02-02 21:16:20 | [B] Worker 투입 Complete: False
+2025-02-02 21:16:20 | [B] Worker 배출 Ready: False
+2025-02-02 21:16:20 | [B] Worker 배출 Comlete: False
+2025-02-02 21:16:20 | [B] Bunker Door Open 완료: False
+2025-02-02 21:16:20 | [B] Bunker Door Close 완료: False
+2025-02-02 21:16:20 | [B] Bunker 투입 Ready: False
+2025-02-02 21:16:20 | [B] Bunker 투입 Complete: True
+2025-02-02 21:16:20 | [B] Bunker 배출 Ready: True
+2025-02-02 21:16:20 | [B] Bunker 배출 Comlete: True
+2025-02-02 21:16:20 | [B] Cylinder Align 진행중: False
+2025-02-02 21:16:20 | [B] Cylinder Align 완료: True
+2025-02-02 21:16:20 | [B] Cap Open 진행중: True
+2025-02-02 21:16:20 | [B] Cap Close 진행중: True
+2025-02-02 21:16:20 | [B] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:20 | [B] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:20 | [B] Cap 위치 찾는중: True
+2025-02-02 21:16:20 | [B] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:20 | [B] Worker door Open 진행중: True
+2025-02-02 21:16:20 | [B] Worker door Close 진행중: True
+2025-02-02 21:16:20 | [B] Bunker door Open 진행중: True
+2025-02-02 21:16:20 | [B] Bunker door Close 진행중: False
+2025-02-02 21:16:21 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:21 | Bunker ID: 1
+2025-02-02 21:16:21 | Gas Cabinet ID: 2
+2025-02-02 21:16:21 | Gas Cabinet 가스 종류 1: 15
+2025-02-02 21:16:21 | Gas Cabinet 가스 종류 2: 18
+2025-02-02 21:16:21 | Gas Cabinet 가스 종류 3: 35
+2025-02-02 21:16:21 | Gas Cabinet 가스 종류 4: 9
+2025-02-02 21:16:21 | Gas Cabinet 가스 종류 5: 11
+2025-02-02 21:16:21 | Gas Cabinet Alarm Code: 158
+2025-02-02 21:16:21 | PT1A: 72 PSI
+2025-02-02 21:16:21 | PT2A: 53 PSI
+2025-02-02 21:16:21 | PT1B: 43 PSI
+2025-02-02 21:16:21 | PT2B: 7 PSI
+2025-02-02 21:16:21 | PT3: 47 PSI
+2025-02-02 21:16:21 | PT4: 1 PSI
+2025-02-02 21:16:21 | WA (A Port Weight): 6 kg
+2025-02-02 21:16:21 | WB (B Port Weight): 43 kg
+2025-02-02 21:16:21 | [A] JACKET HEATER: 44°C
+2025-02-02 21:16:21 | [A] LINE HEATER: 61°C
+2025-02-02 21:16:21 | [B] JACKET HEATER: 96°C
+2025-02-02 21:16:21 | [B] LINE HEATER: 37°C
+2025-02-02 21:16:21 | [A] CGA 체결 Torque: 19 kgf·cm
+2025-02-02 21:16:21 | [A] CAP 체결 Torque: 19 kgf·cm
+2025-02-02 21:16:21 | [A] 실린더 Up/Down Pos: 115 mm
+2025-02-02 21:16:21 | [B] CGA 체결 Torque: 74 kgf·cm
+2025-02-02 21:16:21 | [B] CAP 체결 Torque: 76 kgf·cm
+2025-02-02 21:16:21 | [B] 실린더 Up/Down Pos: 102 mm
+2025-02-02 21:16:21 | [A] Port Barcode: 8P5KE2DKGIZ9PFZBNOAIB2BDB4AE2M
+2025-02-02 21:16:21 | [B] Port Barcode: LPDR67BMGQB194VNNUH1VHE3BJ9PJZ
+2025-02-02 21:16:21 | [A] Port 가스 종류 1: 4
+2025-02-02 21:16:21 | [A] Port 가스 종류 2: 5
+2025-02-02 21:16:21 | [A] Port 가스 종류 3: 5
+2025-02-02 21:16:21 | [A] Port 가스 종류 4: 4
+2025-02-02 21:16:21 | [A] Port 가스 종류 5: 4
+2025-02-02 21:16:21 | [B] Port 가스 종류 1: 2
+2025-02-02 21:16:21 | [B] Port 가스 종류 2: 5
+2025-02-02 21:16:21 | [B] Port 가스 종류 3: 5
+2025-02-02 21:16:21 | [B] Port 가스 종류 4: 4
+2025-02-02 21:16:21 | [B] Port 가스 종류 5: 4
+2025-02-02 21:16:21 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:21 | EMG Signal: False
+2025-02-02 21:16:21 | Heart Bit: False
+2025-02-02 21:16:21 | Run/Stop Signal: True
+2025-02-02 21:16:21 | Server Connected Bit: False
+2025-02-02 21:16:21 | T-LAMP RED: False
+2025-02-02 21:16:21 | T-LAMP YELLOW: False
+2025-02-02 21:16:21 | T-LAMP GREEN: False
+2025-02-02 21:16:21 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:21 | [A] Port 실린더 유무: True
+2025-02-02 21:16:21 | [B] Port 실린더 유무: False
+2025-02-02 21:16:21 | [A] Worker Door Open: False
+2025-02-02 21:16:21 | [A] Worker Door Close: False
+2025-02-02 21:16:21 | [A] Bunker Door Open: False
+2025-02-02 21:16:21 | [A] Bunker Door Close: True
+2025-02-02 21:16:21 | [B] Worker Door Open: False
+2025-02-02 21:16:21 | [B] Worker Door Close: True
+2025-02-02 21:16:21 | [B] Bunker Door Open: True
+2025-02-02 21:16:21 | [B] Bunker Door Close: True
+2025-02-02 21:16:21 | [A] Port 보호캡 분리 완료: True
+2025-02-02 21:16:21 | [A] Port 보호캡 체결 완료: False
+2025-02-02 21:16:21 | [A] Worker Door Open 완료: False
+2025-02-02 21:16:21 | [A] Worker Door Close 완료: True
+2025-02-02 21:16:21 | [A] Worker 투입 Ready: True
+2025-02-02 21:16:21 | [A] Worker 투입 Complete: True
+2025-02-02 21:16:21 | [A] Worker 배출 Ready: False
+2025-02-02 21:16:21 | [A] Worker 배출 Comlete: True
+2025-02-02 21:16:21 | [A] Bunker Door Open 완료: False
+2025-02-02 21:16:21 | [A] Bunker Door Close 완료: True
+2025-02-02 21:16:21 | [A] Bunker 투입 Ready: True
+2025-02-02 21:16:21 | [A] Bunker 투입 Complete: False
+2025-02-02 21:16:21 | [A] Bunker 배출 Ready: False
+2025-02-02 21:16:21 | [A] Bunker 배출 Comlete: False
+2025-02-02 21:16:21 | [A] Cylinder Align 진행중: False
+2025-02-02 21:16:21 | [A] Cylinder Align 완료: True
+2025-02-02 21:16:21 | [A] Cap Open 진행중: True
+2025-02-02 21:16:21 | [A] Cap Close 진행중: False
+2025-02-02 21:16:21 | [A] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:21 | [A] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:21 | [A] Cap 위치 찾는중: False
+2025-02-02 21:16:21 | [A] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:21 | [A] Worker door Open 진행중: True
+2025-02-02 21:16:21 | [A] Worker door Close 진행중: False
+2025-02-02 21:16:21 | [A] Bunker door Open 진행중: False
+2025-02-02 21:16:21 | [A] Bunker door Close 진행중: False
+2025-02-02 21:16:21 | [B] Port 보호캡 분리 완료: False
+2025-02-02 21:16:21 | [B] Port 보호캡 체결 완료: False
+2025-02-02 21:16:21 | [B] Worker Door Open 완료: False
+2025-02-02 21:16:21 | [B] Worker Door Close 완료: True
+2025-02-02 21:16:21 | [B] Worker 투입 Ready: True
+2025-02-02 21:16:21 | [B] Worker 투입 Complete: False
+2025-02-02 21:16:21 | [B] Worker 배출 Ready: False
+2025-02-02 21:16:21 | [B] Worker 배출 Comlete: False
+2025-02-02 21:16:21 | [B] Bunker Door Open 완료: False
+2025-02-02 21:16:21 | [B] Bunker Door Close 완료: True
+2025-02-02 21:16:21 | [B] Bunker 투입 Ready: True
+2025-02-02 21:16:21 | [B] Bunker 투입 Complete: False
+2025-02-02 21:16:21 | [B] Bunker 배출 Ready: False
+2025-02-02 21:16:21 | [B] Bunker 배출 Comlete: False
+2025-02-02 21:16:21 | [B] Cylinder Align 진행중: True
+2025-02-02 21:16:21 | [B] Cylinder Align 완료: True
+2025-02-02 21:16:21 | [B] Cap Open 진행중: False
+2025-02-02 21:16:21 | [B] Cap Close 진행중: True
+2025-02-02 21:16:21 | [B] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:21 | [B] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:21 | [B] Cap 위치 찾는중: False
+2025-02-02 21:16:21 | [B] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:21 | [B] Worker door Open 진행중: True
+2025-02-02 21:16:21 | [B] Worker door Close 진행중: False
+2025-02-02 21:16:21 | [B] Bunker door Open 진행중: False
+2025-02-02 21:16:21 | [B] Bunker door Close 진행중: True
+2025-02-02 21:16:22 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:22 | Bunker ID: 1
+2025-02-02 21:16:22 | Gas Cabinet ID: 2
+2025-02-02 21:16:22 | Gas Cabinet 가스 종류 1: 37
+2025-02-02 21:16:22 | Gas Cabinet 가스 종류 2: 47
+2025-02-02 21:16:22 | Gas Cabinet 가스 종류 3: 7
+2025-02-02 21:16:22 | Gas Cabinet 가스 종류 4: 11
+2025-02-02 21:16:22 | Gas Cabinet 가스 종류 5: 22
+2025-02-02 21:16:22 | Gas Cabinet Alarm Code: 262
+2025-02-02 21:16:22 | PT1A: 37 PSI
+2025-02-02 21:16:22 | PT2A: 72 PSI
+2025-02-02 21:16:22 | PT1B: 32 PSI
+2025-02-02 21:16:22 | PT2B: 64 PSI
+2025-02-02 21:16:22 | PT3: 88 PSI
+2025-02-02 21:16:22 | PT4: 51 PSI
+2025-02-02 21:16:22 | WA (A Port Weight): 27 kg
+2025-02-02 21:16:22 | WB (B Port Weight): 94 kg
+2025-02-02 21:16:22 | [A] JACKET HEATER: 55°C
+2025-02-02 21:16:22 | [A] LINE HEATER: 77°C
+2025-02-02 21:16:22 | [B] JACKET HEATER: 97°C
+2025-02-02 21:16:22 | [B] LINE HEATER: 73°C
+2025-02-02 21:16:22 | [A] CGA 체결 Torque: 50 kgf·cm
+2025-02-02 21:16:22 | [A] CAP 체결 Torque: 81 kgf·cm
+2025-02-02 21:16:22 | [A] 실린더 Up/Down Pos: 28 mm
+2025-02-02 21:16:22 | [B] CGA 체결 Torque: 81 kgf·cm
+2025-02-02 21:16:22 | [B] CAP 체결 Torque: 44 kgf·cm
+2025-02-02 21:16:22 | [B] 실린더 Up/Down Pos: 119 mm
+2025-02-02 21:16:22 | [A] Port Barcode: PO6D7GQZMB4TM63YH3PJO5VULPI35P
+2025-02-02 21:16:22 | [B] Port Barcode: G6ALELWDECJBKC6LF809I35VZUDCAT
+2025-02-02 21:16:22 | [A] Port 가스 종류 1: 2
+2025-02-02 21:16:22 | [A] Port 가스 종류 2: 4
+2025-02-02 21:16:22 | [A] Port 가스 종류 3: 5
+2025-02-02 21:16:22 | [A] Port 가스 종류 4: 2
+2025-02-02 21:16:22 | [A] Port 가스 종류 5: 4
+2025-02-02 21:16:22 | [B] Port 가스 종류 1: 3
+2025-02-02 21:16:22 | [B] Port 가스 종류 2: 4
+2025-02-02 21:16:22 | [B] Port 가스 종류 3: 5
+2025-02-02 21:16:22 | [B] Port 가스 종류 4: 4
+2025-02-02 21:16:22 | [B] Port 가스 종류 5: 5
+2025-02-02 21:16:22 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:22 | EMG Signal: True
+2025-02-02 21:16:22 | Heart Bit: False
+2025-02-02 21:16:22 | Run/Stop Signal: True
+2025-02-02 21:16:22 | Server Connected Bit: False
+2025-02-02 21:16:22 | T-LAMP RED: False
+2025-02-02 21:16:22 | T-LAMP YELLOW: False
+2025-02-02 21:16:22 | T-LAMP GREEN: False
+2025-02-02 21:16:22 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:22 | [A] Port 실린더 유무: False
+2025-02-02 21:16:22 | [B] Port 실린더 유무: False
+2025-02-02 21:16:22 | [A] Worker Door Open: False
+2025-02-02 21:16:22 | [A] Worker Door Close: False
+2025-02-02 21:16:22 | [A] Bunker Door Open: True
+2025-02-02 21:16:22 | [A] Bunker Door Close: True
+2025-02-02 21:16:22 | [B] Worker Door Open: False
+2025-02-02 21:16:22 | [B] Worker Door Close: True
+2025-02-02 21:16:22 | [B] Bunker Door Open: False
+2025-02-02 21:16:22 | [B] Bunker Door Close: True
+2025-02-02 21:16:22 | [A] Port 보호캡 분리 완료: False
+2025-02-02 21:16:22 | [A] Port 보호캡 체결 완료: False
+2025-02-02 21:16:22 | [A] Worker Door Open 완료: False
+2025-02-02 21:16:22 | [A] Worker Door Close 완료: True
+2025-02-02 21:16:22 | [A] Worker 투입 Ready: False
+2025-02-02 21:16:22 | [A] Worker 투입 Complete: False
+2025-02-02 21:16:22 | [A] Worker 배출 Ready: False
+2025-02-02 21:16:22 | [A] Worker 배출 Comlete: False
+2025-02-02 21:16:22 | [A] Bunker Door Open 완료: False
+2025-02-02 21:16:22 | [A] Bunker Door Close 완료: False
+2025-02-02 21:16:22 | [A] Bunker 투입 Ready: True
+2025-02-02 21:16:22 | [A] Bunker 투입 Complete: True
+2025-02-02 21:16:22 | [A] Bunker 배출 Ready: False
+2025-02-02 21:16:22 | [A] Bunker 배출 Comlete: True
+2025-02-02 21:16:22 | [A] Cylinder Align 진행중: True
+2025-02-02 21:16:22 | [A] Cylinder Align 완료: True
+2025-02-02 21:16:22 | [A] Cap Open 진행중: False
+2025-02-02 21:16:22 | [A] Cap Close 진행중: True
+2025-02-02 21:16:22 | [A] Cylinder 위치로 X축 이동중: True
+2025-02-02 21:16:22 | [A] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:22 | [A] Cap 위치 찾는중: True
+2025-02-02 21:16:22 | [A] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:22 | [A] Worker door Open 진행중: False
+2025-02-02 21:16:22 | [A] Worker door Close 진행중: True
+2025-02-02 21:16:22 | [A] Bunker door Open 진행중: True
+2025-02-02 21:16:22 | [A] Bunker door Close 진행중: True
+2025-02-02 21:16:22 | [B] Port 보호캡 분리 완료: True
+2025-02-02 21:16:22 | [B] Port 보호캡 체결 완료: True
+2025-02-02 21:16:22 | [B] Worker Door Open 완료: True
+2025-02-02 21:16:22 | [B] Worker Door Close 완료: True
+2025-02-02 21:16:22 | [B] Worker 투입 Ready: False
+2025-02-02 21:16:22 | [B] Worker 투입 Complete: True
+2025-02-02 21:16:22 | [B] Worker 배출 Ready: True
+2025-02-02 21:16:22 | [B] Worker 배출 Comlete: True
+2025-02-02 21:16:22 | [B] Bunker Door Open 완료: False
+2025-02-02 21:16:22 | [B] Bunker Door Close 완료: False
+2025-02-02 21:16:22 | [B] Bunker 투입 Ready: True
+2025-02-02 21:16:22 | [B] Bunker 투입 Complete: True
+2025-02-02 21:16:22 | [B] Bunker 배출 Ready: True
+2025-02-02 21:16:22 | [B] Bunker 배출 Comlete: True
+2025-02-02 21:16:22 | [B] Cylinder Align 진행중: True
+2025-02-02 21:16:22 | [B] Cylinder Align 완료: True
+2025-02-02 21:16:22 | [B] Cap Open 진행중: True
+2025-02-02 21:16:22 | [B] Cap Close 진행중: True
+2025-02-02 21:16:22 | [B] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:22 | [B] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:22 | [B] Cap 위치 찾는중: True
+2025-02-02 21:16:22 | [B] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:22 | [B] Worker door Open 진행중: False
+2025-02-02 21:16:22 | [B] Worker door Close 진행중: True
+2025-02-02 21:16:22 | [B] Bunker door Open 진행중: False
+2025-02-02 21:16:22 | [B] Bunker door Close 진행중: True
+2025-02-02 21:16:23 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:23 | Bunker ID: 1
+2025-02-02 21:16:23 | Gas Cabinet ID: 2
+2025-02-02 21:16:23 | Gas Cabinet 가스 종류 1: 15
+2025-02-02 21:16:23 | Gas Cabinet 가스 종류 2: 33
+2025-02-02 21:16:23 | Gas Cabinet 가스 종류 3: 2
+2025-02-02 21:16:23 | Gas Cabinet 가스 종류 4: 21
+2025-02-02 21:16:23 | Gas Cabinet 가스 종류 5: 39
+2025-02-02 21:16:23 | Gas Cabinet Alarm Code: 166
+2025-02-02 21:16:23 | PT1A: 15 PSI
+2025-02-02 21:16:23 | PT2A: 52 PSI
+2025-02-02 21:16:23 | PT1B: 51 PSI
+2025-02-02 21:16:23 | PT2B: 40 PSI
+2025-02-02 21:16:23 | PT3: 11 PSI
+2025-02-02 21:16:23 | PT4: 49 PSI
+2025-02-02 21:16:23 | WA (A Port Weight): 51 kg
+2025-02-02 21:16:23 | WB (B Port Weight): 35 kg
+2025-02-02 21:16:23 | [A] JACKET HEATER: 21°C
+2025-02-02 21:16:23 | [A] LINE HEATER: 12°C
+2025-02-02 21:16:23 | [B] JACKET HEATER: 37°C
+2025-02-02 21:16:23 | [B] LINE HEATER: 6°C
+2025-02-02 21:16:23 | [A] CGA 체결 Torque: 90 kgf·cm
+2025-02-02 21:16:23 | [A] CAP 체결 Torque: 32 kgf·cm
+2025-02-02 21:16:23 | [A] 실린더 Up/Down Pos: 14 mm
+2025-02-02 21:16:23 | [B] CGA 체결 Torque: 91 kgf·cm
+2025-02-02 21:16:23 | [B] CAP 체결 Torque: 0 kgf·cm
+2025-02-02 21:16:23 | [B] 실린더 Up/Down Pos: 16 mm
+2025-02-02 21:16:23 | [A] Port Barcode: S72ASMB0AGX88TLTFRFC8PYBNZY456
+2025-02-02 21:16:23 | [B] Port Barcode: 5VRR4OUUU8Z3T6OG1J5Y1JHEDNA0JB
+2025-02-02 21:16:23 | [A] Port 가스 종류 1: 1
+2025-02-02 21:16:23 | [A] Port 가스 종류 2: 2
+2025-02-02 21:16:23 | [A] Port 가스 종류 3: 2
+2025-02-02 21:16:23 | [A] Port 가스 종류 4: 4
+2025-02-02 21:16:23 | [A] Port 가스 종류 5: 2
+2025-02-02 21:16:23 | [B] Port 가스 종류 1: 5
+2025-02-02 21:16:23 | [B] Port 가스 종류 2: 3
+2025-02-02 21:16:23 | [B] Port 가스 종류 3: 3
+2025-02-02 21:16:23 | [B] Port 가스 종류 4: 2
+2025-02-02 21:16:23 | [B] Port 가스 종류 5: 1
+2025-02-02 21:16:23 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:23 | EMG Signal: True
+2025-02-02 21:16:23 | Heart Bit: False
+2025-02-02 21:16:23 | Run/Stop Signal: False
+2025-02-02 21:16:23 | Server Connected Bit: False
+2025-02-02 21:16:23 | T-LAMP RED: False
+2025-02-02 21:16:23 | T-LAMP YELLOW: False
+2025-02-02 21:16:23 | T-LAMP GREEN: False
+2025-02-02 21:16:23 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:23 | [A] Port 실린더 유무: False
+2025-02-02 21:16:23 | [B] Port 실린더 유무: False
+2025-02-02 21:16:23 | [A] Worker Door Open: False
+2025-02-02 21:16:23 | [A] Worker Door Close: True
+2025-02-02 21:16:23 | [A] Bunker Door Open: False
+2025-02-02 21:16:23 | [A] Bunker Door Close: True
+2025-02-02 21:16:23 | [B] Worker Door Open: True
+2025-02-02 21:16:23 | [B] Worker Door Close: False
+2025-02-02 21:16:23 | [B] Bunker Door Open: False
+2025-02-02 21:16:23 | [B] Bunker Door Close: True
+2025-02-02 21:16:23 | [A] Port 보호캡 분리 완료: False
+2025-02-02 21:16:23 | [A] Port 보호캡 체결 완료: False
+2025-02-02 21:16:23 | [A] Worker Door Open 완료: True
+2025-02-02 21:16:23 | [A] Worker Door Close 완료: False
+2025-02-02 21:16:23 | [A] Worker 투입 Ready: True
+2025-02-02 21:16:23 | [A] Worker 투입 Complete: True
+2025-02-02 21:16:23 | [A] Worker 배출 Ready: False
+2025-02-02 21:16:23 | [A] Worker 배출 Comlete: True
+2025-02-02 21:16:23 | [A] Bunker Door Open 완료: True
+2025-02-02 21:16:23 | [A] Bunker Door Close 완료: False
+2025-02-02 21:16:23 | [A] Bunker 투입 Ready: True
+2025-02-02 21:16:23 | [A] Bunker 투입 Complete: False
+2025-02-02 21:16:23 | [A] Bunker 배출 Ready: True
+2025-02-02 21:16:23 | [A] Bunker 배출 Comlete: True
+2025-02-02 21:16:23 | [A] Cylinder Align 진행중: False
+2025-02-02 21:16:23 | [A] Cylinder Align 완료: True
+2025-02-02 21:16:23 | [A] Cap Open 진행중: False
+2025-02-02 21:16:23 | [A] Cap Close 진행중: True
+2025-02-02 21:16:23 | [A] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:23 | [A] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:23 | [A] Cap 위치 찾는중: False
+2025-02-02 21:16:23 | [A] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:23 | [A] Worker door Open 진행중: True
+2025-02-02 21:16:23 | [A] Worker door Close 진행중: False
+2025-02-02 21:16:23 | [A] Bunker door Open 진행중: False
+2025-02-02 21:16:23 | [A] Bunker door Close 진행중: False
+2025-02-02 21:16:23 | [B] Port 보호캡 분리 완료: False
+2025-02-02 21:16:23 | [B] Port 보호캡 체결 완료: True
+2025-02-02 21:16:23 | [B] Worker Door Open 완료: True
+2025-02-02 21:16:23 | [B] Worker Door Close 완료: True
+2025-02-02 21:16:23 | [B] Worker 투입 Ready: False
+2025-02-02 21:16:23 | [B] Worker 투입 Complete: True
+2025-02-02 21:16:23 | [B] Worker 배출 Ready: True
+2025-02-02 21:16:23 | [B] Worker 배출 Comlete: True
+2025-02-02 21:16:23 | [B] Bunker Door Open 완료: True
+2025-02-02 21:16:23 | [B] Bunker Door Close 완료: True
+2025-02-02 21:16:23 | [B] Bunker 투입 Ready: False
+2025-02-02 21:16:23 | [B] Bunker 투입 Complete: False
+2025-02-02 21:16:23 | [B] Bunker 배출 Ready: False
+2025-02-02 21:16:23 | [B] Bunker 배출 Comlete: True
+2025-02-02 21:16:23 | [B] Cylinder Align 진행중: False
+2025-02-02 21:16:23 | [B] Cylinder Align 완료: False
+2025-02-02 21:16:23 | [B] Cap Open 진행중: True
+2025-02-02 21:16:23 | [B] Cap Close 진행중: False
+2025-02-02 21:16:23 | [B] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:23 | [B] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:23 | [B] Cap 위치 찾는중: False
+2025-02-02 21:16:23 | [B] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:23 | [B] Worker door Open 진행중: True
+2025-02-02 21:16:23 | [B] Worker door Close 진행중: True
+2025-02-02 21:16:23 | [B] Bunker door Open 진행중: False
+2025-02-02 21:16:23 | [B] Bunker door Close 진행중: False
+2025-02-02 21:16:24 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:24 | Bunker ID: 1
+2025-02-02 21:16:24 | Gas Cabinet ID: 2
+2025-02-02 21:16:24 | Gas Cabinet 가스 종류 1: 47
+2025-02-02 21:16:24 | Gas Cabinet 가스 종류 2: 10
+2025-02-02 21:16:24 | Gas Cabinet 가스 종류 3: 23
+2025-02-02 21:16:24 | Gas Cabinet 가스 종류 4: 50
+2025-02-02 21:16:24 | Gas Cabinet 가스 종류 5: 38
+2025-02-02 21:16:24 | Gas Cabinet Alarm Code: 493
+2025-02-02 21:16:24 | PT1A: 96 PSI
+2025-02-02 21:16:24 | PT2A: 53 PSI
+2025-02-02 21:16:24 | PT1B: 94 PSI
+2025-02-02 21:16:24 | PT2B: 9 PSI
+2025-02-02 21:16:24 | PT3: 10 PSI
+2025-02-02 21:16:24 | PT4: 62 PSI
+2025-02-02 21:16:24 | WA (A Port Weight): 22 kg
+2025-02-02 21:16:24 | WB (B Port Weight): 44 kg
+2025-02-02 21:16:24 | [A] JACKET HEATER: 27°C
+2025-02-02 21:16:24 | [A] LINE HEATER: 63°C
+2025-02-02 21:16:24 | [B] JACKET HEATER: 20°C
+2025-02-02 21:16:24 | [B] LINE HEATER: 0°C
+2025-02-02 21:16:24 | [A] CGA 체결 Torque: 88 kgf·cm
+2025-02-02 21:16:24 | [A] CAP 체결 Torque: 68 kgf·cm
+2025-02-02 21:16:24 | [A] 실린더 Up/Down Pos: 238 mm
+2025-02-02 21:16:24 | [B] CGA 체결 Torque: 16 kgf·cm
+2025-02-02 21:16:24 | [B] CAP 체결 Torque: 62 kgf·cm
+2025-02-02 21:16:24 | [B] 실린더 Up/Down Pos: 60 mm
+2025-02-02 21:16:24 | [A] Port Barcode: NFB76T1ZQXWV1VHXWIG5GKFRAZWW5S
+2025-02-02 21:16:24 | [B] Port Barcode: NL969I3KH25XHJ8F64HGQUV80UV0XL
+2025-02-02 21:16:24 | [A] Port 가스 종류 1: 2
+2025-02-02 21:16:24 | [A] Port 가스 종류 2: 3
+2025-02-02 21:16:24 | [A] Port 가스 종류 3: 2
+2025-02-02 21:16:24 | [A] Port 가스 종류 4: 4
+2025-02-02 21:16:24 | [A] Port 가스 종류 5: 3
+2025-02-02 21:16:24 | [B] Port 가스 종류 1: 2
+2025-02-02 21:16:24 | [B] Port 가스 종류 2: 3
+2025-02-02 21:16:24 | [B] Port 가스 종류 3: 2
+2025-02-02 21:16:24 | [B] Port 가스 종류 4: 3
+2025-02-02 21:16:24 | [B] Port 가스 종류 5: 3
+2025-02-02 21:16:24 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:24 | EMG Signal: True
+2025-02-02 21:16:24 | Heart Bit: True
+2025-02-02 21:16:24 | Run/Stop Signal: False
+2025-02-02 21:16:24 | Server Connected Bit: False
+2025-02-02 21:16:24 | T-LAMP RED: False
+2025-02-02 21:16:24 | T-LAMP YELLOW: False
+2025-02-02 21:16:24 | T-LAMP GREEN: False
+2025-02-02 21:16:24 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:24 | [A] Port 실린더 유무: False
+2025-02-02 21:16:24 | [B] Port 실린더 유무: False
+2025-02-02 21:16:24 | [A] Worker Door Open: False
+2025-02-02 21:16:24 | [A] Worker Door Close: False
+2025-02-02 21:16:24 | [A] Bunker Door Open: False
+2025-02-02 21:16:24 | [A] Bunker Door Close: False
+2025-02-02 21:16:24 | [B] Worker Door Open: True
+2025-02-02 21:16:24 | [B] Worker Door Close: True
+2025-02-02 21:16:24 | [B] Bunker Door Open: True
+2025-02-02 21:16:24 | [B] Bunker Door Close: False
+2025-02-02 21:16:24 | [A] Port 보호캡 분리 완료: True
+2025-02-02 21:16:24 | [A] Port 보호캡 체결 완료: True
+2025-02-02 21:16:24 | [A] Worker Door Open 완료: True
+2025-02-02 21:16:24 | [A] Worker Door Close 완료: True
+2025-02-02 21:16:24 | [A] Worker 투입 Ready: False
+2025-02-02 21:16:24 | [A] Worker 투입 Complete: False
+2025-02-02 21:16:24 | [A] Worker 배출 Ready: False
+2025-02-02 21:16:24 | [A] Worker 배출 Comlete: True
+2025-02-02 21:16:24 | [A] Bunker Door Open 완료: True
+2025-02-02 21:16:24 | [A] Bunker Door Close 완료: False
+2025-02-02 21:16:24 | [A] Bunker 투입 Ready: True
+2025-02-02 21:16:24 | [A] Bunker 투입 Complete: True
+2025-02-02 21:16:24 | [A] Bunker 배출 Ready: False
+2025-02-02 21:16:24 | [A] Bunker 배출 Comlete: True
+2025-02-02 21:16:24 | [A] Cylinder Align 진행중: True
+2025-02-02 21:16:24 | [A] Cylinder Align 완료: False
+2025-02-02 21:16:24 | [A] Cap Open 진행중: False
+2025-02-02 21:16:24 | [A] Cap Close 진행중: True
+2025-02-02 21:16:24 | [A] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:24 | [A] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:24 | [A] Cap 위치 찾는중: True
+2025-02-02 21:16:24 | [A] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:24 | [A] Worker door Open 진행중: True
+2025-02-02 21:16:24 | [A] Worker door Close 진행중: False
+2025-02-02 21:16:24 | [A] Bunker door Open 진행중: True
+2025-02-02 21:16:24 | [A] Bunker door Close 진행중: True
+2025-02-02 21:16:24 | [B] Port 보호캡 분리 완료: False
+2025-02-02 21:16:24 | [B] Port 보호캡 체결 완료: False
+2025-02-02 21:16:24 | [B] Worker Door Open 완료: True
+2025-02-02 21:16:24 | [B] Worker Door Close 완료: False
+2025-02-02 21:16:24 | [B] Worker 투입 Ready: True
+2025-02-02 21:16:24 | [B] Worker 투입 Complete: True
+2025-02-02 21:16:24 | [B] Worker 배출 Ready: True
+2025-02-02 21:16:24 | [B] Worker 배출 Comlete: False
+2025-02-02 21:16:24 | [B] Bunker Door Open 완료: False
+2025-02-02 21:16:24 | [B] Bunker Door Close 완료: True
+2025-02-02 21:16:24 | [B] Bunker 투입 Ready: True
+2025-02-02 21:16:24 | [B] Bunker 투입 Complete: False
+2025-02-02 21:16:24 | [B] Bunker 배출 Ready: True
+2025-02-02 21:16:24 | [B] Bunker 배출 Comlete: True
+2025-02-02 21:16:24 | [B] Cylinder Align 진행중: False
+2025-02-02 21:16:24 | [B] Cylinder Align 완료: False
+2025-02-02 21:16:24 | [B] Cap Open 진행중: False
+2025-02-02 21:16:24 | [B] Cap Close 진행중: True
+2025-02-02 21:16:24 | [B] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:24 | [B] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:24 | [B] Cap 위치 찾는중: False
+2025-02-02 21:16:24 | [B] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:24 | [B] Worker door Open 진행중: True
+2025-02-02 21:16:24 | [B] Worker door Close 진행중: False
+2025-02-02 21:16:24 | [B] Bunker door Open 진행중: False
+2025-02-02 21:16:24 | [B] Bunker door Close 진행중: True
+2025-02-02 21:16:25 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:25 | Bunker ID: 1
+2025-02-02 21:16:25 | Gas Cabinet ID: 3
+2025-02-02 21:16:25 | Gas Cabinet 가스 종류 1: 45
+2025-02-02 21:16:25 | Gas Cabinet 가스 종류 2: 45
+2025-02-02 21:16:25 | Gas Cabinet 가스 종류 3: 10
+2025-02-02 21:16:25 | Gas Cabinet 가스 종류 4: 33
+2025-02-02 21:16:25 | Gas Cabinet 가스 종류 5: 43
+2025-02-02 21:16:25 | Gas Cabinet Alarm Code: 217
+2025-02-02 21:16:25 | PT1A: 53 PSI
+2025-02-02 21:16:25 | PT2A: 75 PSI
+2025-02-02 21:16:25 | PT1B: 34 PSI
+2025-02-02 21:16:25 | PT2B: 12 PSI
+2025-02-02 21:16:25 | PT3: 86 PSI
+2025-02-02 21:16:25 | PT4: 57 PSI
+2025-02-02 21:16:25 | WA (A Port Weight): 90 kg
+2025-02-02 21:16:25 | WB (B Port Weight): 18 kg
+2025-02-02 21:16:25 | [A] JACKET HEATER: 10°C
+2025-02-02 21:16:25 | [A] LINE HEATER: 98°C
+2025-02-02 21:16:25 | [B] JACKET HEATER: 83°C
+2025-02-02 21:16:25 | [B] LINE HEATER: 43°C
+2025-02-02 21:16:25 | [A] CGA 체결 Torque: 10 kgf·cm
+2025-02-02 21:16:25 | [A] CAP 체결 Torque: 47 kgf·cm
+2025-02-02 21:16:25 | [A] 실린더 Up/Down Pos: 245 mm
+2025-02-02 21:16:25 | [B] CGA 체결 Torque: 79 kgf·cm
+2025-02-02 21:16:25 | [B] CAP 체결 Torque: 16 kgf·cm
+2025-02-02 21:16:25 | [B] 실린더 Up/Down Pos: 187 mm
+2025-02-02 21:16:25 | [A] Port Barcode: B0G9QE8K31T9REOKE9GJOWVW4MMX4D
+2025-02-02 21:16:25 | [B] Port Barcode: 5YPAECE5K7J8MK2T63UB7JGFNCG175
+2025-02-02 21:16:25 | [A] Port 가스 종류 1: 4
+2025-02-02 21:16:25 | [A] Port 가스 종류 2: 2
+2025-02-02 21:16:25 | [A] Port 가스 종류 3: 2
+2025-02-02 21:16:25 | [A] Port 가스 종류 4: 4
+2025-02-02 21:16:25 | [A] Port 가스 종류 5: 4
+2025-02-02 21:16:25 | [B] Port 가스 종류 1: 4
+2025-02-02 21:16:25 | [B] Port 가스 종류 2: 4
+2025-02-02 21:16:25 | [B] Port 가스 종류 3: 5
+2025-02-02 21:16:25 | [B] Port 가스 종류 4: 4
+2025-02-02 21:16:25 | [B] Port 가스 종류 5: 1
+2025-02-02 21:16:25 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:25 | EMG Signal: True
+2025-02-02 21:16:25 | Heart Bit: False
+2025-02-02 21:16:25 | Run/Stop Signal: False
+2025-02-02 21:16:25 | Server Connected Bit: False
+2025-02-02 21:16:25 | T-LAMP RED: False
+2025-02-02 21:16:25 | T-LAMP YELLOW: False
+2025-02-02 21:16:25 | T-LAMP GREEN: False
+2025-02-02 21:16:25 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:25 | [A] Port 실린더 유무: False
+2025-02-02 21:16:25 | [B] Port 실린더 유무: True
+2025-02-02 21:16:25 | [A] Worker Door Open: True
+2025-02-02 21:16:25 | [A] Worker Door Close: True
+2025-02-02 21:16:25 | [A] Bunker Door Open: True
+2025-02-02 21:16:25 | [A] Bunker Door Close: True
+2025-02-02 21:16:25 | [B] Worker Door Open: False
+2025-02-02 21:16:25 | [B] Worker Door Close: True
+2025-02-02 21:16:25 | [B] Bunker Door Open: False
+2025-02-02 21:16:25 | [B] Bunker Door Close: False
+2025-02-02 21:16:25 | [A] Port 보호캡 분리 완료: True
+2025-02-02 21:16:25 | [A] Port 보호캡 체결 완료: False
+2025-02-02 21:16:25 | [A] Worker Door Open 완료: False
+2025-02-02 21:16:25 | [A] Worker Door Close 완료: True
+2025-02-02 21:16:25 | [A] Worker 투입 Ready: True
+2025-02-02 21:16:25 | [A] Worker 투입 Complete: False
+2025-02-02 21:16:25 | [A] Worker 배출 Ready: False
+2025-02-02 21:16:25 | [A] Worker 배출 Comlete: True
+2025-02-02 21:16:25 | [A] Bunker Door Open 완료: False
+2025-02-02 21:16:25 | [A] Bunker Door Close 완료: False
+2025-02-02 21:16:25 | [A] Bunker 투입 Ready: True
+2025-02-02 21:16:25 | [A] Bunker 투입 Complete: True
+2025-02-02 21:16:25 | [A] Bunker 배출 Ready: True
+2025-02-02 21:16:25 | [A] Bunker 배출 Comlete: True
+2025-02-02 21:16:25 | [A] Cylinder Align 진행중: True
+2025-02-02 21:16:25 | [A] Cylinder Align 완료: False
+2025-02-02 21:16:25 | [A] Cap Open 진행중: False
+2025-02-02 21:16:25 | [A] Cap Close 진행중: False
+2025-02-02 21:16:25 | [A] Cylinder 위치로 X축 이동중: True
+2025-02-02 21:16:25 | [A] Cylinder 위치로 X축 이동완료: False
+2025-02-02 21:16:25 | [A] Cap 위치 찾는중: False
+2025-02-02 21:16:25 | [A] Cylinder Neck 위치 찾는중: True
+2025-02-02 21:16:25 | [A] Worker door Open 진행중: False
+2025-02-02 21:16:25 | [A] Worker door Close 진행중: True
+2025-02-02 21:16:25 | [A] Bunker door Open 진행중: False
+2025-02-02 21:16:25 | [A] Bunker door Close 진행중: True
+2025-02-02 21:16:25 | [B] Port 보호캡 분리 완료: False
+2025-02-02 21:16:25 | [B] Port 보호캡 체결 완료: False
+2025-02-02 21:16:25 | [B] Worker Door Open 완료: True
+2025-02-02 21:16:25 | [B] Worker Door Close 완료: False
+2025-02-02 21:16:25 | [B] Worker 투입 Ready: True
+2025-02-02 21:16:25 | [B] Worker 투입 Complete: False
+2025-02-02 21:16:25 | [B] Worker 배출 Ready: True
+2025-02-02 21:16:25 | [B] Worker 배출 Comlete: False
+2025-02-02 21:16:25 | [B] Bunker Door Open 완료: False
+2025-02-02 21:16:25 | [B] Bunker Door Close 완료: False
+2025-02-02 21:16:25 | [B] Bunker 투입 Ready: True
+2025-02-02 21:16:25 | [B] Bunker 투입 Complete: True
+2025-02-02 21:16:25 | [B] Bunker 배출 Ready: True
+2025-02-02 21:16:25 | [B] Bunker 배출 Comlete: True
+2025-02-02 21:16:25 | [B] Cylinder Align 진행중: False
+2025-02-02 21:16:25 | [B] Cylinder Align 완료: True
+2025-02-02 21:16:25 | [B] Cap Open 진행중: True
+2025-02-02 21:16:25 | [B] Cap Close 진행중: False
+2025-02-02 21:16:25 | [B] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:25 | [B] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:25 | [B] Cap 위치 찾는중: False
+2025-02-02 21:16:25 | [B] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:25 | [B] Worker door Open 진행중: False
+2025-02-02 21:16:25 | [B] Worker door Close 진행중: False
+2025-02-02 21:16:25 | [B] Bunker door Open 진행중: False
+2025-02-02 21:16:25 | [B] Bunker door Close 진행중: False
+2025-02-02 21:16:26 | =========Gas Cabinet plc_data 시작 =========
+2025-02-02 21:16:26 | Bunker ID: 1
+2025-02-02 21:16:26 | Gas Cabinet ID: 3
+2025-02-02 21:16:26 | Gas Cabinet 가스 종류 1: 43
+2025-02-02 21:16:26 | Gas Cabinet 가스 종류 2: 12
+2025-02-02 21:16:26 | Gas Cabinet 가스 종류 3: 4
+2025-02-02 21:16:26 | Gas Cabinet 가스 종류 4: 11
+2025-02-02 21:16:26 | Gas Cabinet 가스 종류 5: 9
+2025-02-02 21:16:26 | Gas Cabinet Alarm Code: 32
+2025-02-02 21:16:26 | PT1A: 22 PSI
+2025-02-02 21:16:26 | PT2A: 68 PSI
+2025-02-02 21:16:26 | PT1B: 42 PSI
+2025-02-02 21:16:26 | PT2B: 40 PSI
+2025-02-02 21:16:26 | PT3: 45 PSI
+2025-02-02 21:16:26 | PT4: 33 PSI
+2025-02-02 21:16:26 | WA (A Port Weight): 43 kg
+2025-02-02 21:16:26 | WB (B Port Weight): 85 kg
+2025-02-02 21:16:26 | [A] JACKET HEATER: 75°C
+2025-02-02 21:16:26 | [A] LINE HEATER: 43°C
+2025-02-02 21:16:26 | [B] JACKET HEATER: 89°C
+2025-02-02 21:16:26 | [B] LINE HEATER: 2°C
+2025-02-02 21:16:26 | [A] CGA 체결 Torque: 65 kgf·cm
+2025-02-02 21:16:26 | [A] CAP 체결 Torque: 57 kgf·cm
+2025-02-02 21:16:26 | [A] 실린더 Up/Down Pos: 56 mm
+2025-02-02 21:16:26 | [B] CGA 체결 Torque: 59 kgf·cm
+2025-02-02 21:16:26 | [B] CAP 체결 Torque: 69 kgf·cm
+2025-02-02 21:16:26 | [B] 실린더 Up/Down Pos: 147 mm
+2025-02-02 21:16:26 | [A] Port Barcode: Q9VS18HFK433G3HQE0NT5Q88BQXY40
+2025-02-02 21:16:26 | [B] Port Barcode: 51TJNND9X55P155TJLYQ0YGWH89DM1
+2025-02-02 21:16:26 | [A] Port 가스 종류 1: 2
+2025-02-02 21:16:26 | [A] Port 가스 종류 2: 2
+2025-02-02 21:16:26 | [A] Port 가스 종류 3: 2
+2025-02-02 21:16:26 | [A] Port 가스 종류 4: 2
+2025-02-02 21:16:26 | [A] Port 가스 종류 5: 3
+2025-02-02 21:16:26 | [B] Port 가스 종류 1: 3
+2025-02-02 21:16:26 | [B] Port 가스 종류 2: 3
+2025-02-02 21:16:26 | [B] Port 가스 종류 3: 5
+2025-02-02 21:16:26 | [B] Port 가스 종류 4: 4
+2025-02-02 21:16:26 | [B] Port 가스 종류 5: 3
+2025-02-02 21:16:26 | ========= Gas Cabinet Bit Area Data 시작 =========
+2025-02-02 21:16:26 | EMG Signal: True
+2025-02-02 21:16:26 | Heart Bit: True
+2025-02-02 21:16:26 | Run/Stop Signal: False
+2025-02-02 21:16:26 | Server Connected Bit: False
+2025-02-02 21:16:26 | T-LAMP RED: False
+2025-02-02 21:16:26 | T-LAMP YELLOW: False
+2025-02-02 21:16:26 | T-LAMP GREEN: False
+2025-02-02 21:16:26 | Touch 수동동작中 Signal: False
+2025-02-02 21:16:26 | [A] Port 실린더 유무: True
+2025-02-02 21:16:26 | [B] Port 실린더 유무: True
+2025-02-02 21:16:26 | [A] Worker Door Open: True
+2025-02-02 21:16:26 | [A] Worker Door Close: False
+2025-02-02 21:16:26 | [A] Bunker Door Open: True
+2025-02-02 21:16:26 | [A] Bunker Door Close: True
+2025-02-02 21:16:26 | [B] Worker Door Open: False
+2025-02-02 21:16:26 | [B] Worker Door Close: False
+2025-02-02 21:16:26 | [B] Bunker Door Open: True
+2025-02-02 21:16:26 | [B] Bunker Door Close: True
+2025-02-02 21:16:26 | [A] Port 보호캡 분리 완료: False
+2025-02-02 21:16:26 | [A] Port 보호캡 체결 완료: False
+2025-02-02 21:16:26 | [A] Worker Door Open 완료: True
+2025-02-02 21:16:26 | [A] Worker Door Close 완료: True
+2025-02-02 21:16:26 | [A] Worker 투입 Ready: True
+2025-02-02 21:16:26 | [A] Worker 투입 Complete: True
+2025-02-02 21:16:26 | [A] Worker 배출 Ready: True
+2025-02-02 21:16:26 | [A] Worker 배출 Comlete: True
+2025-02-02 21:16:26 | [A] Bunker Door Open 완료: False
+2025-02-02 21:16:26 | [A] Bunker Door Close 완료: True
+2025-02-02 21:16:26 | [A] Bunker 투입 Ready: False
+2025-02-02 21:16:26 | [A] Bunker 투입 Complete: False
+2025-02-02 21:16:26 | [A] Bunker 배출 Ready: False
+2025-02-02 21:16:26 | [A] Bunker 배출 Comlete: True
+2025-02-02 21:16:26 | [A] Cylinder Align 진행중: True
+2025-02-02 21:16:26 | [A] Cylinder Align 완료: False
+2025-02-02 21:16:26 | [A] Cap Open 진행중: False
+2025-02-02 21:16:26 | [A] Cap Close 진행중: True
+2025-02-02 21:16:26 | [A] Cylinder 위치로 X축 이동중: True
+2025-02-02 21:16:26 | [A] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:26 | [A] Cap 위치 찾는중: False
+2025-02-02 21:16:26 | [A] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:26 | [A] Worker door Open 진행중: True
+2025-02-02 21:16:26 | [A] Worker door Close 진행중: True
+2025-02-02 21:16:26 | [A] Bunker door Open 진행중: False
+2025-02-02 21:16:26 | [A] Bunker door Close 진행중: False
+2025-02-02 21:16:26 | [B] Port 보호캡 분리 완료: True
+2025-02-02 21:16:26 | [B] Port 보호캡 체결 완료: False
+2025-02-02 21:16:26 | [B] Worker Door Open 완료: True
+2025-02-02 21:16:26 | [B] Worker Door Close 완료: False
+2025-02-02 21:16:26 | [B] Worker 투입 Ready: True
+2025-02-02 21:16:26 | [B] Worker 투입 Complete: True
+2025-02-02 21:16:26 | [B] Worker 배출 Ready: False
+2025-02-02 21:16:26 | [B] Worker 배출 Comlete: True
+2025-02-02 21:16:26 | [B] Bunker Door Open 완료: True
+2025-02-02 21:16:26 | [B] Bunker Door Close 완료: True
+2025-02-02 21:16:26 | [B] Bunker 투입 Ready: False
+2025-02-02 21:16:26 | [B] Bunker 투입 Complete: True
+2025-02-02 21:16:26 | [B] Bunker 배출 Ready: False
+2025-02-02 21:16:26 | [B] Bunker 배출 Comlete: False
+2025-02-02 21:16:26 | [B] Cylinder Align 진행중: False
+2025-02-02 21:16:26 | [B] Cylinder Align 완료: False
+2025-02-02 21:16:26 | [B] Cap Open 진행중: True
+2025-02-02 21:16:26 | [B] Cap Close 진행중: False
+2025-02-02 21:16:26 | [B] Cylinder 위치로 X축 이동중: False
+2025-02-02 21:16:26 | [B] Cylinder 위치로 X축 이동완료: True
+2025-02-02 21:16:26 | [B] Cap 위치 찾는중: True
+2025-02-02 21:16:26 | [B] Cylinder Neck 위치 찾는중: False
+2025-02-02 21:16:26 | [B] Worker door Open 진행중: True
+2025-02-02 21:16:26 | [B] Worker door Close 진행중: False
+2025-02-02 21:16:26 | [B] Bunker door Open 진행중: False
+2025-02-02 21:16:26 | [B] Bunker door Close 진행중: True
