@@ -15,8 +15,8 @@ def generate_plc_data() -> list:
     data = [0] * 120  # Initialize with zeros, covering all 120 WORDs
 
     # Fill data with random values as per your specification
-    data[0] = random.randint(1, 2)  # Bunker ID
-    data[1] = random.randint(1, 3)  # Stocker ID
+    data[0] = 1 #random.randint(1, 2)  # Bunker ID
+    data[1] = 1 #random.randint(1, 3)  # Stocker ID
     for i in range(2, 7):  # Gas Stocker 가스 종류
         data[i] = random.randint(1, 5)
     data[8] = random.randint(0, 500)   # Stocker Alarm Code
