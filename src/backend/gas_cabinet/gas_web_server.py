@@ -504,10 +504,10 @@ class ModbusDataClient:
         finally:
             self.client = None
 
-    async def update_client_data(modbus_client):
-        while modbus_client.running:  # running 플래그 확인
+    async def update_client_data(self):
+        while self.running:  # running 플래그 확인
             try:
-                data = await modbus_client.get_data()
+                data = await self.get_data()
                 if data:
                     await manager.broadcast(data)
                 await asyncio.sleep(0.5)
@@ -585,7 +585,7 @@ async def startup():
         modbus_client = ModbusDataClient()
         await modbus_client.connect()
         # 데이터 업데이트 태스크 시작
-        asyncio.create_task(update_client_data(modbus_client))
+        asyncio.create_task(modbus_client.update_client_data())
         logger.info("Modbus client started")
     except Exception as e:
         logger.error(f"Startup error: {e}")
