@@ -34,6 +34,7 @@ logger.setLevel(logging.INFO)
 logger.addHandler(log_handler)
 logger.addHandler(logging.StreamHandler())
 
+# Custom Data Block 클래스
 class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
     def __init__(self, address, values):
         super().__init__(address, values)
@@ -255,6 +256,7 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
                 f.write(f"{current_time} | [B] JACKET HEATER: {values[20]}°C\n")
                 f.write(f"{current_time} | [B] LINE HEATER: {values[21]}°C\n")
 
+# Custom Slave Context 클래스
 class CustomModbusSlaveContext(ModbusSlaveContext):
     def __init__(self):
         # 메모리 초기화

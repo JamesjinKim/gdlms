@@ -436,6 +436,7 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
                         logger.error(f"Alarm save failed: {e}", exc_info=True)
         except Exception as e:
             self.logger.error(f"Logging error: {e}", exc_info=True)
+
 # Custom Slave Context 클래스
 class CustomModbusSlaveContext(ModbusSlaveContext):
     def __init__(self):
