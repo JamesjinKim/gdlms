@@ -2,70 +2,66 @@ from pymodbus.client import AsyncModbusTcpClient
 import random
 import asyncio
 import logging
-import datetime
+import signal
 
 # 로깅 설정
 logging.basicConfig(
-    format='%(asctime)s %(name)s %(levelname)s %(message)s',
+    format='%(asctime)s %(message)s',
     level=logging.INFO,
 )
-logger = logging.getLogger("GasCabinetClient")
 
 def generate_plc_data():
     """PLC 데이터 생성 함수 - Data area (0-99) 데이터 생성"""
-    data = [0] * 120  # Initialize with zeros, covering all 120 WORDs
+    data = []
 
     # Basic Information (0-6)
-    data[0] = 1 #random.randint(1, 2)  # Bunker ID
-    data[1] = 2 #random.randint(1, 3)  # Stocker ID
-    for i in range(2, 7):  # Stocker 가스 종류
-        data[i] = random.randint(1, 50)
+    data.append(1)  #(random.randint(1, 10))  # Bunker ID (1)
+    data.append(2)  #(random.randint(1, 26))  # Gas Cabinet ID (2)
+    data.extend([random.randint(1, 50) for _ in range(5)])  # Gas Cabinet 가스 종류 (2-6)
 
     # Machine Code and Alarm Code (7-8)
-    data[7] = random.randint(0, 255)  # SEND AND RECEIVE FOR MACHINE CODE
-    data[8] = random.randint(0, 500)  # Stocker Alarm Code
-    data[9] = 0  # Empty
+    data.append(random.randint(0, 255))  # SEND AND RECEIVE FOR MACHINE CODE (7)
+    data.append(random.randint(0, 255))  # Gas Cabinet Alarm Code (8)
+    data.append(0)  # Empty (9)
 
-    # Position and Torque Values (10-13)
-    data[10] = random.randint(0, 100)  # X축 현재값
-    data[11] = random.randint(0, 100)  # Z축 현재값
-    data[12] = random.randint(0, 100)  # Cap Unit 축 보호캡 분리 Torque 설정값
-    data[13] = random.randint(0, 100)  # Cap Unit 축 보호캡 체결 Torque 설정값
-    data[14] = random.randint(0, 100)  # PT3 (PSI)
-    data[15] = random.randint(0, 100)  # PT4 (PSI)
-    data[16] = random.randint(0, 100)  # WA (A Port Weight) (kg)
-    data[17] = random.randint(0, 100)  # WB (B Port Weight) (kg)
+    # Pressure Sensors (10-17)
+    data.append(random.randint(0, 1000))  # PT1A
+    data.append(random.randint(0, 1000))  # PT2A
+    data.append(random.randint(0, 1000))  # PT1B
+    data.append(random.randint(0, 1000))  # PT2B
+    data.append(random.randint(0, 1000))  # PT3
+    data.append(random.randint(0, 1000))  # PT4
+    data.append(random.randint(0, 100))   # WA (Weight A)
+    data.append(random.randint(0, 100))   # WB (Weight B)
 
-    # 히터 상태 (18-21)
-    data[18] = random.randint(0, 100)  # [A] JACKET HEATER (°C)
-    data[19] = random.randint(0, 100)  # [A] LINE HEATER (°C)
-    data[20] = random.randint(0, 100)  # [B] JACKET HEATER (°C)
-    data[21] = random.randint(0, 100)  # [B] LINE HEATER (°C)
+    # Heater Values (18-21)
+    data.append(random.randint(0, 100))  # [A] JACKET HEATER
+    data.append(random.randint(0, 100))  # [A] LINE HEATER
+    data.append(random.randint(0, 100))  # [B] JACKET HEATER
+    data.append(random.randint(0, 100))  # [B] LINE HEATER
 
     # Empty space (22-23)
-    data[22:24] = [0, 0]
+    data.extend([0, 0])
 
-    # A Port Torque & Position 데이터 (24-26)
-    data[24] = random.randint(0, 100)  # [A] CGA 체결 Torque (kgf·cm)
-    data[25] = random.randint(0, 100)  # [A] CAP 체결 Torque (kgf·cm)
-    data[26] = random.randint(0, 255)  # [A] 실린더 Up/Down Pos (mm)
-
-    # B Port Torque & Position 데이터 (27-29)
-    data[27] = random.randint(0, 100)  # [B] CGA 체결 Torque (kgf·cm)
-    data[28] = random.randint(0, 100)  # [B] CAP 체결 Torque (kgf·cm)
-    data[29] = random.randint(0, 255)  # [B] 실린더 Up/Down Pos (mm)
+    # Torque and Position Values (24-29)
+    data.append(random.randint(0, 100))  # [A] CGA 체결 Torque 설정값
+    data.append(random.randint(0, 100))  # [A] CAP 체결 Torque 설정값
+    data.append(random.randint(0, 255))  # [A] 실린더 Up/Down Pos 현재값
+    data.append(random.randint(0, 100))  # [B] CGA 체결 Torque 설정값
+    data.append(random.randint(0, 100))  # [B] CAP 체결 Torque 설정값
+    data.append(random.randint(0, 255))  # [B] 실린더 Up/Down Pos 현재값
 
     # Barcode Data (30-89)
     # [A] Port Barcode Data #1~#30
-    data[30:60] = [ord(random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')) for _ in range(30)]
+    data.extend([ord(random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')) for _ in range(30)])
+    #data.extend([random.randint(32, 126) for _ in range(30)])
     # [B] Port Barcode Data #1~#30
-    data[60:90] = [ord(random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')) for _ in range(30)]
+    data.extend([ord(random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')) for _ in range(30)])  
+    #data.extend([random.randint(32, 126) for _ in range(30)])  
 
     # Gas Types (90-99)
-    for i in range(90, 95):  # [A] Port 가스 종류
-        data[i] = random.randint(1, 5)
-    for i in range(95, 100):  # [B] Port 가스 종류
-        data[i] = random.randint(1, 5)
+    data.extend([random.randint(1, 50) for _ in range(5)])  # [A] Port 가스 종류
+    data.extend([random.randint(1, 50) for _ in range(5)])  # [B] Port 가스 종류
 
     return data
 
@@ -73,125 +69,233 @@ def generate_bit_data():
     """PLC Bit area 데이터 생성 함수 - (100-117) 워드 생성"""
     bit_data = []
 
-    # Word definitions with bit descriptions
-    word_dict = {
-        100: [  # Basic signals
-            (0, "EMG Signal"), (1, "Heart Bit"), (2, "Run/Stop Signal"),
-            (3, "Server Connected Bit"), (4, "T-LAMP RED"), (5, "T-LAMP YELLOW"),
-            (6, "T-LAMP GREEN"), (7, "Touch 수동동작中 Signal")
-        ],
-        105: [  # Door and cylinder status
-            (0, "[A] Port 실린더 유무"), (1, "[B] Port 실린더 유무"),
-            (2, "[A] Worker Door Open"), (3, "[A] Worker Door Close"),
-            (4, "[A] Bunker Door Open"), (5, "[A] Bunker Door Close"),
-            (6, "[B] Worker Door Open"), (7, "[B] Worker Door Close"),
-            (8, "[B] Bunker Door Open"), (9, "[B] Bunker Door Close")
-        ],
-        110: [(i, f"Signal {i}") for i in range(16)],  # [A] Port operation status
-        111: [(i, f"Signal {i}") for i in range(10)],  # [A] Port detailed status
-        115: [(i, f"Signal {i}") for i in range(16)],  # [B] Port operation status
-        116: [(i, f"Signal {i}") for i in range(10)]   # [B] Port detailed status
-    }
+    # Word 100 (Basic signals)
+    word_100 = 0
+    word_100 |= random.choice([0, 1]) << 0  # EMG Signal
+    word_100 |= random.choice([0, 1]) << 1  # Heart Bit
+    word_100 |= random.choice([0, 1]) << 2  # Run/Stop Signal
+    word_100 |= random.choice([0, 1]) << 3  # Server Connected Bit
+    word_100 |= random.choice([0, 1]) << 4  # T-LAMP RED
+    word_100 |= random.choice([0, 1]) << 5  # T-LAMP YELLOW
+    word_100 |= random.choice([0, 1]) << 6  # T-LAMP GREEN
+    word_100 |= random.choice([0, 1]) << 7  # Touch 수동동작中 Signal
+    bit_data.append(word_100)
 
-    # Generate words 100-117
-    for address in range(100, 118):
-        word = 0
-        if address in word_dict:
-            for bit, _ in word_dict[address]:
-                bit_value = random.choice([0, 1])
-                word |= bit_value << bit
-        else:
-            # For addresses not specifically defined, generate random word
-            word = random.randint(0, 65535)
-        bit_data.append(word)
+    # Word 101 (Valve status)
+    word_101 = 0
+    for i in range(13):  # AV1A ~ AV9
+        word_101 |= random.choice([0, 1]) << i
+    bit_data.append(word_101)
 
+    # Word 102 (Heater and sensor status)
+    word_102 = 0
+    for i in range(9):  # Various sensors and relays
+        word_102 |= random.choice([0, 1]) << i
+    bit_data.append(word_102)
+
+    # Word 103 (Port requests and completions)
+    word_103 = 0
+    for i in range(12):  # Port insert/remove requests and completions
+        word_103 |= random.choice([0, 1]) << i
+    bit_data.append(word_103)
+
+    # Word 104 (Empty)
+    bit_data.append(0)
+
+    # Word 105 (Door and cylinder status)
+    word_105 = 0
+    for i in range(4):  # Cylinder presence and door status
+        word_105 |= random.choice([0, 1]) << i
+    bit_data.append(word_105)
+
+    # Words 106-109 (Empty)
+    bit_data.extend([0] * 4)
+
+    # Word 110 ([A] Port operation status)
+    word_110 = 0
+    for i in range(13):  # A Port operation flags
+        word_110 |= random.choice([0, 1]) << i
+    bit_data.append(word_110)
+
+    # Word 111 ([A] Port detailed status)
+    word_111 = 0
+    for i in range(16):  # A Port detailed status flags
+        word_111 |= random.choice([0, 1]) << i
+    bit_data.append(word_111)
+
+    # Word 112 ([A] Port additional status)
+    word_112 = 0
+    for i in range(3):  # A Port additional status flags
+        word_112 |= random.choice([0, 1]) << i
+    bit_data.append(word_112)
+
+    # Words 113-114 (Empty)
+    bit_data.extend([0] * 2)
+
+    # Word 115 ([B] Port operation status)
+    word_115 = 0
+    for i in range(13):  # B Port operation flags
+        word_115 |= random.choice([0, 1]) << i
+    bit_data.append(word_115)
+
+    # Word 116 ([B] Port detailed status)
+    word_116 = 0
+    for i in range(16):  # B Port detailed status flags
+        word_116 |= random.choice([0, 1]) << i
+    bit_data.append(word_116)
+
+    # Word 117 ([B] Port additional status)
+    word_117 = 0
+    for i in range(3):  # B Port additional status flags
+        word_117 |= random.choice([0, 1]) << i
+    bit_data.append(word_117)
+    print(bit_data)
     return bit_data
 
 async def run_client():
-    TIME_SYNC_ADDRESS = 900  # 시간 동기화 시작 주소
+    # 클라이언트 설정
     client = None
-    try:
-        client = AsyncModbusTcpClient('127.0.0.1', port=5020)
-        await client.connect()
-        logger.info("서버 연결 성공!")
+    loop = asyncio.get_running_loop()
+    should_exit = asyncio.Event()
 
-        # 연결 후 바로 서버의 시간 읽기 (주소 0번부터 6개의 레지스터 읽기)
-        time_response = await client.read_holding_registers(TIME_SYNC_ADDRESS, count=6)
-        if not time_response.isError():
-            server_time = datetime.datetime(
-                year=time_response.registers[0],   # 주소 900: 년
-                month=time_response.registers[1],  # 주소 901: 월
-                day=time_response.registers[2],    # 주소 902: 일
-                hour=time_response.registers[3],   # 주소 903: 시
-                minute=time_response.registers[4], # 주소 904: 분
-                second=time_response.registers[5]  # 주소 905: 초
-            )
-            logger.info(f"서버 시간: {server_time}")
-        else:
-            logger.error("시간 동기화 데이터 읽기 실패")
-
-        while True:
-            try:
-                # Generate and combine data
-                plc_data = generate_plc_data()
-                bit_data = generate_bit_data()
-
-                # Combine register data and bit data
-                combined_data = plc_data + bit_data
-                logger.info("=== 생성된 Stocker 데이터 ===")
-                logger.info(f"Bunker ID: {combined_data[0]}")
-                logger.info(f"Stocker ID: {combined_data[1]}")
-
-                # PLC data 전송 (0-99 주소)
-                plc_block = plc_data[:100]  # PLC 데이터만 분리
-                response = await client.write_registers(0, plc_block)
-
-                if response.isError():
-                    logger.error(f"PLC data 전송 실패")
-                    continue
-
-                # Bit data 전송 (100-117 주소)
-                for i, word in enumerate(bit_data):
-                    try:
-                        response = await client.write_register(address=i+100, value=word)
-                        if response.isError():
-                            logger.error(f"Bit data 전송 실패 (주소 {i+100})")
-                        else:
-                            logger.info(f"Bit data 전송 성공 (주소 {i+100})")
-                    except Exception as e:
-                        logger.error(f"Bit data 전송 오류: {e}")
-
-                 # 전송한 데이터 확인
-                result_word = await client.read_holding_registers(address=0, count=len(plc_data))
-                result_bit = await client.read_coils(address=100, count=160)
-
-                if not result_word.isError() and not result_bit.isError():
-                    logger.info("전송된 데이터:")
-                    logger.info(f"Word data: {result_word.registers}")
-                    for i in range(0, 160, 16):
-                        word = result_bit.bits[i:i+16]
-                        binary = ''.join(['1' if bit else '0' for bit in word])
-                        logger.info(f"Bit data (워드 {i//16}): {binary}")
+    async def read_time_sync_data():
+        """시간 동기화 데이터 읽기"""
+        try:
+            if client and client.connected:
+                # 주소 0-5에서 시간 데이터 읽기
+                result = await client.read_holding_registers(
+                    address=0,
+                    count=6,
+                    slave=1
+                )
+                if result and not result.isError():
+                    time_data = result.registers
+                    print("\n=== 수신된 시간 동기화 데이터 ===")
+                    print(f"날짜: {time_data[0]:04d}년 {time_data[1]:02d}월 {time_data[2]:02d}일")
+                    print(f"시간: {time_data[3]:02d}시 {time_data[4]:02d}분 {time_data[5]:02d}초")
+                    return time_data
+        except Exception as e:
+            print(f"시간 동기화 데이터 읽기 오류: {e}")
+        return None
+    
+    async def connect_client():
+        nonlocal client
+        try:
+            if client is None or not client.connected:
+                print("\n=== Modbus TCP 클라이언트 연결 시도 ===")
+                client = AsyncModbusTcpClient('127.0.0.1', port=5020)
+                connected = await client.connect()
+                if connected:
+                    print("서버 연결 성공!")
+                    # 연결 직후 시간 동기화 데이터 읽기
+                    await read_time_sync_data()
                 else:
-                    logger.error("데이터 읽기 오류")
+                    print("서버 연결 실패!")
+                return connected
+            return client.connected
+        except Exception as e:
+            print(f"연결 오류: {e}")
+            return False
 
-                # Add delay to prevent CPU overload
-                await asyncio.sleep(1)
+    async def send_data():
+        """데이터 전송 함수"""
+        if not await connect_client():
+            print("서버에 연결할 수 없습니다. 재시도 중...")
+            return
+                
+        try:
+            # 시간 동기화 데이터 읽기
+            await read_time_sync_data()
 
-            except asyncio.CancelledError:
-                logger.info("Operation cancelled.")
-                break
-            except Exception as e:
-                logger.error(f"Data transmission error: {e}")
-                break
-       
+            # Data area (0-99) 데이터 전송
+            data = generate_plc_data()
+            print("\n=== 생성된 PLC 데이터 ===")
+            print(f"Bunker ID: {data[0]}")
+            print(f"Cabinet ID: {data[1]}")
+            print(f"Gas Type: {data[2:7]}")
+            
+            # 각 레지스터를 개별적으로 전송
+            for i, value in enumerate(data):
+                try:
+                    if client and client.connected:
+                        result = await client.write_register(
+                            address=i,      # 0-99 범위의 주소
+                            value=value,
+                            slave=1
+                        )
+                        if result and hasattr(result, 'isError') and result.isError():
+                            print(f"데이터 전송 실패: address={i}, value={value}")
+                    else:
+                        print("클라이언트 연결이 끊어졌습니다.")
+                        break
+                except Exception as e:
+                    print(f"레지스터 쓰기 오류 - address={i}: {e}")
 
+            # Bit area (100-117) 데이터 전송
+            bit_data = generate_bit_data()
+            print(f"\n=== 생성된 Bit 데이터 ===")
+            print(f"Bit data length: {len(bit_data)}")
+            
+            # 각 비트 데이터를 개별적으로 전송
+            for i, value in enumerate(bit_data):
+                try:
+                    if client and client.connected:
+                        result = await client.write_register(
+                            address=100 + i,    # 100-117 범위의 주소
+                            value=value,
+                            slave=1
+                        )
+                        if result and hasattr(result, 'isError') and result.isError():
+                            print(f"비트 데이터 전송 실패: address={100+i}, value={value}")
+                    else:
+                        print("클라이언트 연결이 끊어졌습니다.")
+                        break
+                except Exception as e:
+                    print(f"비트 레지스터 쓰기 오류 - address={100+i}: {e}")
+
+        except Exception as e:
+            print(f"데이터 전송 중 오류 발생: {e}")
+
+    async def client_loop():
+        try:
+            while not should_exit.is_set():
+                await send_data()
+                await asyncio.sleep(5)
+        except asyncio.CancelledError:
+            print("클라이언트 루프가 취소되었습니다.")
+        except Exception as e:
+            print(f"클라이언트 루프 오류: {e}")
+
+    def signal_handler():
+        print("\n프로그램 종료 시작...")
+        should_exit.set()
+        for task in asyncio.all_tasks(loop):
+            if task is not asyncio.current_task():
+                task.cancel()
+
+    try:
+        loop.add_signal_handler(signal.SIGINT, signal_handler)
+        print("\n=== Modbus TCP 클라이언트 시작 ===")
+        await client_loop()
+    except asyncio.CancelledError:
+        print("프로그램이 취소되었습니다.")
     except Exception as e:
-        logger.error(f"연결 오류: {e}")
+        print(f"예기치 않은 오류: {e}")
     finally:
-        if client and client.connected:
-            await client.close()
-        logger.info("클라이언트 연결 종료 완료")
+        # 클라이언트 종료 부분 수정
+        if client and hasattr(client, 'connected'):
+            try:
+                if client.connected:
+                    await client.close()
+                    print("클라이언트 연결 종료 완료")
+                else:
+                    print("클라이언트가 이미 연결 해제된 상태입니다.")
+            except Exception as e:
+                print(f"클라이언트 종료 중 오류 발생: {e}")
+        else:
+            print("클라이언트가 초기화되지 않았거나 이미 종료되었습니다.")
+        print("클라이언트 프로그램 종료")
+
 
 if __name__ == "__main__":
     try:

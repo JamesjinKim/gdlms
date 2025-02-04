@@ -1,14 +1,22 @@
+import sys
+from pathlib import Path
+from typing import Set
+sys.path.append(str(Path(__file__).parent.parent))
 from pymodbus.server import StartAsyncTcpServer
 from pymodbus.datastore import ModbusSequentialDataBlock, ModbusSlaveContext, ModbusServerContext
 import logging
-import asyncio
-import os
 import socket
-import json
-import time
 from gas_cabinet_alarm_code import gas_cabinet_alarm_code
 from logging.handlers import TimedRotatingFileHandler
-from datetime import datetime
+import asyncio, time, json, datetime
+import os
+from logging.handlers import TimedRotatingFileHandler
+from pymodbus.device import ModbusDeviceIdentification
+from copy import deepcopy
+import gc
+from common.db_manager import DBManager
+import websockets
+from websockets.server import WebSocketServerProtocol
 
 # 로그 파일 경로 설정
 log_dir = "./log"
@@ -30,215 +38,636 @@ logger.setLevel(logging.INFO)
 logger.addHandler(log_handler)
 logger.addHandler(logging.StreamHandler())
 
-class CustomDataBlock(ModbusSequentialDataBlock): 
-    def __init__(self):
-        super().__init__(0, [0] * 1000) # 300개의 데이터를 0으로 초기화 버퍼는 1000개로 설정
+class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
+    def __init__(self, address, values):
+        super().__init__(address, values)
         self.last_log_time = 0
-        self.LOG_INTERVAL = 1  # 1초 간격으로 로깅
-        self._buffer = []  # 데이터 버퍼 추가
+        self.LOG_INTERVAL = 1
+        self._buffer = []
+        # DBManager 인스턴스 생성
+        self.db_manager = DBManager('gas_cabinet')
+        self.retry_count = 3  # DB 저장 재시도 횟수
 
     def setValues(self, address, values):
-        # 변경된 데이터를 버퍼에 추가
-        self._buffer.append((address, values))
+        self._buffer.append((address, deepcopy(values)))
         super().setValues(address, values)
         
         current_time = time.time()
         if current_time - self.last_log_time >= self.LOG_INTERVAL:
-            if self._buffer:  # 버퍼에 데이터가 있는 경우만 로깅
+            if self._buffer:
                 self.last_log_time = current_time
-                self.log_all_data()
-                self._buffer.clear()  # 버퍼 초기화
+                self.log_all_data()  # 동기 함수로 호출
+                self._buffer.clear()
+                gc.collect()
+    
+    async def format_data_for_db(self, values):
+        """DB 저장을 위한 데이터 포맷팅"""
+        try:
+            # Barcode 데이터 처리
+            barcode_a = ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' for i in range(30, 60)])
+            barcode_b = ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' for i in range(60, 90)])
+            
+            # 비트 데이터 읽기
+            bit_values = self.getValues(100, 18)
 
+            # 데이터 구조화
+            status_data = {
+                "plc_data": {
+                    "bunker_id": values[0],
+                    "gas_cabinet_id": values[1],
+                    "gas_types": {
+                        "cabinet_gas": [values[i] for i in range(2, 7)],
+                        "port_a": [values[i] for i in range(90, 95)],
+                        "port_b": [values[i] for i in range(95, 100)]
+                    },
+                    "alarm_code": values[8],
+                    "sensors": {
+                        "pressure": {
+                            "PT1A": values[10],
+                            "PT2A": values[11],
+                            "PT1B": values[12],
+                            "PT2B": values[13],
+                            "PT3": values[14],
+                            "PT4": values[15]
+                        },
+                        "weight": {
+                            "port_a": values[16],
+                            "port_b": values[17]
+                        }
+                    },
+                    "heaters": {
+                        "port_a": {
+                            "jacket": values[18],
+                            "line": values[19]
+                        },
+                        "port_b": {
+                            "jacket": values[20],
+                            "line": values[21]
+                        }
+                    },
+                    "torque_position": {
+                        "port_a": {
+                            "cga_torque": values[24],
+                            "cap_torque": values[25],
+                            "cylinder_position": values[26]
+                        },
+                        "port_b": {
+                            "cga_torque": values[27],
+                            "cap_torque": values[28],
+                            "cylinder_position": values[29]
+                        }
+                    },
+                    "barcodes": {
+                        "port_a": barcode_a.strip(),
+                        "port_b": barcode_b.strip()
+                    }
+                },
+                "bit_data": {
+                    "basic_signals": {  # Word 100
+                        "emg_signal": bool(bit_values[0] & (1 << 0)),
+                        "heart_bit": bool(bit_values[0] & (1 << 1)),
+                        "run_stop": bool(bit_values[0] & (1 << 2)),
+                        "server_connected": bool(bit_values[0] & (1 << 3)),
+                        "t_lamp_red": bool(bit_values[0] & (1 << 4)),
+                        "t_lamp_yellow": bool(bit_values[0] & (1 << 5)),
+                        "t_lamp_green": bool(bit_values[0] & (1 << 6)),
+                        "touch_manual": bool(bit_values[0] & (1 << 7))
+                    },
+                    "av_status": {  # Word 101
+                        "port_a": {
+                            "av1": bool(bit_values[1] & (1 << 0)),
+                            "av2": bool(bit_values[1] & (1 << 1)),
+                            "av3": bool(bit_values[1] & (1 << 2)),
+                            "av4": bool(bit_values[1] & (1 << 3)),
+                            "av5": bool(bit_values[1] & (1 << 4))
+                        },
+                        "port_b": {
+                            "av1": bool(bit_values[1] & (1 << 5)),
+                            "av2": bool(bit_values[1] & (1 << 6)),
+                            "av3": bool(bit_values[1] & (1 << 7)),
+                            "av4": bool(bit_values[1] & (1 << 8)),
+                            "av5": bool(bit_values[1] & (1 << 9))
+                        },
+                        "common": {
+                            "av7": bool(bit_values[1] & (1 << 10)),
+                            "av8": bool(bit_values[1] & (1 << 11)),
+                            "av9": bool(bit_values[1] & (1 << 12))
+                        }
+                    },
+                    "system_status": {  # Word 102
+                        "heater_relay": {
+                            "port_a": {
+                                "jacket": bool(bit_values[2] & (1 << 0)),
+                                "line": bool(bit_values[2] & (1 << 1))
+                            },
+                            "port_b": {
+                                "jacket": bool(bit_values[2] & (1 << 2)),
+                                "line": bool(bit_values[2] & (1 << 3))
+                            }
+                        },
+                        "safety": {
+                            "gas_leak_shutdown": bool(bit_values[2] & (1 << 4)),
+                            "vmb_stop_signal": bool(bit_values[2] & (1 << 5)),
+                            "uv_ir_sensor": bool(bit_values[2] & (1 << 6)),
+                            "high_temp_sensor": bool(bit_values[2] & (1 << 7)),
+                            "smoke_sensor": bool(bit_values[2] & (1 << 8))
+                        }
+                    },
+                    "port_operations": {  # Word 103
+                        "port_a": {
+                            "insert_request": bool(bit_values[3] & (1 << 0)),
+                            "insert_complete": bool(bit_values[3] & (1 << 1)),
+                            "remove_request": bool(bit_values[3] & (1 << 2)),
+                            "remove_complete": bool(bit_values[3] & (1 << 3))
+                        },
+                        "port_b": {
+                            "insert_request": bool(bit_values[3] & (1 << 8)),
+                            "insert_complete": bool(bit_values[3] & (1 << 9)),
+                            "remove_request": bool(bit_values[3] & (1 << 10)),
+                            "remove_complete": bool(bit_values[3] & (1 << 11))
+                        }
+                    },
+                    "port_status": {  # Word 105
+                        "port_a": {
+                            "cylinder_present": bool(bit_values[5] & (1 << 0))
+                        },
+                        "port_b": {
+                            "cylinder_present": bool(bit_values[5] & (1 << 1))
+                        },
+                        "door": {
+                            "open_complete": bool(bit_values[5] & (1 << 2)),
+                            "close_complete": bool(bit_values[5] & (1 << 3))
+                        }
+                    },
+                    "port_a_sequence": {  # Word 110
+                        "cylinder_close": bool(bit_values[10] & (1 << 0)),
+                        "first_purge_before_exchange": bool(bit_values[10] & (1 << 1)),
+                        "decompression_test": bool(bit_values[10] & (1 << 2)),
+                        "second_purge_before_exchange": bool(bit_values[10] & (1 << 3)),
+                        "exchange_cylinder": bool(bit_values[10] & (1 << 4)),
+                        "first_purge_after_exchange": bool(bit_values[10] & (1 << 5)),
+                        "pressure_test": bool(bit_values[10] & (1 << 6)),
+                        "second_purge_after_exchange": bool(bit_values[10] & (1 << 7)),
+                        "purge_completed": bool(bit_values[10] & (1 << 8)),
+                        "prepare_to_supply": bool(bit_values[10] & (1 << 9)),
+                        "gas_supply_av3_choose": bool(bit_values[10] & (1 << 10)),
+                        "gas_supply": bool(bit_values[10] & (1 << 11)),
+                        "ready_to_supply": bool(bit_values[10] & (1 << 12))
+                    },
+                    "port_a_status": {  # Word 111, 112
+                        "cylinder_ready": bool(bit_values[11] & (1 << 0)),
+                        "cga_disconnect_complete": bool(bit_values[11] & (1 << 1)),
+                        "cga_connect_complete": bool(bit_values[11] & (1 << 2)),
+                        "cylinder_valve_open_complete": bool(bit_values[11] & (1 << 3)),
+                        "cylinder_valve_close_complete": bool(bit_values[11] & (1 << 4)),
+                        "cylinder_valve_open_status": bool(bit_values[11] & (1 << 5)),
+                        "cylinder_lift_unit_ready": bool(bit_values[11] & (1 << 6)),
+                        "cylinder_lift_unit_moving_up": bool(bit_values[11] & (1 << 7)),
+                        "cylinder_lift_unit_moving_down": bool(bit_values[11] & (1 << 8)),
+                        "cga_separation_in_progress": bool(bit_values[11] & (1 << 9)),
+                        "cga_connection_in_progress": bool(bit_values[11] & (1 << 10)),
+                        "cylinder_cap_separation_in_progress": bool(bit_values[11] & (1 << 11)),
+                        "cylinder_valve_open_in_progress": bool(bit_values[11] & (1 << 12)),
+                        "cylinder_valve_close_in_progress": bool(bit_values[11] & (1 << 13)),
+                        "cylinder_alignment_in_progress": bool(bit_values[11] & (1 << 14)),
+                        "cylinder_turn_in_progress": bool(bit_values[11] & (1 << 15)),
+                        # Word 112
+                        "cylinder_turn_complete": bool(bit_values[12] & (1 << 0)),
+                        "cylinder_clamp_complete": bool(bit_values[12] & (1 << 1)),
+                        "cga_connect_complete_status": bool(bit_values[12] & (1 << 2))
+                    },
+                    "port_b_sequence": {  # Word 115
+                        "cylinder_close": bool(bit_values[15] & (1 << 0)),
+                        "first_purge_before_exchange": bool(bit_values[15] & (1 << 1)),
+                        "decompression_test": bool(bit_values[15] & (1 << 2)),
+                        "second_purge_before_exchange": bool(bit_values[15] & (1 << 3)),
+                        "exchange_cylinder": bool(bit_values[15] & (1 << 4)),
+                        "first_purge_after_exchange": bool(bit_values[15] & (1 << 5)),
+                        "pressure_test": bool(bit_values[15] & (1 << 6)),
+                        "second_purge_after_exchange": bool(bit_values[15] & (1 << 7)),
+                        "purge_completed": bool(bit_values[15] & (1 << 8)),
+                        "prepare_to_supply": bool(bit_values[15] & (1 << 9)),
+                        "gas_supply_av3_choose": bool(bit_values[15] & (1 << 10)),
+                        "gas_supply": bool(bit_values[15] & (1 << 11)),
+                        "ready_to_supply": bool(bit_values[15] & (1 << 12))
+                    },
+                    "port_b_status": {  # Word 116, 117
+                        "cylinder_ready": bool(bit_values[16] & (1 << 0)),
+                        "cga_disconnect_complete": bool(bit_values[16] & (1 << 1)),
+                        "cga_connect_complete": bool(bit_values[16] & (1 << 2)),
+                        "cylinder_valve_open_complete": bool(bit_values[16] & (1 << 3)),
+                        "cylinder_valve_close_complete": bool(bit_values[16] & (1 << 4)),
+                        "cylinder_valve_open_status": bool(bit_values[16] & (1 << 5)),
+                        "cylinder_lift_unit_ready": bool(bit_values[16] & (1 << 6)),
+                        "cylinder_lift_unit_moving_up": bool(bit_values[16] & (1 << 7)),
+                        "cylinder_lift_unit_moving_down": bool(bit_values[16] & (1 << 8)),
+                        "cga_separation_in_progress": bool(bit_values[16] & (1 << 9)),
+                        "cga_connection_in_progress": bool(bit_values[16] & (1 << 10)),
+                        "cylinder_cap_separation_in_progress": bool(bit_values[16] & (1 << 11)),
+                        "cylinder_valve_open_in_progress": bool(bit_values[16] & (1 << 12)),
+                        "cylinder_valve_close_in_progress": bool(bit_values[16] & (1 << 13)),
+                        "cylinder_alignment_in_progress": bool(bit_values[16] & (1 << 14)),
+                        "cylinder_turn_in_progress": bool(bit_values[16] & (1 << 15)),
+                        # Word 117
+                        "cylinder_turn_complete": bool(bit_values[17] & (1 << 0)),
+                        "cylinder_clamp_complete": bool(bit_values[17] & (1 << 1)),
+                        "cga_connect_complete_status": bool(bit_values[17] & (1 << 2))
+                    }
+                }
+            }
+            return status_data
+            
+        except Exception as e:
+            logger.error(f"Data formatting error: {e}")
+            return None
+        
     def log_all_data(self):
         """모든 데이터 로깅"""
-        # PLC 데이터 영역 로깅
-        all_values = self.getValues(0, 100)
-        self.log_plc_data(all_values)
-        
-        # 비트 데이터 영역 로깅
-        bit_values = self.getValues(100, 18)
-        self.log_bit_data(bit_values)
+        with open("./log/gas_cabinet.log", "a") as f:
+            current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            # PLC 데이터 영역
+            values = self.getValues(1, 120)  # 주소 1부터 읽기
+            
+            # 비트 데이터 영역
+            bit_values = self.getValues(100, 18)  # 100번 주소부터 18개 워드 읽기
+            
+            # DB에 저장할 데이터 구조화
+            status_data = {
+                'plc_data': {
+                    'bunker_id': values[0],
+                    'gas_cabinet_id': values[1],
+                    'gas_types': {
+                        'cabinet': values[2:7],
+                        'port_a': values[90:95],
+                        'port_b': values[95:100]
+                    },
+                    'alarm_code': values[8],
+                    'sensors': {
+                        'pressure': {
+                            'PT1A': values[10],
+                            'PT2A': values[11],
+                            'PT1B': values[12],
+                            'PT2B': values[13],
+                            'PT3': values[14],
+                            'PT4': values[15]
+                        },
+                        'weight': {
+                            'port_a': values[16],
+                            'port_b': values[17]
+                        }
+                    },
+                    'heaters': {
+                        'port_a': {
+                            'jacket': values[18],
+                            'line': values[19]
+                        },
+                        'port_b': {
+                            'jacket': values[20],
+                            'line': values[21]
+                        }
+                    },
+                    'torque_position': {
+                        'port_a': {
+                            'cga_torque': values[24],
+                            'cap_torque': values[25],
+                            'cylinder_position': values[26]
+                        },
+                        'port_b': {
+                            'cga_torque': values[27],
+                            'cap_torque': values[28],
+                            'cylinder_position': values[29]
+                        }
+                    },
+                    'barcodes': {
+                        'port_a': ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' 
+                                       for i in range(30, 60)]).strip(),
+                        'port_b': ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' 
+                                       for i in range(60, 90)]).strip()
+                    }
+                },
+                'bit_data': {
+                    "basic_signals": {  # Word 100
+                        "emg_signal": bool(bit_values[0] & (1 << 0)),
+                        "heart_bit": bool(bit_values[0] & (1 << 1)),
+                        "run_stop": bool(bit_values[0] & (1 << 2)),
+                        "server_connected": bool(bit_values[0] & (1 << 3)),
+                        "t_lamp_red": bool(bit_values[0] & (1 << 4)),
+                        "t_lamp_yellow": bool(bit_values[0] & (1 << 5)),
+                        "t_lamp_green": bool(bit_values[0] & (1 << 6)),
+                        "touch_manual": bool(bit_values[0] & (1 << 7))
+                    },
+                    "av_status": {  # Word 101
+                        "port_a": {
+                            "av1": bool(bit_values[1] & (1 << 0)),
+                            "av2": bool(bit_values[1] & (1 << 1)),
+                            "av3": bool(bit_values[1] & (1 << 2)),
+                            "av4": bool(bit_values[1] & (1 << 3)),
+                            "av5": bool(bit_values[1] & (1 << 4))
+                        },
+                        "port_b": {
+                            "av1": bool(bit_values[1] & (1 << 5)),
+                            "av2": bool(bit_values[1] & (1 << 6)),
+                            "av3": bool(bit_values[1] & (1 << 7)),
+                            "av4": bool(bit_values[1] & (1 << 8)),
+                            "av5": bool(bit_values[1] & (1 << 9))
+                        },
+                        "common": {
+                            "av7": bool(bit_values[1] & (1 << 10)),
+                            "av8": bool(bit_values[1] & (1 << 11)),
+                            "av9": bool(bit_values[1] & (1 << 12))
+                        }
+                    },
+                    "system_status": {  # Word 102
+                        "heater_relay": {
+                            "port_a": {
+                                "jacket": bool(bit_values[2] & (1 << 0)),
+                                "line": bool(bit_values[2] & (1 << 1))
+                            },
+                            "port_b": {
+                                "jacket": bool(bit_values[2] & (1 << 2)),
+                                "line": bool(bit_values[2] & (1 << 3))
+                            }
+                        },
+                        "safety": {
+                            "gas_leak_shutdown": bool(bit_values[2] & (1 << 4)),
+                            "vmb_stop_signal": bool(bit_values[2] & (1 << 5)),
+                            "uv_ir_sensor": bool(bit_values[2] & (1 << 6)),
+                            "high_temp_sensor": bool(bit_values[2] & (1 << 7)),
+                            "smoke_sensor": bool(bit_values[2] & (1 << 8))
+                        }
+                    },
+                    "port_operations": {  # Word 103
+                        "port_a": {
+                            "insert_request": bool(bit_values[3] & (1 << 0)),
+                            "insert_complete": bool(bit_values[3] & (1 << 1)),
+                            "remove_request": bool(bit_values[3] & (1 << 2)),
+                            "remove_complete": bool(bit_values[3] & (1 << 3))
+                        },
+                        "port_b": {
+                            "insert_request": bool(bit_values[3] & (1 << 8)),
+                            "insert_complete": bool(bit_values[3] & (1 << 9)),
+                            "remove_request": bool(bit_values[3] & (1 << 10)),
+                            "remove_complete": bool(bit_values[3] & (1 << 11))
+                        }
+                    },
+                    "port_status": {  # Word 105
+                        "port_a": {
+                            "cylinder_present": bool(bit_values[5] & (1 << 0))
+                        },
+                        "port_b": {
+                            "cylinder_present": bool(bit_values[5] & (1 << 1))
+                        },
+                        "door": {
+                            "open_complete": bool(bit_values[5] & (1 << 2)),
+                            "close_complete": bool(bit_values[5] & (1 << 3))
+                        }
+                    },
+                    "port_a_sequence": {  # Word 110
+                        "cylinder_close": bool(bit_values[10] & (1 << 0)),
+                        "first_purge_before_exchange": bool(bit_values[10] & (1 << 1)),
+                        "decompression_test": bool(bit_values[10] & (1 << 2)),
+                        "second_purge_before_exchange": bool(bit_values[10] & (1 << 3)),
+                        "exchange_cylinder": bool(bit_values[10] & (1 << 4)),
+                        "first_purge_after_exchange": bool(bit_values[10] & (1 << 5)),
+                        "pressure_test": bool(bit_values[10] & (1 << 6)),
+                        "second_purge_after_exchange": bool(bit_values[10] & (1 << 7)),
+                        "purge_completed": bool(bit_values[10] & (1 << 8)),
+                        "prepare_to_supply": bool(bit_values[10] & (1 << 9)),
+                        "gas_supply_av3_choose": bool(bit_values[10] & (1 << 10)),
+                        "gas_supply": bool(bit_values[10] & (1 << 11)),
+                        "ready_to_supply": bool(bit_values[10] & (1 << 12))
+                    },
+                    "port_a_status": {  # Word 111, 112
+                        "cylinder_ready": bool(bit_values[11] & (1 << 0)),
+                        "cga_disconnect_complete": bool(bit_values[11] & (1 << 1)),
+                        "cga_connect_complete": bool(bit_values[11] & (1 << 2)),
+                        "cylinder_valve_open_complete": bool(bit_values[11] & (1 << 3)),
+                        "cylinder_valve_close_complete": bool(bit_values[11] & (1 << 4)),
+                        "cylinder_valve_open_status": bool(bit_values[11] & (1 << 5)),
+                        "cylinder_lift_unit_ready": bool(bit_values[11] & (1 << 6)),
+                        "cylinder_lift_unit_moving_up": bool(bit_values[11] & (1 << 7)),
+                        "cylinder_lift_unit_moving_down": bool(bit_values[11] & (1 << 8)),
+                        "cga_separation_in_progress": bool(bit_values[11] & (1 << 9)),
+                        "cga_connection_in_progress": bool(bit_values[11] & (1 << 10)),
+                        "cylinder_cap_separation_in_progress": bool(bit_values[11] & (1 << 11)),
+                        "cylinder_valve_open_in_progress": bool(bit_values[11] & (1 << 12)),
+                        "cylinder_valve_close_in_progress": bool(bit_values[11] & (1 << 13)),
+                        "cylinder_alignment_in_progress": bool(bit_values[11] & (1 << 14)),
+                        "cylinder_turn_in_progress": bool(bit_values[11] & (1 << 15)),
+                        # Word 112
+                        "cylinder_turn_complete": bool(bit_values[12] & (1 << 0)),
+                        "cylinder_clamp_complete": bool(bit_values[12] & (1 << 1)),
+                        "cga_connect_complete_status": bool(bit_values[12] & (1 << 2))
+                    },
+                    "port_b_sequence": {  # Word 115
+                        "cylinder_close": bool(bit_values[15] & (1 << 0)),
+                        "first_purge_before_exchange": bool(bit_values[15] & (1 << 1)),
+                        "decompression_test": bool(bit_values[15] & (1 << 2)),
+                        "second_purge_before_exchange": bool(bit_values[15] & (1 << 3)),
+                        "exchange_cylinder": bool(bit_values[15] & (1 << 4)),
+                        "first_purge_after_exchange": bool(bit_values[15] & (1 << 5)),
+                        "pressure_test": bool(bit_values[15] & (1 << 6)),
+                        "second_purge_after_exchange": bool(bit_values[15] & (1 << 7)),
+                        "purge_completed": bool(bit_values[15] & (1 << 8)),
+                        "prepare_to_supply": bool(bit_values[15] & (1 << 9)),
+                        "gas_supply_av3_choose": bool(bit_values[15] & (1 << 10)),
+                        "gas_supply": bool(bit_values[15] & (1 << 11)),
+                        "ready_to_supply": bool(bit_values[15] & (1 << 12))
+                    },
+                    "port_b_status": {  # Word 116, 117
+                        "cylinder_ready": bool(bit_values[16] & (1 << 0)),
+                        "cga_disconnect_complete": bool(bit_values[16] & (1 << 1)),
+                        "cga_connect_complete": bool(bit_values[16] & (1 << 2)),
+                        "cylinder_valve_open_complete": bool(bit_values[16] & (1 << 3)),
+                        "cylinder_valve_close_complete": bool(bit_values[16] & (1 << 4)),
+                        "cylinder_valve_open_status": bool(bit_values[16] & (1 << 5)),
+                        "cylinder_lift_unit_ready": bool(bit_values[16] & (1 << 6)),
+                        "cylinder_lift_unit_moving_up": bool(bit_values[16] & (1 << 7)),
+                        "cylinder_lift_unit_moving_down": bool(bit_values[16] & (1 << 8)),
+                        "cga_separation_in_progress": bool(bit_values[16] & (1 << 9)),
+                        "cga_connection_in_progress": bool(bit_values[16] & (1 << 10)),
+                        "cylinder_cap_separation_in_progress": bool(bit_values[16] & (1 << 11)),
+                        "cylinder_valve_open_in_progress": bool(bit_values[16] & (1 << 12)),
+                        "cylinder_valve_close_in_progress": bool(bit_values[16] & (1 << 13)),
+                        "cylinder_alignment_in_progress": bool(bit_values[16] & (1 << 14)),
+                        "cylinder_turn_in_progress": bool(bit_values[16] & (1 << 15)),
+                        # Word 117
+                        "cylinder_turn_complete": bool(bit_values[17] & (1 << 0)),
+                        "cylinder_clamp_complete": bool(bit_values[17] & (1 << 1)),
+                        "cga_connect_complete_status": bool(bit_values[17] & (1 << 2))
+                    }
+                },
+                'timestamp': current_time  # timestamp 필드 추가
+            }
 
-    def log_plc_data(self, all_values):
-        """PLC 데이터 로깅 (0-99 주소)"""
-        logger.info("\n=== Gas Cabinet PLC Data Area ===")
-        
-        # 기본 정보 (0-6)
-        logger.info(f"Bunker ID: {all_values[0]}")
-        logger.info(f"Gas Cabinet ID: {all_values[1]}")
-        logger.info(f"Gas Cabinet 가스 종류: {all_values[2:7]}")
-        
-        # 시스템 상태 (7-8)
-        logger.info(f"\n=== 시스템 상태 ===")
-        logger.info(f"SEND AND RECEIVE FOR MACHINE CODE: {all_values[7]}")
-        logger.info(f"Gas Cabinet Alarm Code: {all_values[8]}")
-        logger.info(f"Gas Cabinet Alarm Message: {gas_cabinet_alarm_code.get_description(all_values[8])}")
-        
-        # 센서 데이터 (10-17)
-        logger.info(f"\n=== 센서 데이터 ===")
-        logger.info(f"PT1A: {all_values[10]} PSI")
-        logger.info(f"PT2A: {all_values[11]} PSI")
-        logger.info(f"PT1B: {all_values[12]} PSI")
-        logger.info(f"PT2B: {all_values[13]} PSI")
-        logger.info(f"PT3: {all_values[14]} PSI")
-        logger.info(f"PT4: {all_values[15]} PSI")
-        logger.info(f"WA (A Port Weight): {all_values[16]} kg")
-        logger.info(f"WB (B Port Weight): {all_values[17]} kg")
-        
-        # 히터 상태 (18-21)
-        logger.info(f"\n=== 히터 상태 ===")
-        logger.info(f"[A] JACKET HEATER: {all_values[18]}°C")
-        logger.info(f"[A] LINE HEATER: {all_values[19]}°C")
-        logger.info(f"[B] JACKET HEATER: {all_values[20]}°C")
-        logger.info(f"[B] LINE HEATER: {all_values[21]}°C")
-        
-        # A Port 데이터 (24-29, 30-59, 90-94)
-        logger.info(f"\n=== A Port 데이터 ===")
-        logger.info(f"[A] CGA 체결 Torque 설정값: {all_values[24]} kgf·cm")
-        logger.info(f"[A] CAP 체결 Torque 설정값: {all_values[25]} kgf·cm")
-        logger.info(f"[A] 실린더 Up/Down Pos 현재값: {all_values[26]} mm")
-        
-        # A Port Barcode 데이터
-        barcode_a = ''.join([chr(x) if 32 <= x <= 126 else '?' for x in all_values[30:60]])
-        logger.info(f"[A] 실린더 Barcode Data: {barcode_a}")
-        logger.info(f"[A] Port 가스 종류: {all_values[90:95]}")
-        
-        # B Port 데이터 (27-29, 60-89, 95-99)
-        logger.info(f"\n=== B Port 데이터 ===")
-        logger.info(f"[B] CGA 체결 Torque 설정값: {all_values[27]} kgf·cm")
-        logger.info(f"[B] CAP 체결 Torque 설정값: {all_values[28]} kgf·cm")
-        logger.info(f"[B] 실린더 Up/Down Pos 현재값: {all_values[29]} mm")
-        
-        # B Port Barcode 데이터
-        barcode_b = ''.join([chr(x) if 32 <= x <= 126 else '?' for x in all_values[60:90]])
-        logger.info(f"[B] 실린더 Barcode Data: {barcode_b}")
-        logger.info(f"[B] Port 가스 종류: {all_values[95:100]}")
+            try:
+                # bunker_id와 gas_cabinet_id가 0보다 큰 경우에만 저장, 초기 생성 데이터 제외
+                if values[0] > 0 and values[1] > 0:
+                    # DB 저장 (비동기로 처리)
+                    asyncio.create_task(
+                        self.db_manager.update_data(
+                            f"gas_{values[1]}",  # Gas Cabinet ID를 사용
+                            status_data  # 전체 status_data를 직접 전달
+                        )
+                    )
 
-    def log_bit_data(self, bit_values):
-        """비트 데이터 로깅 (100-117 주소)"""
-        logger.info("\n=== Gas Cabinet Bit Area Data ===")
-        print(f"비트 데이터: {bit_values}")
-        # 기본 신호 (100)
-        word_100 = bit_values[0]
-        logger.info("\n[100] 기본 신호:")
-        basic_signals = [
-            "EMG Signal", "Heart Bit", "Run/Stop Signal", "Server Connected Bit",
-            "T-LAMP RED", "T-LAMP YELLOW", "T-LAMP GREEN", "Touch 수동동작中 Signal"
-        ]
-        for i, name in enumerate(basic_signals):
-            logger.info(f"{name}: {bool(word_100 & (1<<i))}")
+                # 알람 코드 확인 및 저장
+                alarm_code = values[8]
+                if alarm_code > 0:
+                    description = gas_cabinet_alarm_code.get_description(alarm_code)
+                    asyncio.create_task(
+                        self.db_manager.save_alarm(
+                            f"gas_{values[1]}", 
+                            alarm_code, 
+                            f"Gas Cabinet {values[1]} Alarm: Code {alarm_code} - {description}"
+                        )
+                    )
+            except Exception as e:
+                f.write(f"{current_time} | DB 저장 오류: {str(e)}\n")
+                logger.error(f"DB 저장 실패: {e}", exc_info=True)
 
-        # 밸브 상태 (101)
-        word_101 = bit_values[1]
-        logger.info("\n[101] 밸브 상태:")
-        valves = ["AV1A", "AV2A", "AV3A", "AV4A", "AV5A", 
-                 "AV1B", "AV2B", "AV3B", "AV4B", "AV5B",
-                 "AV7", "AV8", "AV9"]
-        for i, name in enumerate(valves):
-            logger.info(f"{name}: {bool(word_101 & (1<<i))}")
+            if values[0] > 0 and values[1] > 0:
+                # PLC 데이터 영역 log 작성
+                f.write(f"{current_time} | =========Gas Cabinet plc_data 시작 =========\n")
+                values = self.getValues(1, 120)  # 주소 1부터 읽기
 
-        # 센서 및 릴레이 상태 (102)
-        word_102 = bit_values[2]
-        logger.info("\n[102] 센서 및 릴레이 상태:")
-        sensors = [
-            "JACKET HEATER A RELAY", "LINE HEATER A RELAY",
-            "JACKET HEATER B RELAY", "LINE HEATER B RELAY",
-            "GAS LEAK SHUT DOWN", "VMB STOP SIGNAL",
-            "UV/IR SENSOR", "HIGH TEMP SENSOR", "SMOKE SENSOR"
-        ]
-        for i, name in enumerate(sensors):
-            logger.info(f"{name}: {bool(word_102 & (1<<i))}")
+                # 기본 정보
+                f.write(f"{current_time} | Bunker ID: {values[0]}\n")
+                f.write(f"{current_time} | Gas Cabinet ID: {values[1]}\n")
+                for i in range(2, 7):
+                    f.write(f"{current_time} | Gas Cabinet 가스 종류 {i-1}: {values[i]}\n")
 
-        # Port 요청 상태 (103)
-        word_103 = bit_values[3]
-        logger.info("\n[103] Port 요청 상태:")
-        port_requests = [
-            "[A] Port Insert Request", "[A] Port Insert Complete",
-            "[A] Port Remove Request", "[A] Port Remove Complete",
-            "[B] Port Insert Request", "[B] Port Insert Complete",
-            "[B] Port Remove Request", "[B] Port Remove Complete"
-        ]
-        for i, name in enumerate(port_requests):
-            if i < 4 or (8 <= i < 12):  # A Port (0-3) and B Port (8-11)
-                logger.info(f"{name}: {bool(word_103 & (1<<i))}")
+                # 시스템 상태
+                f.write(f"{current_time} | Gas Cabinet Alarm Code: {values[8]}\n")
+                
+                # 센서 데이터
+                f.write(f"{current_time} | PT1A: {values[10]} PSI\n")
+                f.write(f"{current_time} | PT2A: {values[11]} PSI\n")
+                f.write(f"{current_time} | PT1B: {values[12]} PSI\n")
+                f.write(f"{current_time} | PT2B: {values[13]} PSI\n")
+                f.write(f"{current_time} | PT3: {values[14]} PSI\n")
+                f.write(f"{current_time} | PT4: {values[15]} PSI\n")
+                f.write(f"{current_time} | WA (A Port Weight): {values[16]} kg\n")
+                f.write(f"{current_time} | WB (B Port Weight): {values[17]} kg\n")
 
-        # 실린더 및 도어 상태 (105)
-        word_105 = bit_values[5]
-        logger.info("\n[105] 실린더 및 도어 상태:")
-        status = [
-            "[A] Port 실린더 유무", "[B] Port 실린더 유무",
-            "Door Open 완료", "Door Close 완료"
-        ]
-        for i, name in enumerate(status):
-            logger.info(f"{name}: {bool(word_105 & (1<<i))}")
+                # 히터 상태
+                f.write(f"{current_time} | [A] JACKET HEATER: {values[18]}°C\n")
+                f.write(f"{current_time} | [A] LINE HEATER: {values[19]}°C\n")
+                f.write(f"{current_time} | [B] JACKET HEATER: {values[20]}°C\n")
+                f.write(f"{current_time} | [B] LINE HEATER: {values[21]}°C\n")
 
-        # A Port 작업 상태 (110)
-        word_110 = bit_values[10]
-        logger.info("\n[110] A Port 작업 상태:")
-        port_a_ops = [
-            "Close the Cylinder", "1st Purge before Exchange",
-            "Decompression Test", "2nd Purge before Exchange",
-            "Exchange Cylinder", "1st Purge after Exchange",
-            "Pressure Test", "2nd Purge after Exchange",
-            "Purge Completed", "Prepare to Supply",
-            "Gas Supply AV3 Open/Close Choose", "Gas Supply",
-            "Ready to Supply"
-        ]
-        for i, name in enumerate(port_a_ops):
-            logger.info(f"[A] {name}: {bool(word_110 & (1<<i))}")
+                # A Port Torque & Position 데이터
+                f.write(f"{current_time} | [A] CGA 체결 Torque: {values[24]} kgf·cm\n")
+                f.write(f"{current_time} | [A] CAP 체결 Torque: {values[25]} kgf·cm\n")
+                f.write(f"{current_time} | [A] 실린더 Up/Down Pos: {values[26]} mm\n")
 
-        # B Port 작업 상태 (115)
-        word_115 = bit_values[15]
-        logger.info("\n[115] B Port 작업 상태:")
-        for i, name in enumerate(port_a_ops):  # 같은 상태 이름 사용
-            logger.info(f"[B] {name}: {bool(word_115 & (1<<i))}")
+                # B Port Torque & Position 데이터
+                f.write(f"{current_time} | [B] CGA 체결 Torque: {values[27]} kgf·cm\n")
+                f.write(f"{current_time} | [B] CAP 체결 Torque: {values[28]} kgf·cm\n")
+                f.write(f"{current_time} | [B] 실린더 Up/Down Pos: {values[29]} mm\n")
 
-        # B Port 상세 상태 (116)
-        word_116 = bit_values[16]
-        logger.info("\n[116] B Port 상세 상태:")
-        b_port_details = [
-            "Cylinder Ready",
-            "CGA Disconnect Complete",
-            "CGA Connect Complete",
-            "Cylinder Valve Open Complete",
-            "Cylinder Valve Close Complete",
-            "Cylinder Valve Open Status",
-            "Cylinder Lift Unit Ready",
-            "Cylinder Lift Unit Moving Up",
-            "Cylinder Lift Unit Moving Down",
-            "CGA Separation In Progress",
-            "CGA Connection In Progress",
-            "Cylinder Cap Separation In Progress",
-            "Cylinder Valve Open In Progress",
-            "Cylinder Valve Close In Progress",
-            "Cylinder Alignment In Progress",
-            "Cylinder Turn In Progress"
-        ]
-        for i, name in enumerate(b_port_details):
-            logger.info(f"[B] {name}: {bool(word_116 & (1<<i))}")
+                # A Port Barcode 데이터
+                barcode_a = ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' for i in range(30, 60)])
+                f.write(f"{current_time} | [A] Port Barcode: {barcode_a}\n")
 
-        # B Port 추가 상태 (117)
-        word_117 = bit_values[17]
-        logger.info("\n[117] B Port 추가 상태:")
-        b_port_additional = [
-            "Cylinder Turn Complete",
-            "Cylinder Clamp Complete",
-            "CGA Connect Complete Status"
-        ]
-        for i, name in enumerate(b_port_additional):
-            logger.info(f"[B] {name}: {bool(word_117 & (1<<i))}")
+                # B Port Barcode 데이터
+                barcode_b = ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' for i in range(60, 90)])
+                f.write(f"{current_time} | [B] Port Barcode: {barcode_b}\n")
 
-class ModbusServer:
+                # Gas Types
+                for i in range(90, 95):
+                    f.write(f"{current_time} | [A] Port 가스 종류 {i-89}: {values[i]}\n")
+                for i in range(95, 100):
+                    f.write(f"{current_time} | [B] Port 가스 종류 {i-94}: {values[i]}\n")
+
+                # 비트 데이터 영역
+                f.write(f"{current_time} | ========= Gas Cabinet Bit Area Data 시작 =========\n")
+                bit_values = self.getValues(100, 18)  # 100번 주소부터 18개 워드 읽기
+
+                # Word 100 - 기본 신호
+                signals = ["EMG Signal", "Heart Bit", "Run/Stop Signal", "Server Connected Bit",
+                        "T-LAMP RED", "T-LAMP YELLOW", "T-LAMP GREEN", "Touch 수동동작中 Signal"]
+                for i, name in enumerate(signals):
+                    value = bool(bit_values[0] & (1 << i))
+                    f.write(f"{current_time} | {name}: {value}\n")
+
+                # Word 105 - 실린더 및 도어 상태
+                cylinder_door = [
+                    "[A] Port 실린더 유무", "[B] Port 실린더 유무",
+                    "[A] Worker Door Open", "[A] Worker Door Close",
+                    "[A] Bunker Door Open", "[A] Bunker Door Close",
+                    "[B] Worker Door Open", "[B] Worker Door Close",
+                    "[B] Bunker Door Open", "[B] Bunker Door Close"
+                ]
+                for i, name in enumerate(cylinder_door):
+                    value = bool(bit_values[5] & (1 << i))
+                    f.write(f"{current_time} | {name}: {value}\n")
+
+                # Word 110 - A Port 상태
+                a_port_status = [
+                    "[A] Port 보호캡 분리 완료", "[A] Port 보호캡 체결 완료",
+                    "[A] Worker Door Open 완료", "[A] Worker Door Close 완료",
+                    "[A] Worker 투입 Ready", "[A] Worker 투입 Complete",
+                    "[A] Worker 배출 Ready", "[A] Worker 배출 Comlete",
+                    "[A] Bunker Door Open 완료", "[A] Bunker Door Close 완료",
+                    "[A] Bunker 투입 Ready", "[A] Bunker 투입 Complete",
+                    "[A] Bunker 배출 Ready", "[A] Bunker 배출 Comlete",
+                    "[A] Cylinder Align 진행중", "[A] Cylinder Align 완료"
+                ]
+                for i, name in enumerate(a_port_status):
+                    value = bool(bit_values[10] & (1 << i))
+                    f.write(f"{current_time} | {name}: {value}\n")
+
+                # Word 111 - A Port 진행상태
+                a_port_progress = [
+                    "[A] Cap Open 진행중", "[A] Cap Close 진행중",
+                    "[A] Cylinder 위치로 X축 이동중", "[A] Cylinder 위치로 X축 이동완료",
+                    "[A] Cap 위치 찾는중", "[A] Cylinder Neck 위치 찾는중",
+                    "[A] Worker door Open 진행중", "[A] Worker door Close 진행중",
+                    "[A] Bunker door Open 진행중", "[A] Bunker door Close 진행중"
+                ]
+                for i, name in enumerate(a_port_progress):
+                    value = bool(bit_values[11] & (1 << i))
+                    f.write(f"{current_time} | {name}: {value}\n")
+
+                # Word 115 - B Port 상태
+                b_port_status = [x.replace('[A]', '[B]') for x in a_port_status]
+                for i, name in enumerate(b_port_status):
+                    value = bool(bit_values[15] & (1 << i))
+                    f.write(f"{current_time} | {name}: {value}\n")
+
+                # Word 116 - B Port 진행상태
+                b_port_progress = [x.replace('[A]', '[B]') for x in a_port_progress]
+                for i, name in enumerate(b_port_progress):
+                    value = bool(bit_values[16] & (1 << i))
+                    f.write(f"{current_time} | {name}: {value}\n")
+
+class CustomModbusSlaveContext(ModbusSlaveContext):
     def __init__(self):
-        self.running = True
-        self.datablock = CustomDataBlock()
-        store = ModbusSlaveContext(
-            di=self.datablock,  # discrete inputs
-            co=self.datablock,  # coils
-            hr=self.datablock,  # holding registers
-            ir=self.datablock   # input registers
+        # 메모리 초기화
+        gc.collect()
+        
+        # 각 데이터 블록에 대한 메모리 공간 생성
+        values = [0] * 1000
+        di_values = deepcopy(values)
+        co_values = deepcopy(values)
+        hr_values = deepcopy(values)
+        ir_values = deepcopy(values)
+        
+        super().__init__(
+            di=CustomModbusSequentialDataBlock(0, di_values),
+            co=CustomModbusSequentialDataBlock(0, co_values),
+            hr=CustomModbusSequentialDataBlock(0, hr_values),
+            ir=CustomModbusSequentialDataBlock(0, ir_values)
         )
-        self.context = ModbusServerContext(slaves=store, single=True)
+        
+        self.TIME_SYNC_ADDRESS = 900
+        
+        # 메모리 정리 후 시간 동기화
+        gc.collect()
+        self.update_time()
+        self.websocket_server = GasCabinetWebSocketServer()
 
         # 소켓 통신 관련 초기화
         self.socket_path = '/tmp/modbus_data.sock'
@@ -248,362 +677,113 @@ class ModbusServer:
         self.data_socket.bind(self.socket_path)
         self.data_socket.listen(1)
         self.data_socket.setblocking(False)
+
     
-    async def send_time_sync(self):
-        """현재 시간을 클라이언트로 전송"""
-        now = datetime.now()
-        time_data = [
-            now.year,   # Address 0: 년
-            now.month,  # Address 1: 월
-            now.day,    # Address 2: 일
-            now.hour,   # Address 3: 시
-            now.minute, # Address 4: 분
-            now.second  # Address 5: 초
+    def update_time(self):
+        """현재 시간을 레지스터에 업데이트 (900-905 주소 사용)"""
+        now = datetime.datetime.now()
+        time_values = [
+            now.year,   # 900: 년
+            now.month,  # 901: 월
+            now.day,    # 902: 일
+            now.hour,   # 903: 시
+            now.minute, # 904: 분
+            now.second  # 905: 초
         ]
+        # deepcopy를 사용하여 시간 데이터 복사하고 setValues 직접 호출
+        self.setValues(3, self.TIME_SYNC_ADDRESS, deepcopy(time_values))
+        logger.info(f"시간 동기화 데이터 업데이트: {now.strftime('%Y-%m-%d %H:%M:%S')}")
+        gc.collect()  # 시간 업데이트 후 메모리 정리
+
+class GasCabinetWebSocketServer:
+    def __init__(self, host: str = "localhost", port: int = 8765):
+        self.host = host
+        self.port = port
+        self.clients: Set[WebSocketServerProtocol] = set()
+        self.running = True
+        self.modbus_context = None
+
+    async def register(self, websocket: WebSocketServerProtocol):
+        """클라이언트 등록"""
+        self.clients.add(websocket)
+        logger.info(f"Client connected. Total clients: {len(self.clients)}")
+
+    async def unregister(self, websocket: WebSocketServerProtocol):
+        """클라이언트 등록 해제"""
+        self.clients.remove(websocket)
+        logger.info(f"Client disconnected. Total clients: {len(self.clients)}")
+
+    async def send_data_to_clients(self, data: dict):  # Dict를 dict로 변경
+        """모든 클라이언트에 데이터 전송"""
+        if not self.clients:
+            return
         
-        async with self.data_lock:
-            self.datablock.setValues(0, time_data)
-            # 디버그 메시지는 클라이언트가 연결된 경우에만 출력
-            if len(self.clients) > 0:
-                print(f"시간 동기화 데이터 클라이언트로 전송: {time_data}")
-    
-    # async def update_time_periodically(self):
-    #     """주기적으로 시간 업데이트"""
-    #     while self.running:  # 실행 상태 확인
-    #         await self.send_time_sync()
-    #         await asyncio.sleep(1)   
-    
-    async def handle_socket_client(self, client, addr):
-        """소켓 클라이언트 처리"""
-        try:
-            while True:
-                # 데이터 요청을 받으면 현재 데이터 전송
-                data = await self.get_current_data()
-                await self.send_socket_data(client, data)
-                await asyncio.sleep(0.1)
-        except Exception as e:
-            print(f"Socket client error: {e}")
-        finally:
-            client.close()
+        message = json.dumps(data)
+        disconnected_clients = set()
 
-    async def send_socket_data(self, client, data):
-        """소켓을 통해 데이터 전송"""
-        try:
-            json_data = json.dumps(data)
-            #client.send(json_data.encode('utf-8'))
-            await asyncio.get_event_loop().sock_sendall(client, json_data.encode('utf-8'))
-        except Exception as e:
-            print(f"Socket send error: {e}")
-
-    async def accept_socket_clients(self):
-        """소켓 클라이언트 연결 수락"""
-        while self.running:  # 실행 상태 확인
+        for client in self.clients:
             try:
-                client, addr = await asyncio.get_event_loop().sock_accept(self.data_socket)
-                print(f"Socket client connected: {addr}")
-                asyncio.create_task(self.handle_socket_client(client, addr))
+                await client.send(message)
+            except websockets.ConnectionClosed:
+                disconnected_clients.add(client)
             except Exception as e:
-                if self.running:  # 정상 실행 중일 때만 에러 출력
-                    print(f"Socket accept error: {e}")
-                await asyncio.sleep(1)
+                logger.error(f"Error sending data to client: {e}")
+                disconnected_clients.add(client)
 
-    # 가스 공급 중지 명령 현재 사용 안함. 별도의 Command Server 구현 할 예정.
-    # async def stop_gas_supply(self, cabinet_id):  # 수정
-    #     try:
-    #         async with self.data_lock:
-    #             # 예: 특정 주소에 가스 공급 중지 명령 쓰기
-    #             self.datablock.setValues(211, [0])  # A Port 밸브 닫기
-    #             self.datablock.setValues(221, [0])  # B Port 밸브 닫기
-    #         return True
-    #     except Exception as e:
-    #         logging.error(f"가스 공급 중지 중 오류: {str(e)}")
-    #         return False
+        # 연결 끊긴 클라이언트 제거
+        for client in disconnected_clients:
+            await self.unregister(client)
 
-    # async def emergency_stop_all(self):
-    #     """모든 캐비닛 긴급 정지"""
-    #     try:
-    #         async with self.data_lock:
-    #             # EMG Signal 설정 (200번 워드의 0번 비트)
-    #             self.datablock.setValues(200, [1])  # EMG 비트 설정
-    #             # 모든 밸브 닫기
-    #             self.datablock.setValues(211, [0])  # A Port
-    #             self.datablock.setValues(221, [0])  # B Port
-    #         return True
-    #     except Exception as e:
-    #         logging.error(f"긴급 정지 중 오류: {str(e)}")
-    #         return False
-
-    #Gas Cabinet의 전체 상태 데이터를 JSON 형식으로 구조화 
-    # 현재 상태를 Web 시스템에 제공하는 데이터 인터페이스 역할 제공    
-    async def get_current_data(self):
-        """현재 모든 데이터 조회"""
-        async with self.data_lock:
-            # PLC 데이터 영역 (0-99)
-            plc_data = self.datablock.getValues(0, 100)
-            # 비트 데이터 영역 (100-117)
-            bit_data = self.datablock.getValues(100, 18)
-            
-            print("\n=== 서버 데이터 읽기 ===")
-            print(f"PLC 데이터 첫 10개: {plc_data[:10]}")
-            print(f"Bit 데이터 첫 5개: {bit_data[:5]}")
-
-            return {
-                "plc_data": {
-                    "bunker_id": plc_data[0],
-                    "cabinet_id": plc_data[1],
-                    "gas_type": plc_data[2:7],
-                    "system_status": {
-                        "machine_code": plc_data[7],
-                        "alarm_code": plc_data[8]
-                    },
-                    "sensors": {
-                        "pt1a": plc_data[10],
-                        "pt2a": plc_data[11],
-                        "pt1b": plc_data[12],
-                        "pt2b": plc_data[13],
-                        "pt3": plc_data[14],
-                        "pt4": plc_data[15],
-                        "weight_a": plc_data[16],
-                        "weight_b": plc_data[17]
-                    },
-                    "heaters": {
-                        "jacket_heater_a": plc_data[18],
-                        "line_heater_a": plc_data[19],
-                        "jacket_heater_b": plc_data[20],
-                        "line_heater_b": plc_data[21]
-                    },
-                    "port_a": {
-                        "torque": {
-                            "cga_set": plc_data[24],
-                            "cap_set": plc_data[25],
-                            "cylinder_pos": plc_data[26]
-                        },
-                        "barcode": plc_data[30:60],
-                        "gas_type": plc_data[90:95]
-                    },
-                    "port_b": {
-                        "torque": {
-                            "cga_set": plc_data[27],
-                            "cap_set": plc_data[28],
-                            "cylinder_pos": plc_data[29]
-                        },
-                        "barcode": plc_data[60:90],
-                        "gas_type": plc_data[95:100]
-                    }
-                },
-                "bit_data": {
-                    "basic_signals": {
-                        "raw": bit_data[0],
-                        "states": {
-                            "emg_signal": bool(bit_data[0] & (1 << 0)),
-                            "heart_bit": bool(bit_data[0] & (1 << 1)),
-                            "run_stop_signal": bool(bit_data[0] & (1 << 2)),
-                            "server_connected": bool(bit_data[0] & (1 << 3)),
-                            "t_lamp_red": bool(bit_data[0] & (1 << 4)),
-                            "t_lamp_yellow": bool(bit_data[0] & (1 << 5)),
-                            "t_lamp_green": bool(bit_data[0] & (1 << 6)),
-                            "touch_manual": bool(bit_data[0] & (1 << 7))
-                        }
-                    },
-                    "valves": {
-                        "raw": bit_data[1],
-                        "states": {
-                            "av1a": bool(bit_data[1] & (1 << 0)),
-                            "av2a": bool(bit_data[1] & (1 << 1)),
-                            "av3a": bool(bit_data[1] & (1 << 2)),
-                            "av4a": bool(bit_data[1] & (1 << 3)),
-                            "av5a": bool(bit_data[1] & (1 << 4)),
-                            "av1b": bool(bit_data[1] & (1 << 5)),
-                            "av2b": bool(bit_data[1] & (1 << 6)),
-                            "av3b": bool(bit_data[1] & (1 << 7)),
-                            "av4b": bool(bit_data[1] & (1 << 8)),
-                            "av5b": bool(bit_data[1] & (1 << 9)),
-                            "av7": bool(bit_data[1] & (1 << 10)),
-                            "av8": bool(bit_data[1] & (1 << 11)),
-                            "av9": bool(bit_data[1] & (1 << 12))
-                        }
-                    },
-                    "sensors_relays": {
-                        "raw": bit_data[2],
-                        "states": {
-                            "jacket_heater_a": bool(bit_data[2] & (1 << 0)),
-                            "line_heater_a": bool(bit_data[2] & (1 << 1)),
-                            "jacket_heater_b": bool(bit_data[2] & (1 << 2)),
-                            "line_heater_b": bool(bit_data[2] & (1 << 3)),
-                            "gas_leak_shutdown": bool(bit_data[2] & (1 << 4)),
-                            "vmb_stop": bool(bit_data[2] & (1 << 5)),
-                            "uv_ir_sensor": bool(bit_data[2] & (1 << 6)),
-                            "high_temp_sensor": bool(bit_data[2] & (1 << 7)),
-                            "smoke_sensor": bool(bit_data[2] & (1 << 8))
-                        }
-                    },
-                    "port_status": {
-                        "raw": bit_data[3],
-                        "states": {
-                            "port_a": {
-                                "insert_request": bool(bit_data[3] & (1 << 0)),
-                                "insert_complete": bool(bit_data[3] & (1 << 1)),
-                                "remove_request": bool(bit_data[3] & (1 << 2)),
-                                "remove_complete": bool(bit_data[3] & (1 << 3))
-                            },
-                            "port_b": {
-                                "insert_request": bool(bit_data[3] & (1 << 8)),
-                                "insert_complete": bool(bit_data[3] & (1 << 9)),
-                                "remove_request": bool(bit_data[3] & (1 << 10)),
-                                "remove_complete": bool(bit_data[3] & (1 << 11))
-                            }
-                        }
-                    },
-                    "cylinder_door": {
-                        "raw": bit_data[5],
-                        "states": {
-                            "port_a_cylinder": bool(bit_data[5] & (1 << 0)),
-                            "port_b_cylinder": bool(bit_data[5] & (1 << 1)),
-                            "door_open": bool(bit_data[5] & (1 << 2)),
-                            "door_close": bool(bit_data[5] & (1 << 3))
-                        }
-                    },
-                    "port_a_operation": {
-                        "raw": bit_data[10],
-                        "progress": {
-                            "close_cylinder": bool(bit_data[10] & (1 << 0)),
-                            "first_purge_before": bool(bit_data[10] & (1 << 1)),
-                            "decompression_test": bool(bit_data[10] & (1 << 2)),
-                            "second_purge_before": bool(bit_data[10] & (1 << 3)),
-                            "exchange_cylinder": bool(bit_data[10] & (1 << 4)),
-                            "first_purge_after": bool(bit_data[10] & (1 << 5)),
-                            "pressure_test": bool(bit_data[10] & (1 << 6)),
-                            "second_purge_after": bool(bit_data[10] & (1 << 7)),
-                            "purge_completed": bool(bit_data[10] & (1 << 8)),
-                            "prepare_supply": bool(bit_data[10] & (1 << 9)),
-                            "av3_control": bool(bit_data[10] & (1 << 10)),
-                            "gas_supply": bool(bit_data[10] & (1 << 11)),
-                            "ready_supply": bool(bit_data[10] & (1 << 12))
-                        }
-                    },
-                    "port_b_operation": {
-                        "raw": bit_data[15],
-                        "progress": {
-                            "close_cylinder": bool(bit_data[15] & (1 << 0)),
-                            "first_purge_before": bool(bit_data[15] & (1 << 1)),
-                            "decompression_test": bool(bit_data[15] & (1 << 2)),
-                            "second_purge_before": bool(bit_data[15] & (1 << 3)),
-                            "exchange_cylinder": bool(bit_data[15] & (1 << 4)),
-                            "first_purge_after": bool(bit_data[15] & (1 << 5)),
-                            "pressure_test": bool(bit_data[15] & (1 << 6)),
-                            "second_purge_after": bool(bit_data[15] & (1 << 7)),
-                            "purge_completed": bool(bit_data[15] & (1 << 8)),
-                            "prepare_supply": bool(bit_data[15] & (1 << 9)),
-                            "av3_control": bool(bit_data[15] & (1 << 10)),
-                            "gas_supply": bool(bit_data[15] & (1 << 11)),
-                            "ready_supply": bool(bit_data[15] & (1 << 12))
-                        }
-                    },
-                    "port_b_details": {
-                        "raw": bit_data[16],
-                        "states": {
-                            "cylinder_ready": bool(bit_data[16] & (1 << 0)),
-                            "cga_disconnect": bool(bit_data[16] & (1 << 1)),
-                            "cga_connect": bool(bit_data[16] & (1 << 2)),
-                            "valve_open_complete": bool(bit_data[16] & (1 << 3)),
-                            "valve_close_complete": bool(bit_data[16] & (1 << 4)),
-                            "valve_open_status": bool(bit_data[16] & (1 << 5)),
-                            "lift_ready": bool(bit_data[16] & (1 << 6)),
-                            "lift_moving_up": bool(bit_data[16] & (1 << 7)),
-                            "lift_moving_down": bool(bit_data[16] & (1 << 8)),
-                            "cga_separating": bool(bit_data[16] & (1 << 9)),
-                            "cga_connecting": bool(bit_data[16] & (1 << 10)),
-                            "cap_separating": bool(bit_data[16] & (1 << 11)),
-                            "valve_opening": bool(bit_data[16] & (1 << 12)),
-                            "valve_closing": bool(bit_data[16] & (1 << 13)),
-                            "cylinder_aligning": bool(bit_data[16] & (1 << 14)),
-                            "cylinder_turning": bool(bit_data[16] & (1 << 15))
-                        }
-                    },
-                    "port_b_additional": {
-                        "raw": bit_data[17],
-                        "states": {
-                            "cylinder_turn_complete": bool(bit_data[17] & (1 << 0)),
-                            "cylinder_clamp_complete": bool(bit_data[17] & (1 << 1)),
-                            "cga_connect_status": bool(bit_data[17] & (1 << 2))
-                        }
-                    }
-                }
-            }
-        
-    async def handle_client(self, client):
-        self.clients.add(client)
+    async def handler(self, websocket: WebSocketServerProtocol, path: str):
+        """WebSocket 연결 처리"""
+        await self.register(websocket)
         try:
-            while True:
-                await asyncio.sleep(0.1)  
-                if client.is_closing():
-                    break
+            async for message in websocket:
+                try:
+                    # 클라이언트로부터의 메시지 처리
+                    data = json.loads(message)
+                    # 필요한 경우 메시지 처리 로직 추가
+                except json.JSONDecodeError:
+                    logger.error("Invalid JSON received")
+        except websockets.ConnectionClosed:
+            pass
         finally:
-            self.clients.remove(client)
+            await self.unregister(websocket)
 
-    async def update_values(self, address, values):
-        async with self.data_lock:
-            self.datablock.setValues(address, values)
-        # await self.broadcast_update(address, values)
-
-    # async def broadcast_update(self, address, value):
-    #     for client in self.clients:
-    #         try:
-    #             pass  # 실제 브로드캐스트 로직 구현 필요
-    #             #await self.send_socket_data(client, data)
-    #         except Exception as e:
-    #             logging.error(f"브로드캐스트 오류: {e}")
-
-    async def on_client_connect(self, client_socket):
-        """클라이언트 연결 시 호출되는 콜백"""
-        print(f"새로운 클라이언트 연결됨: {client_socket.getpeername()}")
-        await self.send_time_sync()  # 시간 동기화 데이터 전송
-
-    def __del__(self):
-        """소멸자: 소켓 파일 정리"""
-        if hasattr(self, 'data_socket'):
-            self.data_socket.close()
-        if os.path.exists(self.socket_path):
-            os.unlink(self.socket_path)
-
-    async def run_server(self):
-        """서버 실행"""
-        server = None
-        try:
-            print("\n=== Modbus 서버 시작 중... ===")
-            self.running = True  # 서버 실행 상태 설정
-
-            # Modbus 서버 시작 시 클라이언트 연결 핸들러 추가
-            server = await StartAsyncTcpServer(
-                context=self.context,
-                address=("127.0.0.1", 5020),
-            )
-            print("\n=== Modbus 서버가 시작되었습니다! ===")
-            print("클라이언트 연결 대기 중...")
+    async def start_server(self):
+        """WebSocket 서버 시작"""
+        async with websockets.serve(self.handler, self.host, self.port):
+            logger.info(f"WebSocket server started on ws://{self.host}:{self.port}")
+            await asyncio.Future()  # 계속 실행
             
-            await server.serve_forever()
+# 서버 실행 함수
+async def run_server():
+    store = CustomModbusSlaveContext()
+    context = ModbusServerContext(slaves=store, single=True)
+    # WebSocket 서버 시작
+    websocket_server = store.websocket_server
 
-        except KeyboardInterrupt:
-            print("\n=== 서버 종료 요청됨 ===")
-        except Exception as e:
-            print(f"Server error: {e}")
-        finally:
-            self.running = False  # 실행 상태 플래그 해제
-            if server:
-                await server.shutdown()
-            self.data_socket.close()
-            if os.path.exists(self.socket_path):
-                os.unlink(self.socket_path)
-            print("\n=== 서버가 종료되었습니다 ===")
-
-async def main():
-   server = ModbusServer()
-   try:
-       await server.run_server()
-   except KeyboardInterrupt:
-       logging.info("\n프로그램이 사용자에 의해 중단되었습니다.")
-   except Exception as e:
-       logging.error(f"예기치 않은 오류 발생: {e}")
-
+    identity = ModbusDeviceIdentification()
+    identity.VendorName = 'Pymodbus'
+    identity.ProductCode = 'GasCabiniet'
+    identity.ModelName = 'GasCabinet Server'
+    identity.MajorMinorRevision = '1.0'
+    
+    logger.info("Starting Modbus TCP GasCabinet Server...")
+    # 두 서버를 동시에 실행
+    await asyncio.gather(
+        StartAsyncTcpServer(
+            context=context,
+            identity=identity,
+            address=("127.0.0.1", 5020)
+        ),
+        websocket_server.start_server()
+    )
+    
 if __name__ == "__main__":
-   asyncio.run(main())
+    try:
+        asyncio.run(run_server())
+    except KeyboardInterrupt:
+        logger.info("Server stopped by user")
+    except Exception as e:
+        logger.error(f"Server error: {e}")

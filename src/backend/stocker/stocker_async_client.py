@@ -74,10 +74,21 @@ async def run_client():
     try:
         client = AsyncModbusTcpClient('127.0.0.1', port=5021)
         connected = await client.connect()
-        if not connected:
-            logger.error("Server connection failed!")
+        # Improved connection attempt
+        for attempt in range(3):
+            try:
+                connected = await client.connect()
+                if connected:
+                    logger.info("Server connection successful!")
+                    break
+                logger.warning(f"Connection attempt {attempt + 1} failed")
+                await asyncio.sleep(2)  # Wait before retrying
+            except Exception as conn_error:
+                logger.error(f"Connection attempt {attempt + 1} error: {conn_error}")
+                await asyncio.sleep(2)
+        else:
+            logger.error("Failed to connect after 3 attempts")
             return
-        logger.info("Server connection successful!")
 
         # 연결 후 바로 서버의 시간 읽기
         time_response = await client.read_holding_registers(900, count=6)

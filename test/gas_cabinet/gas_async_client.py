@@ -15,8 +15,8 @@ def generate_plc_data():
     data = []
 
     # Basic Information (0-6)
-    data.append(random.randint(1, 10))  # Bunker ID (0)
-    data.append(random.randint(1, 26))  # Gas Cabinet ID (1)
+    data.append(1)  #(random.randint(1, 10))  # Bunker ID (0)
+    data.append(1)  #(random.randint(1, 26))  # Gas Cabinet ID (1)
     data.extend([random.randint(1, 50) for _ in range(5)])  # Gas Cabinet 가스 종류 (2-6)
 
     # Machine Code and Alarm Code (7-8)
@@ -149,7 +149,7 @@ def generate_bit_data():
     for i in range(3):  # B Port additional status flags
         word_117 |= random.choice([0, 1]) << i
     bit_data.append(word_117)
-
+    print(bit_data)
     return bit_data
 
 async def run_client():
