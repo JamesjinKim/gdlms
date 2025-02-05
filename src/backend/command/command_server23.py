@@ -76,7 +76,7 @@ class CustomDataBlock(ModbusSequentialDataBlock):
             # subprocess.run(['shutdown', '/r', '/t', '0'])
         
         elif command_type == 'custom':
-            # Server22만의 특별한 커스텀 명령 처리
+            # Server23만의 특별한 커스텀 명령 처리
             logger.info(f"{self.server_name} - Custom command received")
 
 async def run_server():

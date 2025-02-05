@@ -40,13 +40,22 @@ async def handle_client(reader, writer):
             
             # Stage 2: Job Start
             print("\n=== Stage 2: Job Start ===")
+            # From/To 정보를 포함한 Job Start 메시지 생성
+            # 예: From=001A, To=999B 형식으로 전송
+            from_address = "001"  # 3자리 주소
+            from_port = "A"       # 1자리 포트
+            to_address = "999"    # 3자리 주소
+            to_port = "B"         # 1자리 포트
+            
             job_message = Protocol.create_job_start_message(
-                1, ProtocolConstants.PORT_A, 
-                99, ProtocolConstants.PORT_B
+                from_address=from_address,
+                from_port=from_port,
+                to_address=to_address,
+                to_port=to_port
             )
             writer.write(job_message)
             await writer.drain()
-            print(f'Sent job start command to AGV {addr}')
+            print(f'Sent job start command to AGV {addr} (From: {from_address}{from_port}, To: {to_address}{to_port})')
             
             # Job Reply와 Complete 대기
             for _ in range(2):

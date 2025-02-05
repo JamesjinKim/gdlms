@@ -22,22 +22,22 @@ class AGVSimulator:
         """현재 위치 반환"""
         return self.position
 
-async def handle_job_process(writer, agv):
+async def handle_job_process(writer, agv, from_address, from_port, to_address, to_port):
     """Job 처리 프로세스 시뮬레이션"""
     # Job Reply 전송
-    reply = Protocol.create_job_reply()
+    reply = Protocol.create_job_reply(from_address, from_port, to_address, to_port)
     writer.write(reply)
     await writer.drain()
-    print('Sent job reply')
+    print(f'Sent job reply (From: {from_address}{from_port}, To: {to_address}{to_port})')
     
     # 작업 처리 시뮬레이션
     await asyncio.sleep(2)
     
     # Job Complete 전송
-    complete = Protocol.create_job_complete()
+    complete = Protocol.create_job_complete(from_address, from_port, to_address, to_port)
     writer.write(complete)
     await writer.drain()
-    print('Sent job complete')
+    print(f'Sent job complete (From: {from_address}{from_port}, To: {to_address}{to_port})')
 
 async def agv_client():
     """AGV 클라이언트 메인 코루틴"""
@@ -72,7 +72,12 @@ async def agv_client():
                 elif command_type == 'job_start':
                     # Job Start에 대한 응답
                     print("=== Handling Job Start ===")
-                    await handle_job_process(writer, agv)
+                    # From/To 정보 추출
+                    from_address = result.get('from_address', '001')
+                    from_port = result.get('from_port', 'A')
+                    to_address = result.get('to_address', '001')
+                    to_port = result.get('to_port', 'A')
+                    await handle_job_process(writer, agv, from_address, from_port, to_address, to_port)
                     
                 elif command_type == 'position_request':
                     # Position Check에 대한 응답
