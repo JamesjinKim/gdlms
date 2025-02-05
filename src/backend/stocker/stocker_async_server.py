@@ -1,7 +1,6 @@
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))  # src/backend를 Python 경로에 추가
-
 from pymodbus.server import StartAsyncTcpServer
 from pymodbus.datastore import ModbusSequentialDataBlock, ModbusSlaveContext, ModbusServerContext
 import logging
@@ -9,8 +8,6 @@ import asyncio, time, json, datetime
 import os
 from logging.handlers import TimedRotatingFileHandler
 from pymodbus.device import ModbusDeviceIdentification
-from pathlib import Path
-sys.path.append(str(Path(__file__).parent.parent))
 from common.db_manager import DBManager
 from typing import Dict, Any
 from stocker_alarm_codes import stocker_alarm_code

@@ -4,19 +4,15 @@ from typing import Set
 sys.path.append(str(Path(__file__).parent.parent))
 from pymodbus.server import StartAsyncTcpServer
 from pymodbus.datastore import ModbusSequentialDataBlock, ModbusSlaveContext, ModbusServerContext
-import logging
-import socket
-from gas_cabinet_alarm_code import gas_cabinet_alarm_code
+from pymodbus.device import ModbusDeviceIdentification
 from logging.handlers import TimedRotatingFileHandler
+import logging
 import asyncio, time, json, datetime
 import os
-from logging.handlers import TimedRotatingFileHandler
-from pymodbus.device import ModbusDeviceIdentification
 from copy import deepcopy
 import gc
 from common.db_manager import DBManager
-import websockets
-from websockets.server import WebSocketServerProtocol
+from gas_cabinet_alarm_code import gas_cabinet_alarm_code
 
 # 로그 파일 경로 설정
 log_dir = "./log"
@@ -80,6 +76,7 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
                         "port_a": [values[i] for i in range(90, 95)],
                         "port_b": [values[i] for i in range(95, 100)]
                     },
+                    'machine_code':values[7],
                     "alarm_code": values[8],
                     "sensors": {
                         "pressure": {
@@ -302,6 +299,7 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
                         'port_a': values[90:95],
                         'port_b': values[95:100]
                     },
+                    'machine_code':values[7],
                     'alarm_code': values[8],
                     'sensors': {
                         'pressure': {
@@ -537,7 +535,8 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
                 f.write(f"{current_time} | Gas Cabinet ID: {values[1]}\n")
                 for i in range(2, 7):
                     f.write(f"{current_time} | Gas Cabinet 가스 종류 {i-1}: {values[i]}\n")
-
+                #SEND AND RECEIVE FOR MACHINE CODE
+                f.write(f"{current_time} | Machine Code: {values[7]}\n")
                 # 시스템 상태
                 f.write(f"{current_time} | Gas Cabinet Alarm Code: {values[8]}\n")
                 
@@ -645,38 +644,14 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
 
 class CustomModbusSlaveContext(ModbusSlaveContext):
     def __init__(self):
-        # 메모리 초기화
-        gc.collect()
-        
-        # 각 데이터 블록에 대한 메모리 공간 생성
-        values = [0] * 1000
-        di_values = deepcopy(values)
-        co_values = deepcopy(values)
-        hr_values = deepcopy(values)
-        ir_values = deepcopy(values)
-        
         super().__init__(
-            di=CustomModbusSequentialDataBlock(0, di_values),
-            co=CustomModbusSequentialDataBlock(0, co_values),
-            hr=CustomModbusSequentialDataBlock(0, hr_values),
-            ir=CustomModbusSequentialDataBlock(0, ir_values)
+            di=CustomModbusSequentialDataBlock(0, [0]*1000),
+            co=CustomModbusSequentialDataBlock(0, [0]*1000),
+            hr=CustomModbusSequentialDataBlock(0, [0]*1000),
+            ir=CustomModbusSequentialDataBlock(0, [0]*1000)
         )
-        
         self.TIME_SYNC_ADDRESS = 900
-        
-        # 메모리 정리 후 시간 동기화
-        gc.collect()
         self.update_time()
-
-        # 소켓 통신 관련 초기화
-        self.socket_path = '/tmp/modbus_data.sock'
-        if os.path.exists(self.socket_path):
-            os.unlink(self.socket_path)
-        self.data_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        self.data_socket.bind(self.socket_path)
-        self.data_socket.listen(1)
-        self.data_socket.setblocking(False)
-
     
     def update_time(self):
         """현재 시간을 레지스터에 업데이트 (900-905 주소 사용)"""
@@ -689,10 +664,14 @@ class CustomModbusSlaveContext(ModbusSlaveContext):
             now.minute, # 904: 분
             now.second  # 905: 초
         ]
-        # deepcopy를 사용하여 시간 데이터 복사하고 setValues 직접 호출
-        self.setValues(3, self.TIME_SYNC_ADDRESS, deepcopy(time_values))
-        logger.info(f"시간 동기화 데이터 업데이트: {now.strftime('%Y-%m-%d %H:%M:%S')}")
-        gc.collect()  # 시간 업데이트 후 메모리 정리
+        # 시간 데이터를 900번지에 저장
+        try:
+            # 홀딩 레지스터에 시간 데이터 저장
+            self.setValues(3, self.TIME_SYNC_ADDRESS, list(time_values.copy()))
+            #self.store['hr'].setValues(self.TIME_SYNC_ADDRESS, time_values)
+            logger.info(f"시간 동기화 완료: {time_values}")
+        except Exception as e:
+            logger.error(f"시간 동기화 중 오류 발생: {e}")
 
 # 서버 실행 함수
 async def run_server():
@@ -706,7 +685,6 @@ async def run_server():
     identity.MajorMinorRevision = '1.0'
     
     logger.info("Starting Modbus TCP GasCabinet Server...")
-    # 두 서버를 동시에 실행
     await asyncio.gather(
         StartAsyncTcpServer(
             context=context,
