@@ -117,3 +117,385 @@
     },
     "timestamp": "2025-02-01 09:10:00"
   }
+
+  {
+    "plc_data": {
+      "bunker_id": 1,
+      "stocker_id": 1,
+      "gas_types": [
+        4,
+        4,
+        4,
+        3,
+        4
+      ],
+      "alarm_code": 141,
+      "axis_data": {
+        "x_position": 23,
+        "z_position": 72,
+        "cap_remove_torque": 1,
+        "cap_set_torque": 44
+      },
+      "barcodes": {
+        "port_a": "I9CU34FML0BQCFQKJTRL3BP5DTP3ZJ",
+        "port_b": "HZJ92U1LWPU4OCVBSGGK65WLKC8XOT"
+      },
+      "port_gas_types": {
+        "port_a": [
+          3,
+          3,
+          2,
+          3,
+          2
+        ],
+        "port_b": [
+          2,
+          4,
+          5,
+          5,
+          3
+        ]
+      }
+    },
+    "bit_data": {
+      "basic_signals": {
+        "emg_signal": true,
+        "heart_bit": true,
+        "run_stop": false,
+        "server_connected": false,
+        "t_lamp_red": false,
+        "t_lamp_yellow": false,
+        "t_lamp_green": false,
+        "touch_manual": false
+      },
+      "cylinder_door_status": {
+        "[A]porta_cylinder": false,
+        "[B]portb_cylinder": true,
+        "[A]worker_door_open": false,
+        "[A]worker_door_close": false,
+        "[A]bunker_door_open": true,
+        "[A]bunker_door_close": true,
+        "[B]worker_door_open": true,
+        "[B]worker_door_close": true,
+        "[B]bunker_door_open": true,
+        "[B]bunker_door_close": false
+      },
+      "port_a_status": {
+        "signal_0": true,
+        "signal_1": false,
+        "signal_2": false,
+        "signal_3": false,
+        "signal_4": false,
+        "signal_5": false,
+        "signal_6": true,
+        "signal_7": true,
+        "signal_8": false,
+        "signal_9": true,
+        "signal_10": true,
+        "signal_11": true,
+        "signal_12": false,
+        "signal_13": true,
+        "signal_14": false,
+        "signal_15": false
+      },
+      "port_a_detail": {
+        "signal_0": true,
+        "signal_1": true,
+        "signal_2": false,
+        "signal_3": true,
+        "signal_4": true,
+        "signal_5": true,
+        "signal_6": true,
+        "signal_7": false,
+        "signal_8": true,
+        "signal_9": false
+      },
+      "port_b_status": {
+        "signal_0": true,
+        "signal_1": false,
+        "signal_2": true,
+        "signal_3": false,
+        "signal_4": true,
+        "signal_5": false,
+        "signal_6": false,
+        "signal_7": false,
+        "signal_8": true,
+        "signal_9": true,
+        "signal_10": false,
+        "signal_11": false,
+        "signal_12": false,
+        "signal_13": true,
+        "signal_14": false,
+        "signal_15": true
+      },
+      "port_b_detail": {
+        "signal_0": false,
+        "signal_1": false,
+        "signal_2": false,
+        "signal_3": true,
+        "signal_4": false,
+        "signal_5": false,
+        "signal_6": false,
+        "signal_7": true,
+        "signal_8": false,
+        "signal_9": true
+      }
+    },
+    "timestamp": "2025-02-05 09:51:48"
+  }
+
+  {
+    "plc_data": {
+      "bunker_id": 1,
+      "stocker_id": 1,
+      "gas_types": [
+        1,
+        5,
+        4,
+        3,
+        3
+      ],
+      "alarm_code": 241,
+      "axis_data": {
+        "x_position": 77,
+        "z_position": 97,
+        "cap_remove_torque": 38,
+        "cap_set_torque": 15
+      },
+      "barcodes": {
+        "port_a": "1Z0I2SQATLS3P63L0W9VIACVR71XBE",
+        "port_b": "8DKOI6DBIGSJ7QNFQKW0386YNAAKPQ"
+      },
+      "port_gas_types": {
+        "port_a": [
+          2,
+          5,
+          4,
+          3,
+          3
+        ],
+        "port_b": [
+          5,
+          3,
+          1,
+          1,
+          5
+        ]
+      }
+    },
+    "bit_data": {
+      "basic_signals": {
+        "emg_signal": true,
+        "heart_bit": false,
+        "run_stop": true,
+        "server_connected": false,
+        "t_lamp_red": false,
+        "t_lamp_yellow": false,
+        "t_lamp_green": false,
+        "touch_manual": false
+      },
+      "cylinder_door_status": {
+        "[A]porta_cylinder": false,
+        "[B]portb_cylinder": false,
+        "[A]worker_door_open": true,
+        "[A]worker_door_close": false,
+        "[A]bunker_door_open": true,
+        "[A]bunker_door_close": true,
+        "[B]worker_door_open": false,
+        "[B]worker_door_close": false,
+        "[B]bunker_door_open": true,
+        "[B]bunker_door_close": false
+      },
+      "port_a_status": {
+        "[A] Port 보호캡 분리 완료": true,
+        "[A] Port 보호캡 체결 완료": true,
+        "[A] Worker Door Open 완료": false,
+        "[A] Worker Door Close 완료": false,
+        "[A] Worker 투입 Ready": false,
+        "[A] Worker 투입 Complete": false,
+        "[A] Worker 배출 Ready": false,
+        "[A] Worker 배출 Complete": true,
+        "[A] Bunker Door Open 완료": false,
+        "[A] Bunker Door Close 완료": false,
+        "[A] Bunker 투입 Ready": false,
+        "[A] Bunker 투입 Complete": true,
+        "[A] Bunker 배출 Ready": true,
+        "[A] Bunker 배출 Complete": false,
+        "[A] Cylinder Align 진행중": true,
+        "[A] Cylinder Align 완료": false
+      },
+      "port_a_detail": {
+        "[A] Cap Open 진행중": false,
+        "[A] Cap Close 진행중": false,
+        "[A] Cylinder X축 이동중": false,
+        "[A] Cylinder X축 이동완료": false,
+        "[A] Cap 위치 찾는중": false,
+        "[A] Cylinder Neck 위치 찾는중": true,
+        "[A] Worker door Open 진행중": false,
+        "[A] Worker door Close 진행중": true,
+        "[A] Bunker door Open 진행중": true,
+        "[A] Bunker door Close 진행중": true
+      },
+      "port_b_status": {
+        "[B] Port 보호캡 분리 완료": false,
+        "[B] Port 보호캡 체결 완료": true,
+        "[B] Worker Door Open 완료": true,
+        "[B] Worker Door Close 완료": false,
+        "[B] Worker 투입 Ready": true,
+        "[B] Worker 투입 Complete": false,
+        "[B] Worker 배출 Ready": true,
+        "[B] Worker 배출 Complete": false,
+        "[B] Bunker Door Open 완료": true,
+        "[B] Bunker Door Close 완료": false,
+        "[B] Bunker 투입 Ready": false,
+        "[B] Bunker 투입 Complete": true,
+        "[B] Bunker 배출 Ready": false,
+        "[B] Bunker 배출 Complete": true,
+        "[B] Cylinder Align 진행중": false,
+        "[B] Cylinder Align 완료": false
+      },
+      "port_b_detail": {
+        "[B] Cap Open 진행중": false,
+        "[B] Cap Close 진행중": false,
+        "[B] Cylinder X축 이동중": true,
+        "[B] Cylinder X축 이동완료": false,
+        "[B] Cap 위치 찾는중": false,
+        "[B] Cylinder Neck 위치 찾는중": false,
+        "[B] Worker door Open 진행중": true,
+        "[B] Worker door Close 진행중": false,
+        "[B] Bunker door Open 진행중": false,
+        "[B] Bunker door Close 진행중": false
+      }
+    },
+    "timestamp": "2025-02-05 11:00:51"
+  }
+
+  {
+    "plc_data": {
+      "bunker_id": 1,
+      "stocker_id": 1,
+      "gas_type": [
+        1,
+        5,
+        4,
+        3,
+        3
+      ],
+      "system_status": {
+        "alarm_code": 241,
+        "alarm_message": "Unknown Alarm Code: 241"
+      },
+      "position": {
+        "x_axis": 77,
+        "z_axis": 97
+      },
+      "torque": {
+        "cap_open": 38,
+        "cap_close": 15
+      },
+      "port_a": {
+        "barcode": "1Z0I2SQATLS3P63L0W9VIACVR71XBE",
+        "gas_type": [
+          2,
+          5,
+          4,
+          3,
+          3
+        ]
+      },
+      "port_b": {
+        "barcode": "8DKOI6DBIGSJ7QNFQKW0386YNAAKPQ",
+        "gas_type": [
+          5,
+          3,
+          1,
+          1,
+          5
+        ]
+      }
+    },
+    "bit_data": {
+      "basic_signals": {
+        "EMG Signal": false,
+        "Heart Bit": true,
+        "Run/Stop Signal": false,
+        "Server Connected Bit": false,
+        "T-LAMP RED": false,
+        "T-LAMP YELLOW": true,
+        "T-LAMP GREEN": false,
+        "Touch 수동동작中 Signal": true
+      },
+      "door_status": {
+        "port_a_cylinder": false,
+        "port_b_cylinder": false,
+        "port_a_worker_door_open": false,
+        "port_a_worker_door_close": true,
+        "port_a_bunker_door_open": true,
+        "port_a_bunker_door_close": true,
+        "port_b_worker_door_open": false,
+        "port_b_worker_door_close": false,
+        "port_b_bunker_door_open": false,
+        "port_b_bunker_door_close": false
+      },
+      "port_a_status": {
+        "port_a_cap_open_complete": false,
+        "port_a_cap_close_complete": false,
+        "port_a_worker_door_open_complete": false,
+        "port_a_worker_door_close_complete": false,
+        "port_a_worker_input_ready": true,
+        "port_a_worker_input_complete": false,
+        "port_a_worker_output_ready": false,
+        "port_a_worker_output_complete": false,
+        "port_a_bunker_door_open_complete": false,
+        "port_a_bunker_door_close_complete": false,
+        "port_a_bunker_input_ready": true,
+        "port_a_bunker_input_complete": true,
+        "port_a_bunker_output_ready": false,
+        "port_a_bunker_output_complete": false,
+        "port_a_cylinder_align_in_progress": false,
+        "port_a_cylinder_align_complete": true
+      },
+      "port_a_progress": {
+        "port_a_cap_opening": true,
+        "port_a_cap_closing": true,
+        "port_a_x_axis_moving": true,
+        "port_a_x_axis_complete": true,
+        "port_a_finding_cap": false,
+        "port_a_finding_cylinder_neck": true,
+        "port_a_worker_door_opening": false,
+        "port_a_worker_door_closing": false,
+        "port_a_bunker_door_opening": true,
+        "port_a_bunker_door_closing": true
+      },
+      "port_b_status": {
+        "port_b_cap_open_complete": false,
+        "port_b_cap_close_complete": false,
+        "port_b_worker_door_open_complete": true,
+        "port_b_worker_door_close_complete": false,
+        "port_b_worker_input_ready": false,
+        "port_b_worker_input_complete": false,
+        "port_b_worker_output_ready": false,
+        "port_b_worker_output_complete": false,
+        "port_b_bunker_door_open_complete": false,
+        "port_b_bunker_door_close_complete": true,
+        "port_b_bunker_input_ready": true,
+        "port_b_bunker_input_complete": false,
+        "port_b_bunker_output_ready": false,
+        "port_b_bunker_output_complete": true,
+        "port_b_cylinder_align_in_progress": false,
+        "port_b_cylinder_align_complete": false
+      },
+      "port_b_progress": {
+        "port_b_cap_opening": false,
+        "port_b_cap_closing": true,
+        "port_b_x_axis_moving": false,
+        "port_b_x_axis_complete": true,
+        "port_b_finding_cap": false,
+        "port_b_finding_cylinder_neck": true,
+        "port_b_worker_door_opening": false,
+        "port_b_worker_door_closing": false,
+        "port_b_bunker_door_opening": false,
+        "port_b_bunker_door_closing": false
+      }
+    }
+  }

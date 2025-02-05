@@ -132,7 +132,7 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
             plc_data = {
                 'bunker_id': values[0],         # Bunker ID
                 'stocker_id': values[1],        # Stocker ID
-                'gas_types': values[2:7].copy(),# Gas Stocker 가스 종류
+                'gas_types': values[2:7],       # Gas Stocker 가스 종류 values[2:7].copy()
                 'alarm_code': values[8],        # Stocker Alarm Code
                 'axis_data': {
                     'x_position': values[10],   # X축 현재값
@@ -175,22 +175,82 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
                     port_b_bunker_door_open=bool(bit_values[5] & (1 << 8)),
                     port_b_bunker_door_close=bool(bit_values[5] & (1 << 9))
                 ),
-                'port_a_status': {  # Word 110
-                    f'signal_{i}': bool(bit_values[10] & (1 << i))
-                    for i in range(16)
-                },
-                'port_a_detail': {  # Word 111
-                    f'signal_{i}': bool(bit_values[11] & (1 << i))
-                    for i in range(10)
-                },
-                'port_b_status': {  # Word 115
-                    f'signal_{i}': bool(bit_values[15] & (1 << i))
-                    for i in range(16)
-                },
-                'port_b_detail': {  # Word 116
-                    f'signal_{i}': bool(bit_values[16] & (1 << i))
-                    for i in range(10)
-                }
+                'port_a_status': dict(  # Word 110
+                    port_a_status1 = bool(bit_values[10] & (1 << 0)),
+                    port_a_status2 = bool(bit_values[10] & (1 << 1)),
+                    port_a_status3 = bool(bit_values[10] & (1 << 2)),
+                    port_a_status4 = bool(bit_values[10] & (1 << 3)),
+                    port_a_status5 = bool(bit_values[10] & (1 << 4)),
+                    port_a_status6 = bool(bit_values[10] & (1 << 5)),
+                    port_a_status7 = bool(bit_values[10] & (1 << 6)),
+                    port_a_status8 = bool(bit_values[10] & (1 << 7)),
+                    port_a_status9 = bool(bit_values[10] & (1 << 8)),
+                    port_a_status10 = bool(bit_values[10] & (1 << 9)),
+                    port_a_status11 = bool(bit_values[10] & (1 << 10)),
+                    port_a_status12 = bool(bit_values[10] & (1 << 11)),
+                    port_a_status13 = bool(bit_values[10] & (1 << 12)),
+                    port_a_status14 = bool(bit_values[10] & (1 << 13)),
+                    port_a_status15 = bool(bit_values[10] & (1 << 14)),
+                    port_a_status16 = bool(bit_values[10] & (1 << 15)),
+                ),
+                'port_a_detail': dict(  # Word 111
+                    port_a_detail1 = bool(bit_values[11] & (1 << 0)),
+                    port_a_detail2 = bool(bit_values[11] & (1 << 1)),
+                    port_a_detail3 = bool(bit_values[11] & (1 << 2)),
+                    port_a_detail4 = bool(bit_values[11] & (1 << 3)),
+                    port_a_detail5 = bool(bit_values[11] & (1 << 4)),
+                    port_a_detail6 = bool(bit_values[11] & (1 << 5)),
+                    port_a_detail7 = bool(bit_values[11] & (1 << 6)),
+                    port_a_detail8 = bool(bit_values[11] & (1 << 7)),
+                    port_a_detail9 = bool(bit_values[11] & (1 << 8)),
+                    port_a_detail10 = bool(bit_values[11] & (1 << 9))
+                ),
+                'port_b_status': dict(  # Word 115
+                    port_b_status1 = bool(bit_values[15] & (1 << 0)),
+                    port_b_status2 = bool(bit_values[15] & (1 << 1)),
+                    port_b_status3 = bool(bit_values[15] & (1 << 2)),
+                    port_b_status4 = bool(bit_values[15] & (1 << 3)),
+                    port_b_status5 = bool(bit_values[15] & (1 << 4)),
+                    port_b_status6 = bool(bit_values[15] & (1 << 5)),
+                    port_b_status7 = bool(bit_values[15] & (1 << 6)),
+                    port_b_status8 = bool(bit_values[15] & (1 << 7)),
+                    port_b_status9 = bool(bit_values[15] & (1 << 8)),
+                    port_b_status10 = bool(bit_values[15] & (1 << 9)),
+                    port_b_status11 = bool(bit_values[15] & (1 << 10)),
+                    port_b_status12 = bool(bit_values[15] & (1 << 11)),
+                    port_b_status13 = bool(bit_values[15] & (1 << 12)),
+                    port_b_status14 = bool(bit_values[15] & (1 << 13)),
+                    port_b_status15 = bool(bit_values[15] & (1 << 14)),
+                    port_b_status16 = bool(bit_values[15] & (1 << 15)),
+                ),
+                'port_b_detail': dict(  # Word 116
+                    port_b_detail1 = bool(bit_values[16] & (1 << 0)),
+                    port_b_detail2 = bool(bit_values[16] & (1 << 1)),
+                    port_b_detail3 = bool(bit_values[16] & (1 << 2)),
+                    port_b_detail4 = bool(bit_values[16] & (1 << 3)),
+                    port_b_detail5 = bool(bit_values[16] & (1 << 4)),
+                    port_b_detail6 = bool(bit_values[16] & (1 << 5)),
+                    port_b_detail7 = bool(bit_values[16] & (1 << 6)),
+                    port_b_detail8 = bool(bit_values[16] & (1 << 7)),
+                    port_b_detail9 = bool(bit_values[16] & (1 << 8)),
+                    port_b_detail10 = bool(bit_values[16] & (1 << 9))
+                )
+                # 'port_a_status': {  # Word 110
+                #     f'signal_{i}': bool(bit_values[10] & (1 << i))
+                #     for i in range(16)
+                # },
+                # 'port_a_detail': {  # Word 111
+                #     f'signal_{i}': bool(bit_values[11] & (1 << i))
+                #     for i in range(10)
+                # },
+                # 'port_b_status': {  # Word 115
+                #     f'signal_{i}': bool(bit_values[15] & (1 << i))
+                #     for i in range(16)
+                # },
+                # 'port_b_detail': {  # Word 116
+                #     f'signal_{i}': bool(bit_values[16] & (1 << i))
+                #     for i in range(10)
+                # }
             }
 
             return {
@@ -213,10 +273,6 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
 
         # 유효성 검사: bunker_id와 stocker_id 확인
         if bunker_id <= 0 or stocker_id <= 0:
-            # self.logger.warning(
-            #     f"Invalid bunker_id ({bunker_id}) or stocker_id ({stocker_id}). "
-            #     "Skipping log and DB save."
-            # )
             return  # 조기 종료
 
         try:
@@ -264,27 +320,93 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
                         'touch_manual': bool(bit_values[0] & (1 << 7))
                     },
                     'cylinder_door_status': { # Word 105
-                        'porta_cylinder': bool(bit_values[5] & (1 << 0)),
-                        'portb_cylinder': bool(bit_values[5] & (1 << 1)),
-                        'worker_door_open': bool(bit_values[5] & (1 << 2)),
-                        'worker_door_close': bool(bit_values[5] & (1 << 3))
+                        '[A]porta_cylinder': bool(bit_values[5] & (1 << 0)),
+                        '[B]portb_cylinder': bool(bit_values[5] & (1 << 1)),
+                        '[A]worker_door_open': bool(bit_values[5] & (1 << 2)),
+                        '[A]worker_door_close': bool(bit_values[5] & (1 << 3)),
+                        '[A]bunker_door_open': bool(bit_values[5] & (1 << 4)),
+                        '[A]bunker_door_close': bool(bit_values[5] & (1 << 5)),
+                        '[B]worker_door_open': bool(bit_values[5] & (1 << 6)),
+                        '[B]worker_door_close': bool(bit_values[5] & (1 << 7)),
+                        '[B]bunker_door_open': bool(bit_values[5] & (1 << 8)),
+                        '[B]bunker_door_close': bool(bit_values[5] & (1 << 9))
                     },
                     'port_a_status': {  # Word 110
-                        f'signal_{i}': bool(bit_values[10] & (1 << i))
-                        for i in range(16)
+                        '[A] Port 보호캡 분리 완료': bool(bit_values[10] & (1 << 0)),
+                        '[A] Port 보호캡 체결 완료': bool(bit_values[10] & (1 << 1)),
+                        '[A] Worker Door Open 완료': bool(bit_values[10] & (1 << 2)),
+                        '[A] Worker Door Close 완료': bool(bit_values[10] & (1 << 3)),
+                        '[A] Worker 투입 Ready': bool(bit_values[10] & (1 << 4)),
+                        '[A] Worker 투입 Complete': bool(bit_values[10] & (1 << 5)),
+                        '[A] Worker 배출 Ready': bool(bit_values[10] & (1 << 6)),
+                        '[A] Worker 배출 Complete': bool(bit_values[10] & (1 << 7)),
+                        '[A] Bunker Door Open 완료': bool(bit_values[10] & (1 << 8)),
+                        '[A] Bunker Door Close 완료': bool(bit_values[10] & (1 << 9)),
+                        '[A] Bunker 투입 Ready': bool(bit_values[10] & (1 << 10)),
+                        '[A] Bunker 투입 Complete': bool(bit_values[10] & (1 << 11)),
+                        '[A] Bunker 배출 Ready': bool(bit_values[10] & (1 << 12)),
+                        '[A] Bunker 배출 Complete': bool(bit_values[10] & (1 << 13)),
+                        '[A] Cylinder Align 진행중': bool(bit_values[10] & (1 << 14)),
+                        '[A] Cylinder Align 완료': bool(bit_values[10] & (1 << 15))
                     },
                     'port_a_detail': {  # Word 111
-                        f'signal_{i}': bool(bit_values[11] & (1 << i))
-                        for i in range(10)
+                        '[A] Cap Open 진행중': bool(bit_values[11] & (1 << 0)),
+                        '[A] Cap Close 진행중': bool(bit_values[11] & (1 << 1)),
+                        '[A] Cylinder X축 이동중': bool(bit_values[11] & (1 << 2)),
+                        '[A] Cylinder X축 이동완료': bool(bit_values[11] & (1 << 3)),
+                        '[A] Cap 위치 찾는중': bool(bit_values[11] & (1 << 4)),
+                        '[A] Cylinder Neck 위치 찾는중': bool(bit_values[11] & (1 << 5)),
+                        '[A] Worker door Open 진행중': bool(bit_values[11] & (1 << 6)),
+                        '[A] Worker door Close 진행중': bool(bit_values[11] & (1 << 7)),
+                        '[A] Bunker door Open 진행중': bool(bit_values[11] & (1 << 8)),
+                        '[A] Bunker door Close 진행중': bool(bit_values[11] & (1 << 9))
                     },
                     'port_b_status': {  # Word 115
-                        f'signal_{i}': bool(bit_values[15] & (1 << i))
-                        for i in range(16)
+                        '[B] Port 보호캡 분리 완료': bool(bit_values[15] & (1 << 0)),
+                        '[B] Port 보호캡 체결 완료': bool(bit_values[15] & (1 << 1)),
+                        '[B] Worker Door Open 완료': bool(bit_values[15] & (1 << 2)),
+                        '[B] Worker Door Close 완료': bool(bit_values[15] & (1 << 3)),
+                        '[B] Worker 투입 Ready': bool(bit_values[15] & (1 << 4)),
+                        '[B] Worker 투입 Complete': bool(bit_values[15] & (1 << 5)),
+                        '[B] Worker 배출 Ready': bool(bit_values[15] & (1 << 6)),
+                        '[B] Worker 배출 Complete': bool(bit_values[15] & (1 << 7)),
+                        '[B] Bunker Door Open 완료': bool(bit_values[15] & (1 << 8)),
+                        '[B] Bunker Door Close 완료': bool(bit_values[15] & (1 << 9)),
+                        '[B] Bunker 투입 Ready': bool(bit_values[15] & (1 << 10)),
+                        '[B] Bunker 투입 Complete': bool(bit_values[15] & (1 << 11)),
+                        '[B] Bunker 배출 Ready': bool(bit_values[15] & (1 << 12)),
+                        '[B] Bunker 배출 Complete': bool(bit_values[15] & (1 << 13)),
+                        '[B] Cylinder Align 진행중': bool(bit_values[15] & (1 << 14)),
+                        '[B] Cylinder Align 완료': bool(bit_values[15] & (1 << 15))
                     },
                     'port_b_detail': {  # Word 116
-                        f'signal_{i}': bool(bit_values[16] & (1 << i))
-                        for i in range(10)
+                        '[B] Cap Open 진행중': bool(bit_values[16] & (1 << 0)),
+                        '[B] Cap Close 진행중': bool(bit_values[16] & (1 << 1)),
+                        '[B] Cylinder X축 이동중': bool(bit_values[16] & (1 << 2)),
+                        '[B] Cylinder X축 이동완료': bool(bit_values[16] & (1 << 3)),
+                        '[B] Cap 위치 찾는중': bool(bit_values[16] & (1 << 4)),
+                        '[B] Cylinder Neck 위치 찾는중': bool(bit_values[16] & (1 << 5)),
+                        '[B] Worker door Open 진행중': bool(bit_values[16] & (1 << 6)),
+                        '[B] Worker door Close 진행중': bool(bit_values[16] & (1 << 7)),
+                        '[B] Bunker door Open 진행중': bool(bit_values[16] & (1 << 8)),
+                        '[B] Bunker door Close 진행중': bool(bit_values[16] & (1 << 9))
                     }
+                    # 'port_a_status': {  # Word 110
+                    #     f'signal_{i}': bool(bit_values[10] & (1 << i))
+                    #     for i in range(16)
+                    # },
+                    # 'port_a_detail': {  # Word 111
+                    #     f'signal_{i}': bool(bit_values[11] & (1 << i))
+                    #     for i in range(10)
+                    # },
+                    # 'port_b_status': {  # Word 115
+                    #     f'signal_{i}': bool(bit_values[15] & (1 << i))
+                    #     for i in range(16)
+                    # },
+                    # 'port_b_detail': {  # Word 116
+                    #     f'signal_{i}': bool(bit_values[16] & (1 << i))
+                    #     for i in range(10)
+                    # }
                 }
 
                 # 통합 데이터 생성

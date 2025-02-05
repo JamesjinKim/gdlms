@@ -220,3 +220,188 @@
   },
   "timestamp": "2025-02-05 08:50:34"
 }
+{
+  "plc_data": {
+    "bunker_id": 1,
+    "cabinet_id": 1,
+    "gas_type": [
+      36,
+      28,
+      10,
+      46,
+      31
+    ],
+    "status": {
+      "machine_code": 137,
+      "alarm_code": 120,
+      "alarm_message": "Unknown Alarm Code"
+    },
+    "sensors": {
+      "pt1a": 517,
+      "pt2a": 835,
+      "pt1b": 439,
+      "pt2b": 95,
+      "pt3": 605,
+      "pt4": 463,
+      "weight_a": 91,
+      "weight_b": 43
+    },
+    "heaters": {
+      "jacket_heater_a": 7,
+      "line_heater_a": 54,
+      "jacket_heater_b": 94,
+      "line_heater_b": 8
+    },
+    "port_a": {
+      "cga_torque": 68,
+      "cap_torque": 87,
+      "cylinder_position": 36,
+      "barcode": "CTQEFYK0P14WTXXKRKH0HZVXK01UPX",
+      "gas_type": [
+        8,
+        45,
+        6,
+        3,
+        50
+      ]
+    },
+    "port_b": {
+      "cga_torque": 71,
+      "cap_torque": 56,
+      "cylinder_position": 88,
+      "barcode": "BMZBLDMI9L92MGDGXZTCBSLHYX22XU",
+      "gas_type": [
+        50,
+        45,
+        39,
+        20,
+        19
+      ]
+    }
+  },
+  "bit_data": {
+    "basic_signals": {
+      "EMG Signal": false,
+      "Heart Bit": false,
+      "Run/Stop Signal": true,
+      "Server Connected Bit": false,
+      "T-LAMP RED": true,
+      "T-LAMP YELLOW": true,
+      "T-LAMP GREEN": true,
+      "Touch 수동동작中 Signal": false
+    },
+    "av_status": {
+      "AV1A": true,
+      "AV2A": true,
+      "AV3A": false,
+      "AV4A": true,
+      "AV5A": true,
+      "AV1B": true,
+      "AV2B": false,
+      "AV3B": false,
+      "AV4B": true,
+      "AV5B": true,
+      "AV7": true,
+      "AV8": false,
+      "AV9": false
+    },
+    "heater_status": {
+      "JACKET HEATER A RELAY": false,
+      "LINE HEATER A RELAY": false,
+      "JACKET HEATER B RELAY": true,
+      "LINE HEATER B RELAY": true,
+      "GAS LEAK SHUT DOWN": false,
+      "VMB STOP SIGNAL": true,
+      "UV/IR SENSOR": true,
+      "HIGH TEMP SENSOR": false,
+      "SMOKE SENSOR": false
+    },
+    "port_operations": {
+      "[A] Port Insert Request": false,
+      "[A] Port Insert Complete": true,
+      "[A] Port Remove Request": true,
+      "[A] Port Remove Complete": false,
+      "[B] Port Insert Request": true,
+      "[B] Port Insert Complete": false,
+      "[B] Port Remove Request": false,
+      "[B] Port Remove Complete": false
+    },
+    "port_status": {
+      "[A] Port 실린더 유무": false,
+      "[B] Port 실린더 유무": true,
+      "Door Open 완료": false,
+      "Door Close 완료": true
+    },
+    "port_a_sequence": {
+      "[A] Close the Cylinder": false,
+      "[A] 1st Purge before Exchange": true,
+      "[A] Decompression Test": true,
+      "[A] 2nd Purge before Exchange": false,
+      "[A] Exchange Cylinder": true,
+      "[A] 1st Purge after Exchange": false,
+      "[A] Pressure Test": false,
+      "[A] 2nd Purge after Exchange": false,
+      "[A] Purge Completed": true,
+      "[A] Prepare to Supply": true,
+      "[A] Gas Supply AV3 Open/Close Choose": false,
+      "[A] Gas Supply": false,
+      "[A] Ready to Supply": false
+    },
+    "port_a_status": {
+      "[A] Cyclinder Ready": true,
+      "[A] CGA Disconnect Complete": false,
+      "[A] CGA Connect Complete": true,
+      "[A] Cylinder Valve Open Complete": true,
+      "[A] Cylinder Valve Close Complete": true,
+      "[A] Cylinder Valve Open Status": false,
+      "[A] Cylinder Lift Unit Ready": false,
+      "[A] Cylinder Lift Unit Moving Up": true,
+      "[A] Cylinder Lift Unit Moving Down": false,
+      "[A] CGA Separation In Progress": true,
+      "[A] CGA Connection In Progress": true,
+      "[A] Cylinder Cap Separation In Progress": true,
+      "[A] Cylinder Valve Open In Progress": true,
+      "[A] Cylinder Valve Close In Progress": false,
+      "[A] Cylinder Alignment In Progress": false,
+      "[A] Cylinder Turn In Progress": false
+    },
+    "port_b_sequence": {
+      "[B] Close the Cylinder": true,
+      "[B] 1st Purge before Exchange": true,
+      "[B] Decompression Test": false,
+      "[B] 2nd Purge before Exchange": true,
+      "[B] Exchange Cylinder": true,
+      "[B] 1st Purge after Exchange": false,
+      "[B] Pressure Test": true,
+      "[B] 2nd Purge after Exchange": true,
+      "[B] Purge Completed": false,
+      "[B] Prepare to Supply": false,
+      "[B] Gas Supply AV3 Open/Close Choose": true,
+      "[B] Gas Supply": true,
+      "[B] Ready to Supply": true
+    },
+    "port_b_status": {
+      "[B] Cylinder Ready": true,
+      "[B] CGA Disconnect Complete": true,
+      "[B] CGA Connect Complete": true,
+      "[B] Cylinder Valve Open Complete": false,
+      "[B] Cylinder Valve Close Complete": true,
+      "[B] Cylinder Valve Open Status": false,
+      "[B] Cylinder Lift Unit Ready": false,
+      "[B] Cylinder Lift Unit Moving Up": false,
+      "[B] Cylinder Lift Unit Moving Down": false,
+      "[B] CGA Separation In Progress": true,
+      "[B] CGA Connection In Progress": false,
+      "[B] Cylinder Cap Separation In Progress": true,
+      "[B] Cylinder Valve Open In Progress": true,
+      "[B] Cylinder Valve Close In Progress": true,
+      "[B] Cylinder Alignment In Progress": true,
+      "[B] Cylinder Turn In Progress": false
+    },
+    "port_b_complete": {
+      "[B] Cylinder Turn Complete": false,
+      "[B] Cylinder Clamp Complete": true,
+      "[B] CGA Connect Complete Status": true
+    }
+  }
+}
