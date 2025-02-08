@@ -1,13 +1,12 @@
 import sys
 from pathlib import Path
-from typing import Set
 sys.path.append(str(Path(__file__).parent.parent))
 from pymodbus.server import StartAsyncTcpServer
 from pymodbus.datastore import ModbusSequentialDataBlock, ModbusSlaveContext, ModbusServerContext
 from pymodbus.device import ModbusDeviceIdentification
 from logging.handlers import TimedRotatingFileHandler
 import logging
-import asyncio, time, json, datetime
+import asyncio, time, datetime
 import os
 from copy import deepcopy
 import gc

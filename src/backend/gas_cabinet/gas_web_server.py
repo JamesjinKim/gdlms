@@ -1,18 +1,13 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
-from fastapi.responses import HTMLResponse
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-import logging
-import asyncio
-import json
-import os
-from typing import Set, Dict
-from typing import Any, List, Optional
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from contextlib import asynccontextmanager
-from pymodbus.client import AsyncModbusTcpClient
-from datetime import datetime
-from gas_cabinet_alarm_code import gas_cabinet_alarm_code
+from fastapi.middleware.cors import CORSMiddleware
+import asyncio
 import uvicorn
+import logging
+import os
+from typing import Optional, Dict, List
+from pymodbus.client import AsyncModbusTcpClient
+from gas_cabinet_alarm_code import gas_cabinet_alarm_code
 
 # 로깅 설정
 logging.basicConfig(
@@ -20,206 +15,6 @@ logging.basicConfig(
     level=logging.INFO,
 )
 logger = logging.getLogger("GasWebServer")
-
-# HTML 템플릿 (이전과 동일하되 스타일과 기능을 개선)
-html = """
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Gas Cabinet Monitor</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            body { 
-                margin: 0;
-                padding: 20px;
-                font-family: Arial, sans-serif;
-                background: #f5f5f5;
-            }
-            .container { 
-                max-width: 1200px;
-                margin: 0 auto;
-                background: white;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }
-            h1 {
-                color: #333;
-                border-bottom: 2px solid #eee;
-                padding-bottom: 10px;
-            }
-            .status {
-                margin: 20px 0;
-                padding: 15px;
-                background: #f8f9fa;
-                border-radius: 4px;
-                border-left: 4px solid #6c757d;
-            }
-            .status span {
-                font-weight: bold;
-            }
-            .data-display {
-                background: #fff;
-                padding: 20px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                margin-top: 20px;
-            }
-            .data-display h3 {
-                color: #495057;
-                margin-top: 0;
-            }
-            pre {
-                white-space: pre-wrap;
-                word-wrap: break-word;
-                background: #f8f9fa;
-                padding: 15px;
-                border-radius: 4px;
-                border: 1px solid #e9ecef;
-                font-family: monospace;
-                font-size: 14px;
-            }
-            .connected { color: #28a745; }
-            .disconnected { color: #dc3545; }
-            .error { color: #dc3545; }
-            
-            /* 새로운 스타일 추가 */
-            .alarm {
-                background-color: #fff3cd;
-                border: 1px solid #ffeeba;
-                color: #856404;
-                padding: 10px;
-                margin-top: 10px;
-                border-radius: 4px;
-                display: none;
-            }
-            .indicator {
-                display: inline-block;
-                width: 10px;
-                height: 10px;
-                border-radius: 50%;
-                margin-right: 5px;
-            }
-            .indicator.on { background-color: #28a745; }
-            .indicator.off { background-color: #dc3545; }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>Gas Cabinet Monitoring System</h1>
-            <div class="status">
-                Connection Status: <span id="connection-status">Disconnected</span>
-            </div>
-            <div class="alarm" id="alarm-container">
-                <strong>Alarm:</strong> <span id="alarm-message"></span>
-            </div>
-            <div class="data-display">
-                <h3>Real-time Data:</h3>
-                <pre id="data-container">Waiting for data...</pre>
-            </div>
-        </div>
-
-        <script>
-            const ws = new WebSocket("ws://localhost:5001/ws/gas");
-            const status = document.getElementById('connection-status');
-            const dataContainer = document.getElementById('data-container');
-            const alarmContainer = document.getElementById('alarm-container');
-            const alarmMessage = document.getElementById('alarm-message');
-            
-            function formatData(data) {
-                let formatted = {
-                    plc_data: {
-                        bunker_id: data.plc_data.bunker_id,
-                        cabinet_id: data.plc_data.cabinet_id,
-                        gas_type: data.plc_data.gas_type,
-                        status: data.plc_data.status,
-                        sensors: data.plc_data.sensors,
-                        heaters: data.plc_data.heaters,
-                        port_a: data.plc_data.port_a,
-                        port_b: data.plc_data.port_b
-                    },
-                    bit_data: {
-                        basic_signals: data.bit_data.word_100.states,
-                        av_status: data.bit_data.word_101.states,
-                        heater_status: data.bit_data.word_102.states,
-                        port_operations: data.bit_data.word_103.states,
-                        port_status: data.bit_data.word_105.states,
-                        port_a_sequence: data.bit_data.word_110.states,
-                        port_a_status: data.bit_data.word_111.states,
-                        port_b_sequence: data.bit_data.word_115.states,
-                        port_b_status: data.bit_data.word_116 ? data.bit_data.word_116.states : {},
-                        port_b_complete: data.bit_data.word_117 ? data.bit_data.word_117.states : {}
-                    }
-                };
-                
-                return formatted;
-            }
-            
-            ws.onopen = () => {
-                console.log('WebSocket connection established');
-                status.textContent = 'Connected';
-                status.className = 'connected';
-            };
-
-            ws.onmessage = (event) => {
-                try {
-                    const rawData = event.data;
-                    const data = JSON.parse(rawData);
-                    
-                    console.log('Original data:', data);  // 원본 데이터 확인
-                    
-                    // 일단 간단히 포맷팅해서 확인
-                    const formattedData = formatData(data);
-                    console.log('Formatted data:', formattedData);  // 포맷팅된 데이터 확인
-                    
-                    dataContainer.textContent = JSON.stringify(formattedData, null, 2);
-                    
-                    // 알람 처리
-                    if (data.plc_data && data.plc_data.status && data.plc_data.status.alarm_code > 0) {
-                        alarmContainer.style.display = 'block';
-                        alarmMessage.textContent = data.plc_data.status.alarm_message;
-                    } else {
-                        alarmContainer.style.display = 'none';
-                    }
-                } catch (error) {
-                    console.error('데이터 처리 중 오류:', error);
-                    console.error('받은 원본 데이터:', event.data);
-                }
-            };
-
-            ws.onclose = () => {
-                status.textContent = 'Disconnected';
-                status.className = 'disconnected';
-                // 자동 재연결 시도
-                setTimeout(() => {
-                    ws = new WebSocket("ws://localhost:5001/ws");
-                }, 3000);
-            };
-
-            ws.onerror = (error) => {
-                status.textContent = 'Error';
-                status.className = 'error';
-                console.error('WebSocket error:', error);
-            };
-            
-            function reconnect() {
-                if (ws.readyState === WebSocket.CLOSED) {
-                    status.textContent = 'Reconnecting...';
-                    ws = new WebSocket("ws://localhost:5001/ws");
-                }
-            }
-            
-            // 페이지 종료 시 연결 정리
-            window.addEventListener('beforeunload', () => {
-                if (ws) {
-                    ws.close();
-                }
-            });
-        </script>
-    </body>
-</html>
-"""
 
 class ModbusDataClient:
     def __init__(self):
@@ -597,33 +392,31 @@ async def shutdown():
         await modbus_client.close()
     logger.info("Application shutdown complete")
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # 시작 시 실행
+    await startup()
+    yield
+    # 종료 시 실행
+    await shutdown()
+
 app = FastAPI(
     title="Gas Cabinet Web Server",
-    description="Gas Cabinet Monitoring System"
+    description="Gas Cabinet Monitoring System",
+    lifespan=lifespan
 )
-# 대신 이것으로 교체
-#router = APIRouter()
 
-# CORS 미들웨어 설정 삭제
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"]
-# )
-
-@app.on_event("startup")
-async def on_startup():
-    await startup()
-
-@app.on_event("shutdown")
-async def on_shutdown():
-    await shutdown()    
-
-@app.get("/", response_class=HTMLResponse)
-async def get():
-    return html
+# CORS 미들웨어 설정
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",  # Vue 개발 서버
+        "http://localhost:5001"   # FastAPI 서버
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 @app.websocket("/ws/gas")
 async def websocket_endpoint(websocket: WebSocket):
@@ -649,9 +442,9 @@ async def websocket_endpoint(websocket: WebSocket):
 if __name__ == "__main__":
     try:
         uvicorn.run(
-            "gas_web_server:app",  # 이 부분이 중요: 모듈:app 형식으로 지정
+            "gas_web_server:app", 
             host="0.0.0.0",
-            port=5002,             # WebSocket 전용 포트로 변경 권장
+            port=5001,  # 포트 5001로 변경
             log_level="info"
         )
     except Exception as e:
