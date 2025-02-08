@@ -11,6 +11,9 @@ from contextlib import asynccontextmanager
 from pymodbus.client import AsyncModbusTcpClient
 from stocker_alarm_codes import stocker_alarm_code
 import uvicorn
+import signal
+import sys
+from contextlib import asynccontextmanager
 
 # 로깅 설정
 logging.basicConfig(
@@ -18,214 +21,6 @@ logging.basicConfig(
     level=logging.INFO,
 )
 logger = logging.getLogger("StockerWebServer")
-
-# HTML 템플릿 (이전과 동일하되 스타일과 기능을 개선)
-html = """
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Stocker Monitor</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            body { 
-                margin: 0;
-                padding: 20px;
-                font-family: Arial, sans-serif;
-                background: #f5f5f5;
-            }
-            .container { 
-                max-width: 1200px;
-                margin: 0 auto;
-                background: white;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }
-            h1 {
-                color: #333;
-                border-bottom: 2px solid #eee;
-                padding-bottom: 10px;
-            }
-            .status {
-                margin: 20px 0;
-                padding: 15px;
-                background: #f8f9fa;
-                border-radius: 4px;
-                border-left: 4px solid #6c757d;
-            }
-            .status span {
-                font-weight: bold;
-            }
-            .data-display {
-                background: #fff;
-                padding: 20px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                margin-top: 20px;
-            }
-            .data-display h3 {
-                color: #495057;
-                margin-top: 0;
-            }
-            pre {
-                white-space: pre-wrap;
-                word-wrap: break-word;
-                background: #f8f9fa;
-                padding: 15px;
-                border-radius: 4px;
-                border: 1px solid #e9ecef;
-                font-family: monospace;
-                font-size: 14px;
-            }
-            .connected { color: #28a745; }
-            .disconnected { color: #dc3545; }
-            .error { color: #dc3545; }
-            
-            /* 새로운 스타일 추가 */
-            .alarm {
-                background-color: #fff3cd;
-                border: 1px solid #ffeeba;
-                color: #856404;
-                padding: 10px;
-                margin-top: 10px;
-                border-radius: 4px;
-                display: none;
-            }
-            .indicator {
-                display: inline-block;
-                width: 10px;
-                height: 10px;
-                border-radius: 50%;
-                margin-right: 5px;
-            }
-            .indicator.on { background-color: #28a745; }
-            .indicator.off { background-color: #dc3545; }
-
-            .bit-data {
-                margin-top: 20px;
-                padding: 15px;
-                background: #f8f9fa;
-                border-left: 4px solid #28a745;
-            }
-            .bit-status {
-                display: inline-block;
-                margin-right: 10px;
-                padding: 2px 6px;
-                border-radius: 3px;
-                background: #e9ecef;
-            }
-            .bit-true { color: #28a745; }
-            .bit-false { color: #dc3545; }
-
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>Stocker Monitoring System</h1>
-            <div class="status">
-                Connection Status: <span id="connection-status">Disconnected</span>
-            </div>
-            <div class="alarm" id="alarm-container">
-                <strong>Alarm:</strong> <span id="alarm-message"></span>
-            </div>
-            <div class="data-display">
-                <h3>Real-time Data:</h3>
-                <pre id="data-container">Waiting for data...</pre>
-            </div>
-        </div>
-
-        <script>
-            const ws = new WebSocket("ws://localhost:5002/ws/stocker");
-            const status = document.getElementById('connection-status');
-            const dataContainer = document.getElementById('data-container');
-            const alarmContainer = document.getElementById('alarm-container');
-            const alarmMessage = document.getElementById('alarm-message');
-            
-            function formatData(data) {
-                let formatted = {
-                    plc_data: {
-                        bunker_id: data.plc_data.bunker_id,
-                        stocker_id: data.plc_data.stocker_id,
-                        gas_type: data.plc_data.gas_type,
-                        system_status: data.plc_data.system_status,
-                        position: data.plc_data.position,
-                        torque: data.plc_data.torque,
-                        port_a: data.plc_data.port_a,
-                        port_b: data.plc_data.port_b
-                    },
-                    bit_data: {
-                        basic_signals: data.bit_data.word_100.states,
-                        door_status: data.bit_data.word_105.states,
-                        port_a_status: data.bit_data.word_110.states,
-                        port_a_progress: data.bit_data.word_111.states,
-                        port_b_status: data.bit_data.word_115.states,
-                        port_b_progress: data.bit_data.word_116.states
-                    }
-                };
-                return formatted;
-            }
-            
-            ws.onopen = () => {
-                console.log('WebSocket connection established');
-                status.textContent = 'Connected';
-                status.className = 'connected';
-            };
-
-            ws.onmessage = (event) => {
-                try {
-                    const rawData = event.data;                    
-                    const data = JSON.parse(rawData);
-                    
-                    // formatData 함수를 사용하여 데이터 포맷팅
-                    const formattedData = formatData(data);
-                    dataContainer.textContent = JSON.stringify(formattedData, null, 2);
-                    
-                    // 알람 처리
-                    const alarmCode = data.plc_data.system_status.alarm_code;
-                    if (alarmCode > 0) {
-                        alarmContainer.style.display = 'block';
-                        alarmMessage.textContent = data.plc_data.system_status.alarm_message;
-                    } else {
-                        alarmContainer.style.display = 'none';
-                    }
-                } catch (error) {
-                    console.error('데이터 처리 중 오류:', error);
-                    console.error('받은 원본 데이터:', event.data);                    
-                }
-            };
-
-            ws.onclose = () => {
-                status.textContent = 'Disconnected';
-                status.className = 'disconnected';
-                setTimeout(() => {
-                    ws = new WebSocket("ws://localhost:5002/ws");
-                }, 3000);
-            };
-
-            ws.onerror = (error) => {
-                status.textContent = 'Error';
-                status.className = 'error';
-                console.error('WebSocket error:', error);
-            };
-            
-            function reconnect() {
-                if (ws.readyState === WebSocket.CLOSED) {
-                    status.textContent = 'Reconnecting...';
-                    ws = new WebSocket("ws://localhost:5002/ws");
-                }
-            }
-            
-            // 페이지 종료 시 연결 정리
-            window.addEventListener('beforeunload', () => {
-                if (ws) {
-                    ws.close();
-                }
-            });
-        </script>
-    </body>
-</html>
-"""
 
 class ModbusDataClient:
     def __init__(self):
@@ -526,38 +321,30 @@ async def startup():
     except Exception as e:
         logger.error(f"Startup error: {e}")
 
-async def shutdown():
-    """애플리케이션 종료 시 실행될 코드"""
-    global modbus_client
-    if modbus_client:
-        await modbus_client.close()
-    logger.info("Application shutdown complete")
+# Lifespan 컨텍스트 관리자 사용
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # 시작 시 실행
+    await startup()
+    yield
+    # 종료 시 실행
+    await shutdown()
 
+# FastAPI 앱 생성 시 lifespan 전달
 app = FastAPI(
     title="Stocker Web Server",
-    description="Stocker Monitoring System"
+    description="Stocker Monitoring System",
+    lifespan=lifespan
 )
 
 # CORS 미들웨어 설정 유지
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],        # Vue 개발 서버 주소 (http://localhost:5173)
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
 )
-
-@app.on_event("startup")
-async def on_startup():
-    await startup()
-
-@app.on_event("shutdown")
-async def on_shutdown():
-    await shutdown()    
-
-@app.get("/", response_class=HTMLResponse)
-async def get():
-    return html
             
 @app.websocket("/ws/stocker")
 async def websocket_endpoint(websocket: WebSocket):
@@ -580,13 +367,52 @@ async def websocket_endpoint(websocket: WebSocket):
     finally:
         await manager.disconnect(websocket)
         
+@asynccontextmanager
+async def graceful_shutdown(app):
+    """애플리케이션의 우아한 종료를 관리하는 컨텍스트 관리자"""
+    try:
+        yield app
+    finally:
+        # 여기에 종료 시 정리 작업 추가
+        if modbus_client:
+            await modbus_client.close()
+        logger.info("Application gracefully shut down")
+
+def handle_exit():
+    """프로그램 종료 핸들러"""
+    logger.info("Shutdown requested. Cleaning up...")
+    sys.exit(0)
+
+async def shutdown():
+    """애플리케이션 종료 시 실행될 코드"""
+    global modbus_client
+    try:
+        if modbus_client:
+            await modbus_client.close()
+        logger.info("Modbus client and resources cleaned up")
+    except Exception as e:
+        logger.error(f"Error during shutdown: {e}")
+    
+    # 현재 이벤트 루프 중지
+    loop = asyncio.get_event_loop()
+    tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+    
+    for task in tasks:
+        task.cancel()
+    
+    await asyncio.gather(*tasks, return_exceptions=True)
+    loop.stop()
+
 if __name__ == "__main__":
     try:
+        import uvicorn
         uvicorn.run(
-            "stocker_web_server:app",  # 이 부분이 중요: 모듈:app 형식으로 지정
+            "stocker_web_server:app", 
             host="0.0.0.0",
             port=5002,
             log_level="info"
         )
+    except KeyboardInterrupt:
+        logger.info("Server stopped by user")
     except Exception as e:
         logger.error(f"Server startup error: {e}")

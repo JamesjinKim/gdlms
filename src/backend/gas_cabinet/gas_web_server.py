@@ -601,15 +601,17 @@ app = FastAPI(
     title="Gas Cabinet Web Server",
     description="Gas Cabinet Monitoring System"
 )
+# 대신 이것으로 교체
+#router = APIRouter()
 
-# CORS 미들웨어 설정 유지
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
+# CORS 미들웨어 설정 삭제
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"]
+# )
 
 @app.on_event("startup")
 async def on_startup():
@@ -649,7 +651,7 @@ if __name__ == "__main__":
         uvicorn.run(
             "gas_web_server:app",  # 이 부분이 중요: 모듈:app 형식으로 지정
             host="0.0.0.0",
-            port=5001,
+            port=5002,             # WebSocket 전용 포트로 변경 권장
             log_level="info"
         )
     except Exception as e:

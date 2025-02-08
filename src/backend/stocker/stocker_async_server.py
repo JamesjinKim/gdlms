@@ -235,22 +235,6 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
                     port_b_detail9 = bool(bit_values[16] & (1 << 8)),
                     port_b_detail10 = bool(bit_values[16] & (1 << 9))
                 )
-                # 'port_a_status': {  # Word 110
-                #     f'signal_{i}': bool(bit_values[10] & (1 << i))
-                #     for i in range(16)
-                # },
-                # 'port_a_detail': {  # Word 111
-                #     f'signal_{i}': bool(bit_values[11] & (1 << i))
-                #     for i in range(10)
-                # },
-                # 'port_b_status': {  # Word 115
-                #     f'signal_{i}': bool(bit_values[15] & (1 << i))
-                #     for i in range(16)
-                # },
-                # 'port_b_detail': {  # Word 116
-                #     f'signal_{i}': bool(bit_values[16] & (1 << i))
-                #     for i in range(10)
-                # }
             }
 
             return {
@@ -391,22 +375,7 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
                         '[B] Bunker door Open 진행중': bool(bit_values[16] & (1 << 8)),
                         '[B] Bunker door Close 진행중': bool(bit_values[16] & (1 << 9))
                     }
-                    # 'port_a_status': {  # Word 110
-                    #     f'signal_{i}': bool(bit_values[10] & (1 << i))
-                    #     for i in range(16)
-                    # },
-                    # 'port_a_detail': {  # Word 111
-                    #     f'signal_{i}': bool(bit_values[11] & (1 << i))
-                    #     for i in range(10)
-                    # },
-                    # 'port_b_status': {  # Word 115
-                    #     f'signal_{i}': bool(bit_values[15] & (1 << i))
-                    #     for i in range(16)
-                    # },
-                    # 'port_b_detail': {  # Word 116
-                    #     f'signal_{i}': bool(bit_values[16] & (1 << i))
-                    #     for i in range(10)
-                    # }
+                    
                 }
 
                 # 통합 데이터 생성
