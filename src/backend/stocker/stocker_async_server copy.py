@@ -439,81 +439,81 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
                     for i in range(95, 100):
                         f.write(f"{current_time} | [B] Port 가스 종류 {i-94}: {values[i]}\n")
                     
-                    # 비트 데이터 영역. Log 저장량이 많아 실시간 연동에 차질이 생김.
-                    # f.write(f"{current_time} | ========= bit_data 시작 =========\n")
-                    # bit_values = self.getValues(100, 18)
+                    # 비트 데이터 영역
+                    f.write(f"{current_time} | ========= bit_data 시작 =========\n")
+                    bit_values = self.getValues(100, 18)
                     
-                    # # Word 100 - 기본 신호
-                    # signals = ["EMG Signal", "Heart Bit", "Run/Stop Signal", "Server Connected Bit",
-                    #             "T-LAMP RED", "T-LAMP YELLOW", "T-LAMP GREEN", "Touch 수동동작中 Signal"]
-                    # for i, name in enumerate(signals):
-                    #     value = bool(bit_values[0] & (1 << i))
-                    #     f.write(f"{current_time} | {name}: {value}\n")
+                    # Word 100 - 기본 신호
+                    signals = ["EMG Signal", "Heart Bit", "Run/Stop Signal", "Server Connected Bit",
+                                "T-LAMP RED", "T-LAMP YELLOW", "T-LAMP GREEN", "Touch 수동동작中 Signal"]
+                    for i, name in enumerate(signals):
+                        value = bool(bit_values[0] & (1 << i))
+                        f.write(f"{current_time} | {name}: {value}\n")
 
-                    # # Word 105 - 실린더 및 도어 상태
-                    # cylinder_door = [
-                    #     "[A] Port 실린더 유무", "[B] Port 실린더 유무",
-                    #     "[A] Worker Door Open", "[A] Worker Door Close",
-                    #     "[A] Bunker Door Open", "[A] Bunker Door Close",
-                    #     "[B] Worker Door Open", "[B] Worker Door Close",
-                    #     "[B] Bunker Door Open", "[B] Bunker Door Close"
-                    # ]
-                    # for i, name in enumerate(cylinder_door):
-                    #     value = bool(bit_values[5] & (1 << i))
-                    #     f.write(f"{current_time} | {name}: {value}\n")
+                    # Word 105 - 실린더 및 도어 상태
+                    cylinder_door = [
+                        "[A] Port 실린더 유무", "[B] Port 실린더 유무",
+                        "[A] Worker Door Open", "[A] Worker Door Close",
+                        "[A] Bunker Door Open", "[A] Bunker Door Close",
+                        "[B] Worker Door Open", "[B] Worker Door Close",
+                        "[B] Bunker Door Open", "[B] Bunker Door Close"
+                    ]
+                    for i, name in enumerate(cylinder_door):
+                        value = bool(bit_values[5] & (1 << i))
+                        f.write(f"{current_time} | {name}: {value}\n")
 
-                    # # Word 110 - A Port 상태
-                    # a_port_status = [
-                    #     "[A] Port 보호캡 분리 완료", "[A] Port 보호캡 체결 완료",
-                    #     "[A] Worker Door Open 완료", "[A] Worker Door Close 완료",
-                    #     "[A] Worker 투입 Ready", "[A] Worker 투입 Complete",
-                    #     "[A] Worker 배출 Ready", "[A] Worker 배출 Comlete",
-                    #     "[A] Bunker Door Open 완료", "[A] Bunker Door Close 완료",
-                    #     "[A] Bunker 투입 Ready", "[A] Bunker 투입 Complete",
-                    #     "[A] Bunker 배출 Ready", "[A] Bunker 배출 Comlete",
-                    #     "[A] Cylinder Align 진행중", "[A] Cylinder Align 완료"
-                    # ]
-                    # for i, name in enumerate(a_port_status):
-                    #     value = bool(bit_values[10] & (1 << i))
-                    #     f.write(f"{current_time} | {name}: {value}\n")
+                    # Word 110 - A Port 상태
+                    a_port_status = [
+                        "[A] Port 보호캡 분리 완료", "[A] Port 보호캡 체결 완료",
+                        "[A] Worker Door Open 완료", "[A] Worker Door Close 완료",
+                        "[A] Worker 투입 Ready", "[A] Worker 투입 Complete",
+                        "[A] Worker 배출 Ready", "[A] Worker 배출 Comlete",
+                        "[A] Bunker Door Open 완료", "[A] Bunker Door Close 완료",
+                        "[A] Bunker 투입 Ready", "[A] Bunker 투입 Complete",
+                        "[A] Bunker 배출 Ready", "[A] Bunker 배출 Comlete",
+                        "[A] Cylinder Align 진행중", "[A] Cylinder Align 완료"
+                    ]
+                    for i, name in enumerate(a_port_status):
+                        value = bool(bit_values[10] & (1 << i))
+                        f.write(f"{current_time} | {name}: {value}\n")
 
-                    # # Word 111 - A Port 진행상태
-                    # a_port_progress = [
-                    #     "[A] Cap Open 진행중", "[A] Cap Close 진행중",
-                    #     "[A] Cylinder 위치로 X축 이동중", "[A] Cylinder 위치로 X축 이동완료",
-                    #     "[A] Cap 위치 찾는중", "[A] Cylinder Neck 위치 찾는중",
-                    #     "[A] Worker door Open 진행중", "[A] Worker door Close 진행중",
-                    #     "[A] Bunker door Open 진행중", "[A] Bunker door Close 진행중"
-                    # ]
-                    # for i, name in enumerate(a_port_progress):
-                    #     value = bool(bit_values[11] & (1 << i))
-                    #     f.write(f"{current_time} | {name}: {value}\n")
-                    #     # Word 115 - B Port 상태
-                    # b_port_status = [
-                    #     "[B] Port 보호캡 분리 완료", "[B] Port 보호캡 체결 완료",
-                    #     "[B] Worker Door Open 완료", "[B] Worker Door Close 완료",
-                    #     "[B] Worker 투입 Ready", "[B] Worker 투입 Complete",
-                    #     "[B] Worker 배출 Ready", "[B] Worker 배출 Comlete",
-                    #     "[B] Bunker Door Open 완료", "[B] Bunker Door Close 완료",
-                    #     "[B] Bunker 투입 Ready", "[B] Bunker 투입 Complete",
-                    #     "[B] Bunker 배출 Ready", "[B] Bunker 배출 Comlete",
-                    #     "[B] Cylinder Align 진행중", "[B] Cylinder Align 완료"
-                    # ]
-                    # for i, name in enumerate(b_port_status):
-                    #     value = bool(bit_values[15] & (1 << i))
-                    #     f.write(f"{current_time} | {name}: {value}\n")
+                    # Word 111 - A Port 진행상태
+                    a_port_progress = [
+                        "[A] Cap Open 진행중", "[A] Cap Close 진행중",
+                        "[A] Cylinder 위치로 X축 이동중", "[A] Cylinder 위치로 X축 이동완료",
+                        "[A] Cap 위치 찾는중", "[A] Cylinder Neck 위치 찾는중",
+                        "[A] Worker door Open 진행중", "[A] Worker door Close 진행중",
+                        "[A] Bunker door Open 진행중", "[A] Bunker door Close 진행중"
+                    ]
+                    for i, name in enumerate(a_port_progress):
+                        value = bool(bit_values[11] & (1 << i))
+                        f.write(f"{current_time} | {name}: {value}\n")
+                        # Word 115 - B Port 상태
+                    b_port_status = [
+                        "[B] Port 보호캡 분리 완료", "[B] Port 보호캡 체결 완료",
+                        "[B] Worker Door Open 완료", "[B] Worker Door Close 완료",
+                        "[B] Worker 투입 Ready", "[B] Worker 투입 Complete",
+                        "[B] Worker 배출 Ready", "[B] Worker 배출 Comlete",
+                        "[B] Bunker Door Open 완료", "[B] Bunker Door Close 완료",
+                        "[B] Bunker 투입 Ready", "[B] Bunker 투입 Complete",
+                        "[B] Bunker 배출 Ready", "[B] Bunker 배출 Comlete",
+                        "[B] Cylinder Align 진행중", "[B] Cylinder Align 완료"
+                    ]
+                    for i, name in enumerate(b_port_status):
+                        value = bool(bit_values[15] & (1 << i))
+                        f.write(f"{current_time} | {name}: {value}\n")
 
-                    # # Word 116 - B Port 진행상태
-                    # b_port_progress = [
-                    #     "[B] Cap Open 진행중", "[B] Cap Close 진행중",
-                    #     "[B] Cylinder 위치로 X축 이동중", "[B] Cylinder 위치로 X축 이동완료",
-                    #     "[B] Cap 위치 찾는중", "[B] Cylinder Neck 위치 찾는중",
-                    #     "[B] Worker door Open 진행중", "[B] Worker door Close 진행중",
-                    #     "[B] Bunker door Open 진행중", "[B] Bunker door Close 진행중"
-                    # ]
-                    # for i, name in enumerate(b_port_progress):
-                    #     value = bool(bit_values[16] & (1 << i))
-                    #     f.write(f"{current_time} | {name}: {value}\n")
+                    # Word 116 - B Port 진행상태
+                    b_port_progress = [
+                        "[B] Cap Open 진행중", "[B] Cap Close 진행중",
+                        "[B] Cylinder 위치로 X축 이동중", "[B] Cylinder 위치로 X축 이동완료",
+                        "[B] Cap 위치 찾는중", "[B] Cylinder Neck 위치 찾는중",
+                        "[B] Worker door Open 진행중", "[B] Worker door Close 진행중",
+                        "[B] Bunker door Open 진행중", "[B] Bunker door Close 진행중"
+                    ]
+                    for i, name in enumerate(b_port_progress):
+                        value = bool(bit_values[16] & (1 << i))
+                        f.write(f"{current_time} | {name}: {value}\n")
 
                 # 알람 코드 확인 및 저장
                 alarm_code = equipment_data['plc_data']['alarm_code']
@@ -523,7 +523,6 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
                         # 알람 저장 (중복 방지 및 유효한 알람 코드만 저장)
                         if alarm_code > 0:
                             description = stocker_alarm_code.get_description(alarm_code)
-                            
                             # Unknown Alarm Code가 아닌 경우에만 저장
                             if description != f"Unknown Alarm Code: {alarm_code}":
                                 asyncio.create_task(

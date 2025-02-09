@@ -1,7 +1,7 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
-from fastapi.responses import HTMLResponse
+from datetime import datetime
+import time
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 import logging
 import asyncio
 import os
@@ -11,7 +11,6 @@ from contextlib import asynccontextmanager
 from pymodbus.client import AsyncModbusTcpClient
 from stocker_alarm_codes import stocker_alarm_code
 import uvicorn
-import signal
 import sys
 from contextlib import asynccontextmanager
 
@@ -30,7 +29,9 @@ class ModbusDataClient:
         self.last_data = None
         self.running = True
         self._lock = asyncio.Lock()
-    
+        self.update_interval = 1.0  # 데이터 업데이트 간격 (초)
+        self.last_update = 0
+
     async def connect(self):
         """Modbus 클라이언트 연결"""
         try:
@@ -91,7 +92,7 @@ class ModbusDataClient:
                         "bunker_id": results[0] if len(results) > 0 else 0,
                         "stocker_id": results[1] if len(results) > 1 else 0,
                         "gas_type": results[2:7] if len(results) > 6 else [0]*5,
-                        "system_status": {
+                        "status": {
                             "alarm_code": results[8] if len(results) > 8 else 0,
                             "alarm_message": stocker_alarm_code.get_description(results[8] if len(results) > 8 else 0)
                         },
@@ -238,71 +239,73 @@ class ModbusDataClient:
     async def update_client_data(self):
         while self.running:  # running 플래그 확인
             try:
-                data = await self.get_data()
-                if data:
-                    await manager.broadcast(data)
-                await asyncio.sleep(0.5)
+                current_time = time.time()
+                if current_time - self.last_update >= self.update_interval:
+                    data = await self.get_data()
+                    if data:
+                        await manager.broadcast(data)
+                        self.last_update = current_time
+                await asyncio.sleep(0.1)  # 짧은 대기 시간으로 CPU 부하 감소
             except Exception as e:
-                print(f"데이터 업데이트 오류: {e}")
+                logger.error(f"데이터 업데이트 오류: {e}")
                 await asyncio.sleep(1)
     
 class ConnectionManager:
-    def __init__(self):
+    def __init__(self, batch_size: int = 10, max_connections: int = 50):
         self.active_connections: List[WebSocket] = []
         self._lock = asyncio.Lock()
+        self.max_connections = max_connections
+        self.message_count = 0
+        self.start_time = time.time()
+        self.BATCH_SIZE = batch_size
+
+    def reset_metrics(self):
+        self.message_count = 0
+        self.start_time = time.time()
 
     async def connect(self, websocket: WebSocket):
         async with self._lock:
+            if len(self.active_connections) >= self.max_connections:
+                await websocket.close(code=1008)
+                logger.warning(f"최대 연결 수 초과로 연결 거부됨")
+                return
+                
             self.active_connections.append(websocket)
-            print(f"WebSocket 클라이언트 연결됨. 현재 연결 수: {len(self.active_connections)}")
+            logger.info(f"WebSocket 클라이언트 연결됨. 현재 연결 수: {len(self.active_connections)}")
 
     async def disconnect(self, websocket: WebSocket):
         if websocket in self.active_connections:
             self.active_connections.remove(websocket)
-            print(f"WebSocket 클라이언트 연결 해제. 현재 연결 수: {len(self.active_connections)}")
+            logger.info(f"WebSocket 클라이언트 연결 해제. 현재 연결 수: {len(self.active_connections)}")
 
     async def broadcast(self, data: dict):
-        for connection in self.active_connections[:]:
-            try:
-                await connection.send_json(data)
-            except Exception as e:
-                print(f"브로드캐스트 오류: {e}")
-                await self.disconnect(connection)
+        if not self.active_connections:
+            return
 
-    async def handle_unix_connection(self, reader, writer):
-        try:
-            while True:
-                data = await reader.read(4096)
-                if not data:
-                    break
-                try:
-                    json_data = json.loads(data.decode())
-                    logger.info(f"Received data from Unix socket: {len(str(json_data))} bytes")
-                    await self.broadcast(json_data)
-                except json.JSONDecodeError as e:
-                    logger.error(f"Invalid JSON data received: {e}")
-        finally:
-            writer.close()
-            await writer.wait_closed()
-            
-    async def setup_unix_socket(self):
-        """유닉스 소켓 서버 설정"""
-        if os.path.exists(self.socket_path):
-            os.unlink(self.socket_path)
-        
-        self.unix_server = await asyncio.start_unix_server(
-            self.handle_unix_connection, 
-            self.socket_path
-        )
-        return self.unix_server        
+        self.message_count += 1
+        if self.message_count % 1000 == 0:
+            elapsed = time.time() - self.start_time
+            msg_per_sec = self.message_count / elapsed
+            logger.info(f"메시지 처리율: {msg_per_sec:.2f} messages/sec")
+            if self.message_count >= 1000000:  # 백만 건마다 메트릭 리셋
+                self.reset_metrics()
+
+        for i in range(0, len(self.active_connections), self.BATCH_SIZE):
+            batch = self.active_connections[i:i + self.BATCH_SIZE]
+            try:
+                await asyncio.gather(
+                    *[self._send_to_client(client, data) for client in batch],
+                    return_exceptions=True
+                )
+            except Exception as e:
+                logger.error(f"배치 전송 중 오류: {e}")
     
-    async def cleanup(self):
-        """리소스 정리"""
-        if self.unix_server:
-            self.unix_server.close()
-            await self.unix_server.wait_closed()
-        if os.path.exists(self.socket_path):
-            os.unlink(self.socket_path)
+    async def _send_to_client(self, websocket: WebSocket, data: dict):
+        try:
+            await websocket.send_json(data)
+        except Exception as e:
+            logger.error(f"클라이언트 전송 오류: {e}")
+            await self.disconnect(websocket)
 
 manager = ConnectionManager()
 
@@ -340,7 +343,10 @@ app = FastAPI(
 # CORS 미들웨어 설정 유지
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],        # Vue 개발 서버 주소 (http://localhost:5173)
+    allow_origins=["*"], #개발 중에는 모든 origin 허용
+    # allow_origins=[
+    #     "http://127.0.0.1:5173",  # Vue 개발 서버
+    # ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
@@ -349,8 +355,15 @@ app.add_middleware(
 @app.websocket("/ws/stocker")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    await manager.connect(websocket)
+    # 연결 상태 모니터링
+    client_info = {
+        "ip": websocket.client.host,
+        "connect_time": datetime.now().isoformat()
+    }
+    logger.info(f"New client connected: {client_info}")
+    
     try:
+        await manager.connect(websocket)
         while True:
             try:
                 # ModbusClient에서 데이터 가져오기
@@ -409,7 +422,7 @@ if __name__ == "__main__":
         uvicorn.run(
             "stocker_web_server:app", 
             host="0.0.0.0",
-            port=5002,
+            port=5100,      # 포트 5100으로 변경
             log_level="info"
         )
     except KeyboardInterrupt:

@@ -381,7 +381,7 @@
         3,
         3
       ],
-      "system_status": {
+      "tatus": {
         "alarm_code": 241,
         "alarm_message": "Unknown Alarm Code: 241"
       },

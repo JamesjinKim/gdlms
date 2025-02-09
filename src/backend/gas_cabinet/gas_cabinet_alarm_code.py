@@ -577,7 +577,7 @@ class GasCabinetAlarmCode:
             496: "[B Port] 자동 도어 모터 이상",
             
         }
-        return alarm_descriptions.get(code, "Unknown Alarm Code")
+        return alarm_descriptions.get(code, f"Unknown Alarm Code: {code}")
 
     @classmethod
     def is_valid_alarm(cls, code):
@@ -586,26 +586,3 @@ class GasCabinetAlarmCode:
 # 인스턴스 생성
 gas_cabinet_alarm_code = GasCabinetAlarmCode()
 
-# # 사용 예시
-# if __name__ == "__main__":
-#     # 알람 코드 열거
-#     print("Available Alarm Codes:")
-#     for alarm in GasCabinetAlarmCode:
-#         print(f"{alarm.value}: {GasCabinetAlarmCode.get_description(alarm.value)}")
-    
-#     # 특정 알람 코드 조회
-#     test_code = 475
-#     if GasCabinetAlarmCode.is_valid_alarm(test_code):
-#         print(f"\nAlarm {test_code}: {GasCabinetAlarmCode.get_description(test_code)}")
-#     else:
-#         print(f"\nInvalid alarm code: {test_code}")
-    
-#     # 알람 코드 조회
-#     alarm_code = 475
-#     description = GasCabinetAlarmCode.get_description(alarm_code)
-#     print(f"Alarm {alarm_code}: {description}")
-
-#     # Enum으로 접근
-#     alarm = GasCabinetAlarmCode.B_PORT_BARCODE_READ_ERROR
-#     print(f"Alarm code: {alarm.value}")
-#     print(f"Description: {GasCabinetAlarmCode.get_description(alarm.value)}")

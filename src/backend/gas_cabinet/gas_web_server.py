@@ -5,6 +5,7 @@ import asyncio
 import uvicorn
 import logging
 import os
+import json
 from typing import Optional, Dict, List
 from pymodbus.client import AsyncModbusTcpClient
 from gas_cabinet_alarm_code import gas_cabinet_alarm_code
@@ -410,8 +411,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",  # Vue 개발 서버
-        "http://localhost:5001"   # FastAPI 서버
+        "http://127.0.0.1:5173",  # Vue 개발 서버
+        "http://127.0.0.1:5001"   # FastAPI 서버
     ],
     allow_credentials=True,
     allow_methods=["*"],
