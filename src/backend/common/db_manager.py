@@ -100,9 +100,22 @@ class DBManager:
                 ''')
 
                 # 인덱스 추가
+                # 히스토리 테이블 인덱스
+                cursor.execute(f'''
+                CREATE INDEX IF NOT EXISTS idx_{self.history_table}_created_at 
+                ON {self.history_table} (created_at)
+                ''')
+
+                # 디바이스 ID 인덱스
                 cursor.execute(f'''
                 CREATE INDEX IF NOT EXISTS idx_{self.history_table}_device_id 
                 ON {self.history_table} ({self.history_table.split('_')[0]}_id)
+                ''')
+
+                # 알람 테이블 인덱스
+                cursor.execute(f'''
+                CREATE INDEX IF NOT EXISTS idx_{self.alarm_table}_created_at 
+                ON {self.alarm_table} (created_at)
                 ''')
 
                 cursor.execute(f'''
