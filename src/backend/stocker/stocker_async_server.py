@@ -12,31 +12,10 @@ from pymodbus.device import ModbusDeviceIdentification
 from common.db_manager import DBManager
 from typing import Dict, Any
 from stocker_alarm_codes import stocker_alarm_code
-
-# 로그 디렉토리 설정
-log_dir = Path("./log")
-log_dir.mkdir(parents=True, exist_ok=True)
+from common.logger import setup_logger
 
 # 로거 설정
-logger = logging.getLogger("StockerLogger")
-logger.setLevel(logging.INFO)
-
-# 로그 핸들러 설정
-console_handler = logging.StreamHandler(sys.stdout)
-file_handler = logging.FileHandler(
-    log_dir / f"stocker_server_{datetime.datetime.now().strftime('%Y%m%d')}.log", 
-    encoding='utf-8'
-)
-
-# 포맷터 설정
-formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s')
-console_handler.setFormatter(formatter)
-file_handler.setFormatter(formatter)
-
-# 핸들러 추가 (중복 방지)
-if not logger.handlers:
-    logger.addHandler(console_handler)
-    logger.addHandler(file_handler)
+logger = setup_logger('stocker_server', 'stocker_server.log')
 
 class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
     def __init__(self, address, values):
@@ -52,6 +31,8 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
         
         # 배치 저장 시작
         self.db_manager.start_batch_save()
+        # 로거 설정
+        self.logger = setup_logger('stocker_server', 'stocker_server.log')
 
     def setValues(self, address, values):
         self._buffer.append((address, values))
@@ -63,31 +44,6 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
                 self.last_log_time = current_time
                 self.log_all_data()
                 self._buffer.clear()
-
-    def setup_logging(self):
-        """로깅 설정"""
-        log_dir = Path("./log")
-        log_dir.mkdir(exist_ok=True)
-        
-        # 회전 파일 핸들러 사용
-        handler = RotatingFileHandler(
-            log_dir / "stocker_server.log",
-            maxBytes=10*1024*1024,  # 10MB
-            backupCount=5,  # 5개의 백업 로그 파일 유지 실제 운영시 삭제 또는 숫자 조정필요.
-            encoding='utf-8'
-        )
-        
-        # 포맷터 설정
-        formatter = logging.Formatter(
-            '%(asctime)s | %(levelname)s | %(message)s', 
-            datefmt='%Y-%m-%d %H:%M:%S'
-        )
-        handler.setFormatter(formatter)
-        
-        # 로거 설정
-        self.logger = logging.getLogger("StockerServer")
-        self.logger.setLevel(logging.INFO)
-        self.logger.addHandler(handler)
 
     def validate_plc_data(self, values: list) -> bool:
         """PLC 데이터 유효성 검사"""
@@ -273,268 +229,266 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
             return  # 조기 종료
 
         try:
-            with open("./log/stocker_server.log", "a") as f:
+            # PLC 데이터 영역
+            self.logger.info("=========Stocker plc_data 시작 =========")
+            values = self.getValues(1, 120)  # 주소 1부터 읽기
+            
+            # DB에 저장할 데이터 구조화
+            plc_data = {
+                'bunker_id': values[0],
+                'stocker_id': values[1],
+                'gas_types': values[2:7],
+                'alarm_code': values[8],
+                'axis_data': {
+                    'x_position': values[10],
+                    'z_position': values[11],
+                    'cap_remove_torque': values[12],
+                    'cap_set_torque': values[13]
+                },
+                'barcodes': {
+                    'port_a': ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' 
+                                    for i in range(30, 60)]),
+                    'port_b': ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' 
+                                    for i in range(60, 90)])
+                },
+                'port_gas_types': {
+                    'port_a': values[90:95],
+                    'port_b': values[95:100]
+                }
+            }
 
-                # PLC 데이터 영역
-                f.write(f"{current_time} | =========Stocker plc_data 시작 =========\n")
-                values = self.getValues(1, 120)  # 주소 1부터 읽기
+            # 비트 데이터 영역
+            bit_values = self.getValues(100, 18)
+            bit_data = {
+                'basic_signals': { # Word 100
+                    'emg_signal': bool(bit_values[0] & (1 << 0)),
+                    'heart_bit': bool(bit_values[0] & (1 << 1)),
+                    'run_stop': bool(bit_values[0] & (1 << 2)),
+                    'server_connected': bool(bit_values[0] & (1 << 3)),
+                    't_lamp_red': bool(bit_values[0] & (1 << 4)),
+                    't_lamp_yellow': bool(bit_values[0] & (1 << 5)),
+                    't_lamp_green': bool(bit_values[0] & (1 << 6)),
+                    'touch_manual': bool(bit_values[0] & (1 << 7))
+                },
+                'cylinder_door_status': { # Word 105
+                    '[A]porta_cylinder': bool(bit_values[5] & (1 << 0)),
+                    '[B]portb_cylinder': bool(bit_values[5] & (1 << 1)),
+                    '[A]worker_door_open': bool(bit_values[5] & (1 << 2)),
+                    '[A]worker_door_close': bool(bit_values[5] & (1 << 3)),
+                    '[A]bunker_door_open': bool(bit_values[5] & (1 << 4)),
+                    '[A]bunker_door_close': bool(bit_values[5] & (1 << 5)),
+                    '[B]worker_door_open': bool(bit_values[5] & (1 << 6)),
+                    '[B]worker_door_close': bool(bit_values[5] & (1 << 7)),
+                    '[B]bunker_door_open': bool(bit_values[5] & (1 << 8)),
+                    '[B]bunker_door_close': bool(bit_values[5] & (1 << 9))
+                },
+                'port_a_status': {  # Word 110
+                    '[A] Port 보호캡 분리 완료': bool(bit_values[10] & (1 << 0)),
+                    '[A] Port 보호캡 체결 완료': bool(bit_values[10] & (1 << 1)),
+                    '[A] Worker Door Open 완료': bool(bit_values[10] & (1 << 2)),
+                    '[A] Worker Door Close 완료': bool(bit_values[10] & (1 << 3)),
+                    '[A] Worker 투입 Ready': bool(bit_values[10] & (1 << 4)),
+                    '[A] Worker 투입 Complete': bool(bit_values[10] & (1 << 5)),
+                    '[A] Worker 배출 Ready': bool(bit_values[10] & (1 << 6)),
+                    '[A] Worker 배출 Complete': bool(bit_values[10] & (1 << 7)),
+                    '[A] Bunker Door Open 완료': bool(bit_values[10] & (1 << 8)),
+                    '[A] Bunker Door Close 완료': bool(bit_values[10] & (1 << 9)),
+                    '[A] Bunker 투입 Ready': bool(bit_values[10] & (1 << 10)),
+                    '[A] Bunker 투입 Complete': bool(bit_values[10] & (1 << 11)),
+                    '[A] Bunker 배출 Ready': bool(bit_values[10] & (1 << 12)),
+                    '[A] Bunker 배출 Complete': bool(bit_values[10] & (1 << 13)),
+                    '[A] Cylinder Align 진행중': bool(bit_values[10] & (1 << 14)),
+                    '[A] Cylinder Align 완료': bool(bit_values[10] & (1 << 15))
+                },
+                'port_a_detail': {  # Word 111
+                    '[A] Cap Open 진행중': bool(bit_values[11] & (1 << 0)),
+                    '[A] Cap Close 진행중': bool(bit_values[11] & (1 << 1)),
+                    '[A] Cylinder X축 이동중': bool(bit_values[11] & (1 << 2)),
+                    '[A] Cylinder X축 이동완료': bool(bit_values[11] & (1 << 3)),
+                    '[A] Cap 위치 찾는중': bool(bit_values[11] & (1 << 4)),
+                    '[A] Cylinder Neck 위치 찾는중': bool(bit_values[11] & (1 << 5)),
+                    '[A] Worker door Open 진행중': bool(bit_values[11] & (1 << 6)),
+                    '[A] Worker door Close 진행중': bool(bit_values[11] & (1 << 7)),
+                    '[A] Bunker door Open 진행중': bool(bit_values[11] & (1 << 8)),
+                    '[A] Bunker door Close 진행중': bool(bit_values[11] & (1 << 9))
+                },
+                'port_b_status': {  # Word 115
+                    '[B] Port 보호캡 분리 완료': bool(bit_values[15] & (1 << 0)),
+                    '[B] Port 보호캡 체결 완료': bool(bit_values[15] & (1 << 1)),
+                    '[B] Worker Door Open 완료': bool(bit_values[15] & (1 << 2)),
+                    '[B] Worker Door Close 완료': bool(bit_values[15] & (1 << 3)),
+                    '[B] Worker 투입 Ready': bool(bit_values[15] & (1 << 4)),
+                    '[B] Worker 투입 Complete': bool(bit_values[15] & (1 << 5)),
+                    '[B] Worker 배출 Ready': bool(bit_values[15] & (1 << 6)),
+                    '[B] Worker 배출 Complete': bool(bit_values[15] & (1 << 7)),
+                    '[B] Bunker Door Open 완료': bool(bit_values[15] & (1 << 8)),
+                    '[B] Bunker Door Close 완료': bool(bit_values[15] & (1 << 9)),
+                    '[B] Bunker 투입 Ready': bool(bit_values[15] & (1 << 10)),
+                    '[B] Bunker 투입 Complete': bool(bit_values[15] & (1 << 11)),
+                    '[B] Bunker 배출 Ready': bool(bit_values[15] & (1 << 12)),
+                    '[B] Bunker 배출 Complete': bool(bit_values[15] & (1 << 13)),
+                    '[B] Cylinder Align 진행중': bool(bit_values[15] & (1 << 14)),
+                    '[B] Cylinder Align 완료': bool(bit_values[15] & (1 << 15))
+                },
+                'port_b_detail': {  # Word 116
+                    '[B] Cap Open 진행중': bool(bit_values[16] & (1 << 0)),
+                    '[B] Cap Close 진행중': bool(bit_values[16] & (1 << 1)),
+                    '[B] Cylinder X축 이동중': bool(bit_values[16] & (1 << 2)),
+                    '[B] Cylinder X축 이동완료': bool(bit_values[16] & (1 << 3)),
+                    '[B] Cap 위치 찾는중': bool(bit_values[16] & (1 << 4)),
+                    '[B] Cylinder Neck 위치 찾는중': bool(bit_values[16] & (1 << 5)),
+                    '[B] Worker door Open 진행중': bool(bit_values[16] & (1 << 6)),
+                    '[B] Worker door Close 진행중': bool(bit_values[16] & (1 << 7)),
+                    '[B] Bunker door Open 진행중': bool(bit_values[16] & (1 << 8)),
+                    '[B] Bunker door Close 진행중': bool(bit_values[16] & (1 << 9))
+                }
                 
-                # DB에 저장할 데이터 구조화
-                plc_data = {
-                    'bunker_id': values[0],
-                    'stocker_id': values[1],
-                    'gas_types': values[2:7],
-                    'alarm_code': values[8],
-                    'axis_data': {
-                        'x_position': values[10],
-                        'z_position': values[11],
-                        'cap_remove_torque': values[12],
-                        'cap_set_torque': values[13]
-                    },
-                    'barcodes': {
-                        'port_a': ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' 
-                                        for i in range(30, 60)]),
-                        'port_b': ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' 
-                                        for i in range(60, 90)])
-                    },
-                    'port_gas_types': {
-                        'port_a': values[90:95],
-                        'port_b': values[95:100]
-                    }
-                }
+            }
 
-                # 비트 데이터 영역
-                bit_values = self.getValues(100, 18)
-                bit_data = {
-                    'basic_signals': { # Word 100
-                        'emg_signal': bool(bit_values[0] & (1 << 0)),
-                        'heart_bit': bool(bit_values[0] & (1 << 1)),
-                        'run_stop': bool(bit_values[0] & (1 << 2)),
-                        'server_connected': bool(bit_values[0] & (1 << 3)),
-                        't_lamp_red': bool(bit_values[0] & (1 << 4)),
-                        't_lamp_yellow': bool(bit_values[0] & (1 << 5)),
-                        't_lamp_green': bool(bit_values[0] & (1 << 6)),
-                        'touch_manual': bool(bit_values[0] & (1 << 7))
-                    },
-                    'cylinder_door_status': { # Word 105
-                        '[A]porta_cylinder': bool(bit_values[5] & (1 << 0)),
-                        '[B]portb_cylinder': bool(bit_values[5] & (1 << 1)),
-                        '[A]worker_door_open': bool(bit_values[5] & (1 << 2)),
-                        '[A]worker_door_close': bool(bit_values[5] & (1 << 3)),
-                        '[A]bunker_door_open': bool(bit_values[5] & (1 << 4)),
-                        '[A]bunker_door_close': bool(bit_values[5] & (1 << 5)),
-                        '[B]worker_door_open': bool(bit_values[5] & (1 << 6)),
-                        '[B]worker_door_close': bool(bit_values[5] & (1 << 7)),
-                        '[B]bunker_door_open': bool(bit_values[5] & (1 << 8)),
-                        '[B]bunker_door_close': bool(bit_values[5] & (1 << 9))
-                    },
-                    'port_a_status': {  # Word 110
-                        '[A] Port 보호캡 분리 완료': bool(bit_values[10] & (1 << 0)),
-                        '[A] Port 보호캡 체결 완료': bool(bit_values[10] & (1 << 1)),
-                        '[A] Worker Door Open 완료': bool(bit_values[10] & (1 << 2)),
-                        '[A] Worker Door Close 완료': bool(bit_values[10] & (1 << 3)),
-                        '[A] Worker 투입 Ready': bool(bit_values[10] & (1 << 4)),
-                        '[A] Worker 투입 Complete': bool(bit_values[10] & (1 << 5)),
-                        '[A] Worker 배출 Ready': bool(bit_values[10] & (1 << 6)),
-                        '[A] Worker 배출 Complete': bool(bit_values[10] & (1 << 7)),
-                        '[A] Bunker Door Open 완료': bool(bit_values[10] & (1 << 8)),
-                        '[A] Bunker Door Close 완료': bool(bit_values[10] & (1 << 9)),
-                        '[A] Bunker 투입 Ready': bool(bit_values[10] & (1 << 10)),
-                        '[A] Bunker 투입 Complete': bool(bit_values[10] & (1 << 11)),
-                        '[A] Bunker 배출 Ready': bool(bit_values[10] & (1 << 12)),
-                        '[A] Bunker 배출 Complete': bool(bit_values[10] & (1 << 13)),
-                        '[A] Cylinder Align 진행중': bool(bit_values[10] & (1 << 14)),
-                        '[A] Cylinder Align 완료': bool(bit_values[10] & (1 << 15))
-                    },
-                    'port_a_detail': {  # Word 111
-                        '[A] Cap Open 진행중': bool(bit_values[11] & (1 << 0)),
-                        '[A] Cap Close 진행중': bool(bit_values[11] & (1 << 1)),
-                        '[A] Cylinder X축 이동중': bool(bit_values[11] & (1 << 2)),
-                        '[A] Cylinder X축 이동완료': bool(bit_values[11] & (1 << 3)),
-                        '[A] Cap 위치 찾는중': bool(bit_values[11] & (1 << 4)),
-                        '[A] Cylinder Neck 위치 찾는중': bool(bit_values[11] & (1 << 5)),
-                        '[A] Worker door Open 진행중': bool(bit_values[11] & (1 << 6)),
-                        '[A] Worker door Close 진행중': bool(bit_values[11] & (1 << 7)),
-                        '[A] Bunker door Open 진행중': bool(bit_values[11] & (1 << 8)),
-                        '[A] Bunker door Close 진행중': bool(bit_values[11] & (1 << 9))
-                    },
-                    'port_b_status': {  # Word 115
-                        '[B] Port 보호캡 분리 완료': bool(bit_values[15] & (1 << 0)),
-                        '[B] Port 보호캡 체결 완료': bool(bit_values[15] & (1 << 1)),
-                        '[B] Worker Door Open 완료': bool(bit_values[15] & (1 << 2)),
-                        '[B] Worker Door Close 완료': bool(bit_values[15] & (1 << 3)),
-                        '[B] Worker 투입 Ready': bool(bit_values[15] & (1 << 4)),
-                        '[B] Worker 투입 Complete': bool(bit_values[15] & (1 << 5)),
-                        '[B] Worker 배출 Ready': bool(bit_values[15] & (1 << 6)),
-                        '[B] Worker 배출 Complete': bool(bit_values[15] & (1 << 7)),
-                        '[B] Bunker Door Open 완료': bool(bit_values[15] & (1 << 8)),
-                        '[B] Bunker Door Close 완료': bool(bit_values[15] & (1 << 9)),
-                        '[B] Bunker 투입 Ready': bool(bit_values[15] & (1 << 10)),
-                        '[B] Bunker 투입 Complete': bool(bit_values[15] & (1 << 11)),
-                        '[B] Bunker 배출 Ready': bool(bit_values[15] & (1 << 12)),
-                        '[B] Bunker 배출 Complete': bool(bit_values[15] & (1 << 13)),
-                        '[B] Cylinder Align 진행중': bool(bit_values[15] & (1 << 14)),
-                        '[B] Cylinder Align 완료': bool(bit_values[15] & (1 << 15))
-                    },
-                    'port_b_detail': {  # Word 116
-                        '[B] Cap Open 진행중': bool(bit_values[16] & (1 << 0)),
-                        '[B] Cap Close 진행중': bool(bit_values[16] & (1 << 1)),
-                        '[B] Cylinder X축 이동중': bool(bit_values[16] & (1 << 2)),
-                        '[B] Cylinder X축 이동완료': bool(bit_values[16] & (1 << 3)),
-                        '[B] Cap 위치 찾는중': bool(bit_values[16] & (1 << 4)),
-                        '[B] Cylinder Neck 위치 찾는중': bool(bit_values[16] & (1 << 5)),
-                        '[B] Worker door Open 진행중': bool(bit_values[16] & (1 << 6)),
-                        '[B] Worker door Close 진행중': bool(bit_values[16] & (1 << 7)),
-                        '[B] Bunker door Open 진행중': bool(bit_values[16] & (1 << 8)),
-                        '[B] Bunker door Close 진행중': bool(bit_values[16] & (1 << 9))
-                    }
-                    
-                }
+            # 장비 데이터 포맷팅
+            equipment_data = self.format_equipment_data(values, 
+                                                    self.getValues(100, 18), 
+                                                    current_time)
 
-                # 장비 데이터 포맷팅
-                equipment_data = self.format_equipment_data(values, 
-                                                        self.getValues(100, 18), 
-                                                        current_time)
-
-                try:
-                    # bunker_id와 stocker_id가 모두 0보다 큰 경우에만 DB 저장
-                    if plc_data['bunker_id'] > 0 and plc_data['stocker_id'] > 0:
-                        # DB 저장 (비동기로 처리)
-                        asyncio.create_task(
-                            self.db_manager.update_data(
-                                f"stocker_{equipment_data['plc_data']['stocker_id']}",
-                                equipment_data  # 전체 데이터 전달
-                            )
+            try:
+                # bunker_id와 stocker_id가 모두 0보다 큰 경우에만 DB 저장
+                if plc_data['bunker_id'] > 0 and plc_data['stocker_id'] > 0:
+                    # DB 저장 (비동기로 처리)
+                    asyncio.create_task(
+                        self.db_manager.update_data(
+                            f"stocker_{equipment_data['plc_data']['stocker_id']}",
+                            equipment_data  # 전체 데이터 전달
                         )
-                    
-                except Exception as e:
-                    f.write(f"{current_time} | DB 저장 오류: {str(e)}\n")
-                    self.logger.error(f"DB 저장 실패: {e}", exc_info=True)
-
-                # 기본 정보 LOG 저장
-                if values[0] > 0 and values[1] > 0 :
-                    f.write(f"{current_time} | Bunker ID: {values[0]}\n")
-                    f.write(f"{current_time} | Stocker ID: {values[1]}\n")
-                    for i in range(2, 7):
-                        f.write(f"{current_time} | Gas Stocker 가스 종류 {i-1}: {values[i]}\n")
-
-                    # X, Z축 및 Torque 값
-                    f.write(f"{current_time} | Stocker Alarm Code: {values[8]}\n")
-                    f.write(f"{current_time} | X축 현재값: {values[10]}\n")
-                    f.write(f"{current_time} | Z축 현재값: {values[11]}\n")
-                    f.write(f"{current_time} | Cap Unit 축 보호캡 분리 Torque: {values[12]}\n")
-                    f.write(f"{current_time} | Cap Unit 축 보호캡 체결 Torque: {values[13]}\n")
-
-                    # Port A Barcode
-                    barcode_a = ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' for i in range(30, 60)])
-                    f.write(f"{current_time} | [A] Port Barcode: {barcode_a}\n")
-
-                    # Port B Barcode
-                    barcode_b = ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' for i in range(60, 90)])
-                    f.write(f"{current_time} | [B] Port Barcode: {barcode_b}\n")
-
-                    # Port 가스 종류
-                    for i in range(90, 95):
-                        f.write(f"{current_time} | [A] Port 가스 종류 {i-89}: {values[i]}\n")
-                    for i in range(95, 100):
-                        f.write(f"{current_time} | [B] Port 가스 종류 {i-94}: {values[i]}\n")
-                    
-                    # 비트 데이터 영역. Log 저장량이 많아 실시간 연동에 차질이 생김.
-                    # f.write(f"{current_time} | ========= bit_data 시작 =========\n")
-                    # bit_values = self.getValues(100, 18)
-                    
-                    # # Word 100 - 기본 신호
-                    # signals = ["EMG Signal", "Heart Bit", "Run/Stop Signal", "Server Connected Bit",
-                    #             "T-LAMP RED", "T-LAMP YELLOW", "T-LAMP GREEN", "Touch 수동동작中 Signal"]
-                    # for i, name in enumerate(signals):
-                    #     value = bool(bit_values[0] & (1 << i))
-                    #     f.write(f"{current_time} | {name}: {value}\n")
-
-                    # # Word 105 - 실린더 및 도어 상태
-                    # cylinder_door = [
-                    #     "[A] Port 실린더 유무", "[B] Port 실린더 유무",
-                    #     "[A] Worker Door Open", "[A] Worker Door Close",
-                    #     "[A] Bunker Door Open", "[A] Bunker Door Close",
-                    #     "[B] Worker Door Open", "[B] Worker Door Close",
-                    #     "[B] Bunker Door Open", "[B] Bunker Door Close"
-                    # ]
-                    # for i, name in enumerate(cylinder_door):
-                    #     value = bool(bit_values[5] & (1 << i))
-                    #     f.write(f"{current_time} | {name}: {value}\n")
-
-                    # # Word 110 - A Port 상태
-                    # a_port_status = [
-                    #     "[A] Port 보호캡 분리 완료", "[A] Port 보호캡 체결 완료",
-                    #     "[A] Worker Door Open 완료", "[A] Worker Door Close 완료",
-                    #     "[A] Worker 투입 Ready", "[A] Worker 투입 Complete",
-                    #     "[A] Worker 배출 Ready", "[A] Worker 배출 Comlete",
-                    #     "[A] Bunker Door Open 완료", "[A] Bunker Door Close 완료",
-                    #     "[A] Bunker 투입 Ready", "[A] Bunker 투입 Complete",
-                    #     "[A] Bunker 배출 Ready", "[A] Bunker 배출 Comlete",
-                    #     "[A] Cylinder Align 진행중", "[A] Cylinder Align 완료"
-                    # ]
-                    # for i, name in enumerate(a_port_status):
-                    #     value = bool(bit_values[10] & (1 << i))
-                    #     f.write(f"{current_time} | {name}: {value}\n")
-
-                    # # Word 111 - A Port 진행상태
-                    # a_port_progress = [
-                    #     "[A] Cap Open 진행중", "[A] Cap Close 진행중",
-                    #     "[A] Cylinder 위치로 X축 이동중", "[A] Cylinder 위치로 X축 이동완료",
-                    #     "[A] Cap 위치 찾는중", "[A] Cylinder Neck 위치 찾는중",
-                    #     "[A] Worker door Open 진행중", "[A] Worker door Close 진행중",
-                    #     "[A] Bunker door Open 진행중", "[A] Bunker door Close 진행중"
-                    # ]
-                    # for i, name in enumerate(a_port_progress):
-                    #     value = bool(bit_values[11] & (1 << i))
-                    #     f.write(f"{current_time} | {name}: {value}\n")
-                    #     # Word 115 - B Port 상태
-                    # b_port_status = [
-                    #     "[B] Port 보호캡 분리 완료", "[B] Port 보호캡 체결 완료",
-                    #     "[B] Worker Door Open 완료", "[B] Worker Door Close 완료",
-                    #     "[B] Worker 투입 Ready", "[B] Worker 투입 Complete",
-                    #     "[B] Worker 배출 Ready", "[B] Worker 배출 Comlete",
-                    #     "[B] Bunker Door Open 완료", "[B] Bunker Door Close 완료",
-                    #     "[B] Bunker 투입 Ready", "[B] Bunker 투입 Complete",
-                    #     "[B] Bunker 배출 Ready", "[B] Bunker 배출 Comlete",
-                    #     "[B] Cylinder Align 진행중", "[B] Cylinder Align 완료"
-                    # ]
-                    # for i, name in enumerate(b_port_status):
-                    #     value = bool(bit_values[15] & (1 << i))
-                    #     f.write(f"{current_time} | {name}: {value}\n")
-
-                    # # Word 116 - B Port 진행상태
-                    # b_port_progress = [
-                    #     "[B] Cap Open 진행중", "[B] Cap Close 진행중",
-                    #     "[B] Cylinder 위치로 X축 이동중", "[B] Cylinder 위치로 X축 이동완료",
-                    #     "[B] Cap 위치 찾는중", "[B] Cylinder Neck 위치 찾는중",
-                    #     "[B] Worker door Open 진행중", "[B] Worker door Close 진행중",
-                    #     "[B] Bunker door Open 진행중", "[B] Bunker door Close 진행중"
-                    # ]
-                    # for i, name in enumerate(b_port_progress):
-                    #     value = bool(bit_values[16] & (1 << i))
-                    #     f.write(f"{current_time} | {name}: {value}\n")
-
-                # 알람 코드 확인 및 저장
-                alarm_code = equipment_data['plc_data']['alarm_code']
+                    )
                 
-                if alarm_code > 0:
-                    try:
-                        # 알람 저장 (중복 방지 및 유효한 알람 코드만 저장)
-                        if alarm_code > 0:
-                            description = stocker_alarm_code.get_description(alarm_code)
-                            
-                            # Unknown Alarm Code가 아닌 경우에만 저장
-                            if description != f"Unknown Alarm Code: {alarm_code}":
-                                asyncio.create_task(
-                                    self.db_manager.save_alarm(
-                                        f"stocker_{equipment_data['plc_data']['stocker_id']}", 
-                                        alarm_code, 
-                                        f"Stocker {stocker_id} Alarm: Code {alarm_code} - {description}"
-                                    )
+            except Exception as e:
+                self.logger.error(f"DB 저장 실패: {e}", exc_info=True)
+
+            # 기본 정보 LOG 저장
+            if values[0] > 0 and values[1] > 0:
+                self.logger.info(f"Bunker ID: {values[0]}")
+                self.logger.info(f"Stocker ID: {values[1]}")
+                
+                for i in range(2, 7):
+                    self.logger.info(f"Gas Stocker 가스 종류 {i-1}: {values[i]}")
+
+                # X, Z축 및 Torque 값
+                self.logger.info(f"Stocker Alarm Code: {values[8]}")
+                self.logger.info(f"X축 현재값: {values[10]}")
+                self.logger.info(f"Z축 현재값: {values[11]}")
+                self.logger.info(f"Cap Unit 축 보호캡 분리 Torque: {values[12]}")
+                self.logger.info(f"Cap Unit 축 보호캡 체결 Torque: {values[13]}")
+
+                # Port A Barcode
+                barcode_a = ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' for i in range(30, 60)])
+                self.logger.info(f"[A] Port Barcode: {barcode_a}")
+
+                # Port B Barcode
+                barcode_b = ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' for i in range(60, 90)])
+                self.logger.info(f"[B] Port Barcode: {barcode_b}")
+
+                # Port 가스 종류
+                for i in range(90, 95):
+                    self.logger.info(f"[A] Port 가스 종류 {i-89}: {values[i]}")
+                for i in range(95, 100):
+                    self.logger.info(f"[B] Port 가스 종류 {i-94}: {values[i]}")
+                
+                # 비트 데이터 영역. Log 저장량이 많아 실시간 연동에 차질이 생김.
+                self.logger.info("========= bit_data 시작 =========")
+                bit_values = self.getValues(100, 18)
+                
+                # Word 100 - 기본 신호
+                signals = ["EMG Signal", "Heart Bit", "Run/Stop Signal", "Server Connected Bit",
+                            "T-LAMP RED", "T-LAMP YELLOW", "T-LAMP GREEN", "Touch 수동동작中 Signal"]
+                for i, name in enumerate(signals):
+                    value = bool(bit_values[0] & (1 << i))
+                    self.logger.info(f"{name}: {value}")
+
+                # Word 105 - 실린더 및 도어 상태
+                cylinder_door = [
+                    "[A] Port 실린더 유무", "[B] Port 실린더 유무",
+                    "[A] Worker Door Open", "[A] Worker Door Close",
+                    "[A] Bunker Door Open", "[A] Bunker Door Close",
+                    "[B] Worker Door Open", "[B] Worker Door Close",
+                    "[B] Bunker Door Open", "[B] Bunker Door Close"
+                ]
+                for i, name in enumerate(cylinder_door):
+                    value = bool(bit_values[5] & (1 << i))
+                    self.logger.info(f"{name}: {value}")
+
+                # Word 110 - A Port 상태
+                a_port_status = [
+                    "[A] Port 보호캡 분리 완료", "[A] Port 보호캡 체결 완료",
+                    "[A] Worker Door Open 완료", "[A] Worker Door Close 완료",
+                    "[A] Worker 투입 Ready", "[A] Worker 투입 Complete",
+                    "[A] Worker 배출 Ready", "[A] Worker 배출 Comlete",
+                    "[A] Bunker Door Open 완료", "[A] Bunker Door Close 완료",
+                    "[A] Bunker 투입 Ready", "[A] Bunker 투입 Complete",
+                    "[A] Bunker 배출 Ready", "[A] Bunker 배출 Comlete",
+                    "[A] Cylinder Align 진행중", "[A] Cylinder Align 완료"
+                ]
+                for i, name in enumerate(a_port_status):
+                    value = bool(bit_values[10] & (1 << i))
+                    self.logger.info(f"{name}: {value}")
+
+                # Word 111 - A Port 진행상태
+                a_port_progress = [
+                    "[A] Cap Open 진행중", "[A] Cap Close 진행중",
+                    "[A] Cylinder 위치로 X축 이동중", "[A] Cylinder 위치로 X축 이동완료",
+                    "[A] Cap 위치 찾는중", "[A] Cylinder Neck 위치 찾는중",
+                    "[A] Worker door Open 진행중", "[A] Worker door Close 진행중",
+                    "[A] Bunker door Open 진행중", "[A] Bunker door Close 진행중"
+                ]
+                for i, name in enumerate(a_port_progress):
+                    value = bool(bit_values[11] & (1 << i))
+                    self.logger.info(f"{name}: {value}")
+                    # Word 115 - B Port 상태
+                b_port_status = [
+                    "[B] Port 보호캡 분리 완료", "[B] Port 보호캡 체결 완료",
+                    "[B] Worker Door Open 완료", "[B] Worker Door Close 완료",
+                    "[B] Worker 투입 Ready", "[B] Worker 투입 Complete",
+                    "[B] Worker 배출 Ready", "[B] Worker 배출 Comlete",
+                    "[B] Bunker Door Open 완료", "[B] Bunker Door Close 완료",
+                    "[B] Bunker 투입 Ready", "[B] Bunker 투입 Complete",
+                    "[B] Bunker 배출 Ready", "[B] Bunker 배출 Comlete",
+                    "[B] Cylinder Align 진행중", "[B] Cylinder Align 완료"
+                ]
+                for i, name in enumerate(b_port_status):
+                    value = bool(bit_values[15] & (1 << i))
+                    self.logger.info(f"{name}: {value}")
+
+                # Word 116 - B Port 진행상태
+                b_port_progress = [
+                    "[B] Cap Open 진행중", "[B] Cap Close 진행중",
+                    "[B] Cylinder 위치로 X축 이동중", "[B] Cylinder 위치로 X축 이동완료",
+                    "[B] Cap 위치 찾는중", "[B] Cylinder Neck 위치 찾는중",
+                    "[B] Worker door Open 진행중", "[B] Worker door Close 진행중",
+                    "[B] Bunker door Open 진행중", "[B] Bunker door Close 진행중"
+                ]
+                for i, name in enumerate(b_port_progress):
+                    value = bool(bit_values[16] & (1 << i))
+                    self.logger.info(f"{name}: {value}")
+
+            # 알람 코드 확인 및 저장
+            alarm_code = equipment_data['plc_data']['alarm_code']
+            
+            if alarm_code > 0:
+                try:
+                    # 알람 저장 (중복 방지 및 유효한 알람 코드만 저장)
+                    if alarm_code > 0:
+                        description = stocker_alarm_code.get_description(alarm_code)
+
+                        # Unknown Alarm Code가 아닌 경우에만 저장
+                        if description != f"Unknown Alarm Code: {alarm_code}":
+                            asyncio.create_task(
+                                self.db_manager.save_alarm(
+                                    f"stocker_{equipment_data['plc_data']['stocker_id']}", 
+                                    alarm_code, 
+                                    f"Stocker {stocker_id} Alarm: Code {alarm_code} - {description}"
                                 )
-                    except Exception as e:
-                        logger.error(f"Alarm save failed: {e}", exc_info=True)
+                            )
+                except Exception as e:
+                    logger.error(f"Alarm save failed: {e}", exc_info=True)
 
         except Exception as e:
             self.logger.error(f"Logging error: {e}", exc_info=True)
@@ -553,6 +507,9 @@ class CustomModbusSlaveContext(ModbusSlaveContext):
             hr=CustomModbusSequentialDataBlock(0, [0]*1000),
             ir=CustomModbusSequentialDataBlock(0, [0]*1000)
         )
+
+        # 로거 설정
+        self.logger = setup_logger('stocker_server', 'stocker_server.log')
         self.TIME_SYNC_ADDRESS = 900  # 시간 동기화 주소 정의
         self.update_time()
     
@@ -570,10 +527,9 @@ class CustomModbusSlaveContext(ModbusSlaveContext):
         try:
             # 홀딩 레지스터에 시간 데이터 저장
             self.setValues(3, self.TIME_SYNC_ADDRESS, list(time_values.copy()))
-            #self.store['hr'].setValues(self.TIME_SYNC_ADDRESS, time_values)
-            logger.info(f"시간 동기화 완료: {time_values}")
+            self.logger.info(f"시간 동기화 완료: {time_values}")
         except Exception as e:
-            logger.error(f"시간 동기화 중 오류 발생: {e}")
+            self.logger.error(f"시간 동기화 중 오류 발생: {e}")
 
 # 서버 실행 함수
 async def run_server():

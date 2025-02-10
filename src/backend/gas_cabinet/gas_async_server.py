@@ -12,30 +12,16 @@ from copy import deepcopy
 import gc
 from common.db_manager import DBManager
 from gas_cabinet_alarm_code import gas_cabinet_alarm_code
-
-# 로그 파일 경로 설정
-log_dir = "./log"
-# 로그 디렉토리 생성
-os.makedirs(log_dir, exist_ok=True)
-log_file = os.path.join(log_dir, "gas_cabinet.log")
-
-# 로깅 설정
-log_handler = TimedRotatingFileHandler(
-    log_file, when="M", interval=1, backupCount=10
-)
-log_handler.suffix = "%Y%m%d%H%M"
-log_handler.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
-log_handler.setLevel(logging.INFO)
+from common.logger import setup_logger
 
 # 로거 설정
-logger = logging.getLogger("GasCabinetLogger")
-logger.setLevel(logging.INFO)
-logger.addHandler(log_handler)
-logger.addHandler(logging.StreamHandler())
+logger = setup_logger('gas_cabinet_server', 'gas_cabinet_server.log')
 
 class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
     def __init__(self, address, values):
         super().__init__(address, values)
+        # 로거 설정 추가
+        self.logger = logging.getLogger('gas_cabinet_server')
         self.last_log_time = 0
         self.LOG_INTERVAL = 1
         self._buffer = []
@@ -44,6 +30,7 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
         # 배치 저장 프로세스 시작
         self.db_manager.start_batch_save()  # 이 부분 추가
         self.retry_count = 3  # DB 저장 재시도 횟수
+
 
     def setValues(self, address, values):
         self._buffer.append((address, deepcopy(values)))
@@ -282,7 +269,6 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
     def log_all_data(self):
         """모든 데이터 로깅"""
         current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
         # PLC 데이터 영역
         values = self.getValues(1, 120)  # 주소 1부터 읽기
         bunker_id = values[0]
@@ -523,124 +509,127 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
                     )
                 )
 
-
-        with open("./log/gas_cabinet.log", "a") as f:
+        try:
+        
             if bunker_id > 0 and gas_cabinet_id > 0:
                 # PLC 데이터 영역 log 작성
-                f.write(f"{current_time} | =========Gas Cabinet plc_data 시작 =========\n")
+                self.logger.info("=========Gas Cabinet plc_data 시작 =========\n")
                 values = self.getValues(1, 120)  # 주소 1부터 읽기
 
                 # 기본 정보
-                f.write(f"{current_time} | Bunker ID: {bunker_id}\n")
-                f.write(f"{current_time} | Gas Cabinet ID: {gas_cabinet_id}\n")
+                self.logger.info(f"Bunker ID: {bunker_id}")
+                self.logger.info(f"Gas Cabinet ID: {gas_cabinet_id}")
                 for i in range(2, 7):
-                    f.write(f"{current_time} | Gas Cabinet 가스 종류 {i-1}: {values[i]}\n")
+                    self.logger.info(f"Gas Cabinet 가스 종류 {i-1}: {values[i]}")
                 #SEND AND RECEIVE FOR MACHINE CODE
-                f.write(f"{current_time} | Machine Code: {values[7]}\n")
+                self.logger.info(f"Machine Code: {values[7]}")
                 # 시스템 상태
-                f.write(f"{current_time} | Gas Cabinet Alarm Code: {values[8]}\n")
+                self.logger.info(f"Gas Cabinet Alarm Code: {values[8]}")
                 
                 # 센서 데이터
-                f.write(f"{current_time} | PT1A: {values[10]} PSI\n")
-                f.write(f"{current_time} | PT2A: {values[11]} PSI\n")
-                f.write(f"{current_time} | PT1B: {values[12]} PSI\n")
-                f.write(f"{current_time} | PT2B: {values[13]} PSI\n")
-                f.write(f"{current_time} | PT3: {values[14]} PSI\n")
-                f.write(f"{current_time} | PT4: {values[15]} PSI\n")
-                f.write(f"{current_time} | WA (A Port Weight): {values[16]} kg\n")
-                f.write(f"{current_time} | WB (B Port Weight): {values[17]} kg\n")
+                self.logger.info(f"PT1A: {values[10]} PSI")
+                self.logger.info(f"PT2A: {values[11]} PSI")
+                self.logger.info(f"PT1B: {values[12]} PSI")
+                self.logger.info(f"PT2B: {values[13]} PSI")
+                self.logger.info(f"PT3: {values[14]} PSI")
+                self.logger.info(f"PT4: {values[15]} PSI")
+                self.logger.info(f"WA (A Port Weight): {values[16]} kg")
+                self.logger.info(f"WB (B Port Weight): {values[17]} kg")
 
                 # 히터 상태
-                f.write(f"{current_time} | [A] JACKET HEATER: {values[18]}°C\n")
-                f.write(f"{current_time} | [A] LINE HEATER: {values[19]}°C\n")
-                f.write(f"{current_time} | [B] JACKET HEATER: {values[20]}°C\n")
-                f.write(f"{current_time} | [B] LINE HEATER: {values[21]}°C\n")
+                self.logger.info(f"[A] JACKET HEATER: {values[18]}°C")
+                self.logger.info(f"[A] LINE HEATER: {values[19]}°C")
+                self.logger.info(f"[B] JACKET HEATER: {values[20]}°C")
+                self.logger.info(f"[B] LINE HEATER: {values[21]}°C")
 
                 # A Port Torque & Position 데이터
-                f.write(f"{current_time} | [A] CGA 체결 Torque: {values[24]} kgf·cm\n")
-                f.write(f"{current_time} | [A] CAP 체결 Torque: {values[25]} kgf·cm\n")
-                f.write(f"{current_time} | [A] 실린더 Up/Down Pos: {values[26]} mm\n")
+                self.logger.info(f"[A] CGA 체결 Torque: {values[24]} kgf·cm")
+                self.logger.info(f"[A] CAP 체결 Torque: {values[25]} kgf·cm")
+                self.logger.info(f"[A] 실린더 Up/Down Pos: {values[26]} mm")
 
                 # B Port Torque & Position 데이터
-                f.write(f"{current_time} | [B] CGA 체결 Torque: {values[27]} kgf·cm\n")
-                f.write(f"{current_time} | [B] CAP 체결 Torque: {values[28]} kgf·cm\n")
-                f.write(f"{current_time} | [B] 실린더 Up/Down Pos: {values[29]} mm\n")
+                self.logger.info(f"[B] CGA 체결 Torque: {values[27]} kgf·cm")
+                self.logger.info(f"[B] CAP 체결 Torque: {values[28]} kgf·cm")
+                self.logger.info(f"[B] 실린더 Up/Down Pos: {values[29]} mm")
 
                 # A Port Barcode 데이터
                 barcode_a = ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' for i in range(30, 60)])
-                f.write(f"{current_time} | [A] Port Barcode: {barcode_a}\n")
+                self.logger.info(f"[A] Port Barcode: {barcode_a}")
 
                 # B Port Barcode 데이터
                 barcode_b = ''.join([chr(values[i]) if 32 <= values[i] <= 126 else ' ' for i in range(60, 90)])
-                f.write(f"{current_time} | [B] Port Barcode: {barcode_b}\n")
+                self.logger.info(f"[B] Port Barcode: {barcode_b}")
 
                 # Gas Types
                 for i in range(90, 95):
-                    f.write(f"{current_time} | [A] Port 가스 종류 {i-89}: {values[i]}\n")
+                    self.logger.info(f"[A] Port 가스 종류 {i-89}: {values[i]}")
                 for i in range(95, 100):
-                    f.write(f"{current_time} | [B] Port 가스 종류 {i-94}: {values[i]}\n")
+                    self.logger.info(f"[B] Port 가스 종류 {i-94}: {values[i]}")
 
                 # 비트 데이터 영역 데이터 용량 문제로 주석 처리
-                # f.write(f"{current_time} | ========= Gas Cabinet Bit Area Data 시작 =========\n")
-                # bit_values = self.getValues(100, 18)  # 100번 주소부터 18개 워드 읽기
+                self.logger.info("========= Gas Cabinet Bit Area Data 시작 =========")
+                bit_values = self.getValues(100, 18)  # 100번 주소부터 18개 워드 읽기
 
-                # # Word 100 - 기본 신호
-                # signals = ["EMG Signal", "Heart Bit", "Run/Stop Signal", "Server Connected Bit",
-                #         "T-LAMP RED", "T-LAMP YELLOW", "T-LAMP GREEN", "Touch 수동동작中 Signal"]
-                # for i, name in enumerate(signals):
-                #     value = bool(bit_values[0] & (1 << i))
-                #     f.write(f"{current_time} | {name}: {value}\n")
+                # Word 100 - 기본 신호
+                signals = ["EMG Signal", "Heart Bit", "Run/Stop Signal", "Server Connected Bit",
+                        "T-LAMP RED", "T-LAMP YELLOW", "T-LAMP GREEN", "Touch 수동동작中 Signal"]
+                for i, name in enumerate(signals):
+                    value = bool(bit_values[0] & (1 << i))
+                    self.logger.info(f"{name}: {value}")
 
-                # # Word 105 - 실린더 및 도어 상태
-                # cylinder_door = [
-                #     "[A] Port 실린더 유무", "[B] Port 실린더 유무",
-                #     "[A] Worker Door Open", "[A] Worker Door Close",
-                #     "[A] Bunker Door Open", "[A] Bunker Door Close",
-                #     "[B] Worker Door Open", "[B] Worker Door Close",
-                #     "[B] Bunker Door Open", "[B] Bunker Door Close"
-                # ]
-                # for i, name in enumerate(cylinder_door):
-                #     value = bool(bit_values[5] & (1 << i))
-                #     f.write(f"{current_time} | {name}: {value}\n")
+                # Word 105 - 실린더 및 도어 상태
+                cylinder_door = [
+                    "[A] Port 실린더 유무", "[B] Port 실린더 유무",
+                    "[A] Worker Door Open", "[A] Worker Door Close",
+                    "[A] Bunker Door Open", "[A] Bunker Door Close",
+                    "[B] Worker Door Open", "[B] Worker Door Close",
+                    "[B] Bunker Door Open", "[B] Bunker Door Close"
+                ]
+                for i, name in enumerate(cylinder_door):
+                    value = bool(bit_values[5] & (1 << i))
+                    self.logger.info(f"{name}: {value}")
 
-                # # Word 110 - A Port 상태
-                # a_port_status = [
-                #     "[A] Port 보호캡 분리 완료", "[A] Port 보호캡 체결 완료",
-                #     "[A] Worker Door Open 완료", "[A] Worker Door Close 완료",
-                #     "[A] Worker 투입 Ready", "[A] Worker 투입 Complete",
-                #     "[A] Worker 배출 Ready", "[A] Worker 배출 Comlete",
-                #     "[A] Bunker Door Open 완료", "[A] Bunker Door Close 완료",
-                #     "[A] Bunker 투입 Ready", "[A] Bunker 투입 Complete",
-                #     "[A] Bunker 배출 Ready", "[A] Bunker 배출 Comlete",
-                #     "[A] Cylinder Align 진행중", "[A] Cylinder Align 완료"
-                # ]
-                # for i, name in enumerate(a_port_status):
-                #     value = bool(bit_values[10] & (1 << i))
-                #     f.write(f"{current_time} | {name}: {value}\n")
+                # Word 110 - A Port 상태
+                a_port_status = [
+                    "[A] Port 보호캡 분리 완료", "[A] Port 보호캡 체결 완료",
+                    "[A] Worker Door Open 완료", "[A] Worker Door Close 완료",
+                    "[A] Worker 투입 Ready", "[A] Worker 투입 Complete",
+                    "[A] Worker 배출 Ready", "[A] Worker 배출 Comlete",
+                    "[A] Bunker Door Open 완료", "[A] Bunker Door Close 완료",
+                    "[A] Bunker 투입 Ready", "[A] Bunker 투입 Complete",
+                    "[A] Bunker 배출 Ready", "[A] Bunker 배출 Comlete",
+                    "[A] Cylinder Align 진행중", "[A] Cylinder Align 완료"
+                ]
+                for i, name in enumerate(a_port_status):
+                    value = bool(bit_values[10] & (1 << i))
+                    self.logger.info(f"{name}: {value}")
 
-                # # Word 111 - A Port 진행상태
-                # a_port_progress = [
-                #     "[A] Cap Open 진행중", "[A] Cap Close 진행중",
-                #     "[A] Cylinder 위치로 X축 이동중", "[A] Cylinder 위치로 X축 이동완료",
-                #     "[A] Cap 위치 찾는중", "[A] Cylinder Neck 위치 찾는중",
-                #     "[A] Worker door Open 진행중", "[A] Worker door Close 진행중",
-                #     "[A] Bunker door Open 진행중", "[A] Bunker door Close 진행중"
-                # ]
-                # for i, name in enumerate(a_port_progress):
-                #     value = bool(bit_values[11] & (1 << i))
-                #     f.write(f"{current_time} | {name}: {value}\n")
+                # Word 111 - A Port 진행상태
+                a_port_progress = [
+                    "[A] Cap Open 진행중", "[A] Cap Close 진행중",
+                    "[A] Cylinder 위치로 X축 이동중", "[A] Cylinder 위치로 X축 이동완료",
+                    "[A] Cap 위치 찾는중", "[A] Cylinder Neck 위치 찾는중",
+                    "[A] Worker door Open 진행중", "[A] Worker door Close 진행중",
+                    "[A] Bunker door Open 진행중", "[A] Bunker door Close 진행중"
+                ]
+                for i, name in enumerate(a_port_progress):
+                    value = bool(bit_values[11] & (1 << i))
+                    self.logger.info(f"{name}: {value}")
 
-                # # Word 115 - B Port 상태
-                # b_port_status = [x.replace('[A]', '[B]') for x in a_port_status]
-                # for i, name in enumerate(b_port_status):
-                #     value = bool(bit_values[15] & (1 << i))
-                #     f.write(f"{current_time} | {name}: {value}\n")
+                # Word 115 - B Port 상태
+                b_port_status = [x.replace('[A]', '[B]') for x in a_port_status]
+                for i, name in enumerate(b_port_status):
+                    value = bool(bit_values[15] & (1 << i))
+                    self.logger.info(f"{name}: {value}")
 
-                # # Word 116 - B Port 진행상태
-                # b_port_progress = [x.replace('[A]', '[B]') for x in a_port_progress]
-                # for i, name in enumerate(b_port_progress):
-                #     value = bool(bit_values[16] & (1 << i))
-                #     f.write(f"{current_time} | {name}: {value}\n")
+                # Word 116 - B Port 진행상태
+                b_port_progress = [x.replace('[A]', '[B]') for x in a_port_progress]
+                for i, name in enumerate(b_port_progress):
+                    value = bool(bit_values[16] & (1 << i))
+                    self.logger.info(f"{name}: {value}")
+
+        except Exception as e:
+            self.logger.error(f"Logging error: {e}", exc_info=True)
 
 class CustomModbusSlaveContext(ModbusSlaveContext):
     def __init__(self):

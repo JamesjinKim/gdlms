@@ -152,7 +152,7 @@ async def run_client():
                     logger.error("데이터 읽기 오류")
 
                 # Add delay to prevent CPU overload
-                await asyncio.sleep(1)
+                await asyncio.sleep(5)
 
             except asyncio.CancelledError:
                 logger.info("Operation cancelled.")
