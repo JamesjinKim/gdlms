@@ -4,12 +4,10 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 import asyncio
-import os
-import json
 from typing import List, Dict, Optional
 from contextlib import asynccontextmanager
 from pymodbus.client import AsyncModbusTcpClient
-from stocker_alarm_codes import stocker_alarm_code
+from stocker_alarm_descriptions import get_stocker_descriptions
 import uvicorn
 import sys
 from contextlib import asynccontextmanager
@@ -94,7 +92,8 @@ class ModbusDataClient:
                         "gas_type": results[2:7] if len(results) > 6 else [0]*5,
                         "status": {
                             "alarm_code": results[8] if len(results) > 8 else 0,
-                            "alarm_message": stocker_alarm_code.get_description(results[8] if len(results) > 8 else 0)
+                            # 영문 설명을 디스플레이 해줌.
+                            "alarm_message": get_stocker_descriptions().get(results[8], ("", "", 0))[1] if len(results) > 8 and results[8] > 0 else ""
                         },
                         "position": {
                             "x_axis": results[10] if len(results) > 10 else 0,
@@ -343,10 +342,10 @@ app = FastAPI(
 # CORS 미들웨어 설정 유지
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], #개발 중에는 모든 origin 허용
-    # allow_origins=[
-    #     "http://127.0.0.1:5173",  # Vue 개발 서버
-    # ],
+    allow_origins=[
+        "http://127.0.0.1:5173",   # Vue 개발 서버 
+        "http://localhost:5173",   # 추가 로컬 개발 환경
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]

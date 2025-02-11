@@ -19,7 +19,7 @@ class ServiceMonitor:
     def __init__(self):
         self.service_status = {}
         # 서비스 모니터링용 로거 설정
-        self.logger = setup_logger('service_monitor', 'service_monitor.log')
+        self.logger = setup_logger('service_monitor', None)
     
     def update_status(self, service_name: str, status: str):
         self.service_status[service_name] = {
@@ -35,15 +35,37 @@ class ServiceMonitor:
 
 class ProgramLauncher:
     def __init__(self, base_dir: str):
-        self.base_dir = Path(base_dir)
+        self.services_ready: Dict[str, bool] = {}
         self.processes: Dict[str, subprocess.Popen] = {}
         self.monitor = ServiceMonitor()
+        self.base_dir = Path(base_dir)
+        self.logger = setup_logger('launcher', None)
+        self.logger.setLevel(logging.ERROR)
         
         # logs 디렉토리 생성 (config.py의 LOGS_DIR 사용)
         LOGS_DIR.mkdir(exist_ok=True)
         
-        # 로거 설정 (self.logger로 저장)
-        self.logger = setup_logger('launcher', 'launcher.log')
+    def wait_for_services_ready(self, group, timeout):
+        """서비스 그룹이 준비될 때까지 대기"""
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            ready_count = 0
+            for name, _ in group:
+                if self.check_service_ready(name):
+                    ready_count += 1
+                else:
+                    self.logger.debug(f"Still waiting for {name} to be ready... ({int(time.time() - start_time)}s elapsed)")
+            
+            if ready_count == len(group):
+                self.logger.info(f"All services in group are ready: {[name for name, _ in group]}")
+                return True
+            
+            time.sleep(2)  # 체크 간격 증가
+            
+        # 타임아웃 시 어떤 서비스가 준비되지 않았는지 상세히 기록
+        not_ready = [name for name, _ in group if not self.check_service_ready(name)]
+        self.logger.error(f"Timeout waiting for services. Not ready: {not_ready}")
+        return False
         
     def start_backend_services(self):
         """백엔드 서비스 시작"""
@@ -73,18 +95,72 @@ class ProgramLauncher:
             ]
         ]
         
-        # 그룹별로 순차적 시작
+        # 그룹별로 순차적 시작 및 준비 확인
         for i, group in enumerate(service_groups):
-            self.logger.info(f"Starting service group {i+1}...")  # INFO로 변경
+            self.logger.info(f"Starting service group {i+1}...")
             for name, command in group:
                 self._start_process(name, command)
                 self.monitor.update_status(name, "started")
-                time.sleep(3)
-            
+                self.services_ready[name] = False  # Initialize readiness flag
+
+            # Wait for services in the group to become ready
+            timeout = 60 if 'Web Server' in str(group) else 30  # 웹 서버는 더 긴 타임아웃
+            if not self.wait_for_services_ready(group, timeout=timeout):
+                self.logger.error(f"Services in group {i+1} failed to start in time. Starting services were: {[name for name, _ in group]}")
+                raise RuntimeError(f"Services in group {i+1} failed to start in time.")
+
             wait_time = 5
-            self.logger.info(f"Waiting {wait_time} seconds before starting next group...")  # INFO로 변경
+            self.logger.info(f"Waiting {wait_time} seconds before starting next group...")
             time.sleep(wait_time)
     
+    def read_log_file(self, log_file):
+        """여러 인코딩을 시도하여 로그 파일 읽기"""
+        encodings = ['utf-8', 'cp949', 'euc-kr']
+        
+        for encoding in encodings:
+            try:
+                with open(log_file, 'r', encoding=encoding) as f:
+                    return f.read()
+            except UnicodeDecodeError:
+                continue
+            except Exception as e:
+                self.logger.error(f"Error reading log file: {e}")
+                return None
+                
+        self.logger.error(f"Failed to read log file with any encoding: {log_file}")
+        return None
+
+    def check_service_ready(self, name):
+        """서비스가 준비되었는지 확인"""
+        # 프로세스가 실행 중인지 먼저 확인
+        process = self.processes.get(name)
+        if process is None or process.poll() is not None:
+            self.logger.warning(f"Process check failed for {name}: process is {'None' if process is None else 'terminated'}")
+            return False
+
+        # Web Server나 Client는 즉시 준비 완료로 처리
+        if 'Web Server' in name or 'Client' in name:
+            if process.poll() is None:  # 프로세스가 실행 중이면
+                self.services_ready[name] = True
+                return True
+            return False
+
+        # Modbus 서버들에 대한 로그 파일 확인
+        log_file = LOGS_DIR / f'{name.lower().replace(" ", "_")}.log'
+        if log_file.exists():
+            content = self.read_log_file(log_file)
+            if content is None:
+                return False
+                
+            if "Starting Modbus TCP" in content:
+                self.logger.info(f"{name} is ready")
+                self.services_ready[name] = True
+                return True
+            self.logger.warning(f"Modbus start message not found in {name} log")
+        else:
+            self.logger.warning(f"Log file not found for {name}: {log_file}")
+        return False
+
     def _start_process(self, name: str, command: List[str]):
         try:
             self.logger.info(f"Starting {name}...")
@@ -100,9 +176,10 @@ class ProgramLauncher:
             
             process = subprocess.Popen(
                 command,
-                stdout=subprocess.PIPE,  # 파이프로 변경
-                stderr=subprocess.PIPE,  # 파이프로 변경
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
                 text=True,
+                encoding='utf-8',  # 인코딩 명시적 지정
                 bufsize=1,
                 universal_newlines=True,
                 cwd=str(self.base_dir),
@@ -111,11 +188,26 @@ class ProgramLauncher:
             
             # 비동기로 출력 읽기
             def log_output(pipe, is_error):
-                for line in pipe:
-                    if is_error:
-                        self.logger.info(f"{name}: {line.strip()}")  # 에러 스트림은 ERROR로
-                    else:
-                        self.logger.info(f"{name}: {line.strip()}")   # 일반 출력은 INFO로
+                try:
+                    for line in iter(pipe.readline, ''):
+                        # line이 이미 문자열인 경우 처리
+                        if isinstance(line, str):
+                            processed_line = line.strip()
+                        else:
+                            # bytes인 경우 디코딩
+                            processed_line = line.decode('utf-8', errors='replace').strip()
+                        
+                        # 로깅 및 출력
+                        print(processed_line)
+                        if is_error and any(keyword in processed_line.lower() for keyword in ['error:', 'exception:', 'traceback:']):
+                            self.logger.error(f"{name}: {processed_line}")
+                        else:
+                            self.logger.info(f"{name}: {processed_line}")
+                    
+                    # 파이프가 닫혔을 때
+                    pipe.close()
+                except Exception as e:
+                    self.logger.error(f"Error in log_output for {name}: {e}")
                 
             import threading
             threading.Thread(target=log_output, args=(process.stdout, False), daemon=True).start()
@@ -127,31 +219,54 @@ class ProgramLauncher:
             # 프로세스 상태 확인
             if process.poll() is None:
                 self.monitor.update_status(name, "running")
+                time.sleep(1)
             else:
-                #self.logger.warning(f"{name} failed to start")  # 경고로 변경
+                self.logger.warning(f"{name} failed to start")
                 self.monitor.update_status(name, "failed")
                 
         except Exception as e:
-            #self.logger.error(f"Failed to start {name}: {str(e)}", exc_info=True)  # 실제 에러는 ERROR로 유지
+            self.logger.error(f"Failed to start {name}: {str(e)}", exc_info=True)
             self.monitor.update_status(name, f"error: {str(e)}")
         
     def stop_all(self):
         """모든 프로세스 중지"""
         for name, process in self.processes.items():
-            self.logger.info(f"Stopping {name}...")  # INFO로 변경
+            if process.poll() is not None:  # 이미 종료된 프로세스는 건너뜀
+                continue
+                
+            self.logger.info(f"Stopping {name}...")
             try:
+                # Windows의 경우 CTRL_BREAK_EVENT 사용
                 if sys.platform == 'win32':
-                    process.send_signal(signal.CTRL_C_EVENT)
+                    process.send_signal(signal.CTRL_BREAK_EVENT)
                 else:
                     process.terminate()
-                process.wait(timeout=5)
+                
+                # 최대 10초 동안 정상 종료 대기
+                try:
+                    process.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    self.logger.warning(f"{name} did not respond to terminate signal, killing...")
+                    try:
+                        if sys.platform == 'win32':
+                            # Windows에서 강제 종료
+                            subprocess.run(['taskkill', '/F', '/T', '/PID', str(process.pid)], 
+                                        capture_output=True)
+                        else:
+                            process.kill()
+                        process.wait(timeout=5)
+                    except subprocess.TimeoutExpired:
+                        self.logger.error(f"Failed to kill {name} (PID: {process.pid})")
+                        continue
+                
                 self.monitor.update_status(name, "stopped")
-            except subprocess.TimeoutExpired:
-                self.logger.warning(f"{name} did not terminate gracefully, forcing...")  # 경고로 변경
-                process.kill()
+                self.logger.info(f"{name} stopped successfully")
+
             except Exception as e:
-                self.logger.error(f"Error stopping {name}: {str(e)}")  # 실제 에러는 ERROR로 유지
-        self.logger.info("All processes stopped")  # INFO로 변경
+                self.logger.error(f"Error stopping {name}: {str(e)}")
+                self.monitor.update_status(name, f"stop error: {str(e)}")
+
+        self.logger.info("All processes stopped")
 
 def main():
     base_dir = Path(__file__).parent
@@ -166,10 +281,10 @@ def main():
             time.sleep(5)
             
     except KeyboardInterrupt:
-        logging.info("Shutting down all services...")
+        launcher.logger.info("Shutting down all services...")
         launcher.stop_all()
     except Exception as e:
-        #logging.error(f"An error occurred: {str(e)}")
+        launcher.logger.error(f"An error occurred: {str(e)}")
         launcher.stop_all()
 
 if __name__ == "__main__":

@@ -1,0 +1,161 @@
+@keyframes loader-circle {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dialogbg {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+@keyframes dialogShow {
+  from {
+    transform: scale(0.5, 0.5);
+  }
+  to {
+    transform: scale(1, 1);
+  }
+}
+
+
+
+.reference-detail-enter-active,
+.reference-detail-leave-active {
+  transition: all 0.3s ease;
+}
+
+.reference-detail-enter-from,
+.reference-detail-leave-to {
+  transform: translateY(10%);
+  opacity: 0;
+}
+
+.reference-list-enter-active,
+.reference-list-leave-active {
+  transition: transform 0.35s ease;
+}
+
+.reference-list-enter-from,
+.reference-list-leave-to {
+  transform: translateX(150px);
+}
+
+.fade-logo-enter-active,
+.fade-logo-leave-active {
+  transition: all 0.2s ease;
+}
+.fade-logo-enter-from,
+.fade-logo-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s ease;  
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-loading-enter-active,
+.fade-loading-leave-active {
+  transition: all 0.6s ease;
+}
+
+.fade-loading-enter-from,
+.fade-loading-leave-to {
+  opacity: 0;
+}
+
+.fade-view-enter-active,
+.fade-view-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-view-enter-from,
+.fade-view-leave-to {
+  opacity: 0;
+}
+
+.fade-infowindow-enter-active,
+.fade-infowindow-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-infowindow-enter-from,
+.fade-infowindow-leave-to {
+  transform: translateY(10px);
+  opacity: 0;
+}
+
+
+.search-enter-active .search-bg,
+.search-leave-active .search-bg {
+  transition: all 0.4s ease-out;
+}
+.search-enter-from .search-bg,
+.search-leave-to .search-bg {
+  opacity: 0;
+}
+.search-enter-active .search-box,
+.search-leave-active .search-box {
+  transition: all 0.4s cubic-bezier(0.55, 0.085, 0, 0.99);
+}
+.search-enter-from .search-box,
+.search-leave-to .search-box {
+  transform: translateY(100%);
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes chatLoading {
+  0% {
+    opacity: 0.2;
+    background-size: 20% 50%, 20% 50%, 20% 50%
+  }
+
+  20% {
+    background-size: 20% 20%, 20% 50%, 20% 50%
+  }
+
+  40% {
+    background-size: 20% 100%, 20% 20%, 20% 50%
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  60% {
+    background-size: 20% 50%, 20% 100%, 20% 20%
+  }
+
+  80% {
+    background-size: 20% 50%, 20% 50%, 20% 100%
+  }
+
+  100% {
+    opacity: 0.2;
+    background-size: 20% 50%, 20% 50%, 20% 50%
+  }
+}

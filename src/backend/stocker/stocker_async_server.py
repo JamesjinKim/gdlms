@@ -1,25 +1,39 @@
 import sys
 from pathlib import Path
-sys.path.append(str(Path(__file__).parent.parent))  # src/backend를 Python 경로에 추가
+import os
+sys.path.append(str(Path(__file__).parent.parent.parent))  # src/backend를 Python 경로에 추가
+from backend.config import LOGS_DIR
+
 from pymodbus.server import StartAsyncTcpServer
 from pymodbus.datastore import ModbusSequentialDataBlock, ModbusSlaveContext, ModbusServerContext
-import logging
-import asyncio, time, json
-import datetime
-import os
-from logging.handlers import RotatingFileHandler, TimedRotatingFileHandler
 from pymodbus.device import ModbusDeviceIdentification
-from common.db_manager import DBManager
+import asyncio, time, datetime
 from typing import Dict, Any
-from stocker_alarm_codes import stocker_alarm_code
-from common.logger import setup_logger
+
+# backend 패키지의 모듈들을 import
+from backend.common.db_manager import DBManager
+from backend.common.logger import setup_logger
+from stocker_alarm_descriptions import get_stocker_descriptions
 
 # 로거 설정
 logger = setup_logger('stocker_server', 'stocker_server.log')
 
+# 로그 디렉토리 확인 코드 추가
+try:
+    LOGS_DIR.mkdir(exist_ok=True, parents=True)
+    print(f"Log directory created/exists at: {LOGS_DIR}")
+    print(f"Log directory is writable: {os.access(LOGS_DIR, os.W_OK)}")
+except Exception as e:
+    print(f"Error creating log directory: {e}")
+
 class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
     def __init__(self, address, values):
         super().__init__(address, values)
+
+        # 전역 로거 사용
+        global logger
+        self.logger = logger
+        
         self.last_log_time = 0
         self.LOG_INTERVAL = 1
         self._buffer = []
@@ -31,8 +45,6 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
         
         # 배치 저장 시작
         self.db_manager.start_batch_save()
-        # 로거 설정
-        self.logger = setup_logger('stocker_server', 'stocker_server.log')
 
     def setValues(self, address, values):
         self._buffer.append((address, values))
@@ -71,25 +83,25 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
             self.logger.error(f"Data validation error: {str(e)}")
             return False
 
-    async def save_to_db_with_retry(self, equipment_data: Dict[str, Any]) -> bool:
-        """DB 저장 재시도 로직"""
-        for attempt in range(self.retry_count):
-            try:
-                stocker_id = str(equipment_data['plc_data']['stocker_id'])
+    # async def save_to_db_with_retry(self, equipment_data: Dict[str, Any]) -> bool:
+    #     """DB 저장 재시도 로직"""
+    #     for attempt in range(self.retry_count):
+    #         try:
+    #             stocker_id = str(equipment_data['plc_data']['stocker_id'])
                 
-                # 두 포트 데이터를 한 번에 저장
-                await self.db_manager.update_data(
-                    stocker_id=stocker_id,
-                    data=equipment_data  # 전체 데이터를 한 번에 저장
-                )
-                self.logger.info("Data successfully saved to DB")
-                return True
-            except Exception as e:
-                self.logger.error(f"DB save attempt {attempt + 1} failed: {str(e)}")
-                if attempt < self.retry_count - 1:
-                    await asyncio.sleep(1)  # 재시도 전 대기
-                continue
-        return False
+    #             # 두 포트 데이터를 한 번에 저장
+    #             await self.db_manager.update_data(
+    #                 stocker_id=stocker_id,
+    #                 data=equipment_data  # 전체 데이터를 한 번에 저장
+    #             )
+    #             self.logger.info("Data successfully saved to DB")
+    #             return True
+    #         except Exception as e:
+    #             self.logger.error(f"DB save attempt {attempt + 1} failed: {str(e)}")
+    #             if attempt < self.retry_count - 1:
+    #                 await asyncio.sleep(1)  # 재시도 전 대기
+    #             continue
+    #     return False
 
     def format_equipment_data(self, values: list, bit_values: list, current_time: str) -> Dict[str, Any]:
         """장비 데이터 포맷팅"""
@@ -474,17 +486,21 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
             
             if alarm_code > 0:
                 try:
-                    # 알람 저장 (중복 방지 및 유효한 알람 코드만 저장)
-                    if alarm_code > 0:
-                        description = stocker_alarm_code.get_description(alarm_code)
-
+                    # get_stocker_descriptions()에서 알람 정보 가져오기
+                    alarm_info = get_stocker_descriptions().get(alarm_code)
+                    
+                    if alarm_info:
+                        # 알람 정보에서 한글 설명, 영문 설명, 디스플레이 번호 추출
+                        ko_desc, en_desc, display_num = alarm_info
+                        
                         # Unknown Alarm Code가 아닌 경우에만 저장
-                        if description != f"Unknown Alarm Code: {alarm_code}":
+                        if en_desc != f"Unknown Alarm Code: {alarm_code}":
                             asyncio.create_task(
                                 self.db_manager.save_alarm(
                                     f"stocker_{equipment_data['plc_data']['stocker_id']}", 
                                     alarm_code, 
-                                    f"Stocker {stocker_id} Alarm: Code {alarm_code} - {description}"
+                                    f"Stocker {stocker_id} Alarm: Code {alarm_code} - {en_desc}",
+                                    display_num  # 디스플레이 번호 추가
                                 )
                             )
                 except Exception as e:
@@ -507,9 +523,9 @@ class CustomModbusSlaveContext(ModbusSlaveContext):
             hr=CustomModbusSequentialDataBlock(0, [0]*1000),
             ir=CustomModbusSequentialDataBlock(0, [0]*1000)
         )
-
-        # 로거 설정
-        self.logger = setup_logger('stocker_server', 'stocker_server.log')
+        # 전역 로거 사용
+        global logger
+        self.logger = logger
         self.TIME_SYNC_ADDRESS = 900  # 시간 동기화 주소 정의
         self.update_time()
     
@@ -527,9 +543,9 @@ class CustomModbusSlaveContext(ModbusSlaveContext):
         try:
             # 홀딩 레지스터에 시간 데이터 저장
             self.setValues(3, self.TIME_SYNC_ADDRESS, list(time_values.copy()))
-            self.logger.info(f"시간 동기화 완료: {time_values}")
+            logger.info(f"시간 동기화 완료: {time_values}")
         except Exception as e:
-            self.logger.error(f"시간 동기화 중 오류 발생: {e}")
+            logger.error(f"시간 동기화 중 오류 발생: {e}")
 
 # 서버 실행 함수
 async def run_server():

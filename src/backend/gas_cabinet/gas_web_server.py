@@ -8,7 +8,7 @@ import os
 import json
 from typing import Optional, Dict, List
 from pymodbus.client import AsyncModbusTcpClient
-from gas_cabinet_alarm_code import gas_cabinet_alarm_code
+from gas_alarm_descriptions import get_gas_cabinet_descriptions
 
 # 로깅 설정
 logging.basicConfig(
@@ -90,7 +90,8 @@ class ModbusDataClient:
                         "status": {
                             "machine_code": results[7] if len(results) > 7 else 0,
                             "alarm_code": results[8] if len(results) > 8 else 0,
-                            "alarm_message": gas_cabinet_alarm_code.get_description(results[8] if len(results) > 8 else 0)
+                            # 영문 설명을 디스플레이 해줌.
+                            "alarm_message": get_gas_cabinet_descriptions().get(results[8], ("", "", 0))[1] if len(results) > 8 and results[8] > 0 else ""
                         },
                         "sensors": {
                             "pt1a": results[10] if len(results) > 10 else 0,
@@ -412,7 +413,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://127.0.0.1:5173",  # Vue 개발 서버
-        "http://127.0.0.1:5001"   # FastAPI 서버
+        "http://localhost:5173"   # 추가 로컬 개발 환경
     ],
     allow_credentials=True,
     allow_methods=["*"],

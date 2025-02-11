@@ -68,7 +68,6 @@ def generate_bit_data() -> list:
 
     return bit_data
 
-
 async def run_client():
     client = None
     try:

@@ -95,6 +95,7 @@ class DBManager:
                     {self.alarm_table.split('_')[0]}_id TEXT NOT NULL,
                     alarm_code INTEGER NOT NULL,
                     alarm_description TEXT,
+                    display_num INTEGER DEFAULT 0,
                     created_at DATETIME DEFAULT (datetime('now', 'localtime'))
                 )
                 ''')
@@ -187,6 +188,8 @@ class DBManager:
             return
 
         try:
+            logger.debug(f"Saving alarm batch: {len(self._alarm_queue)} items")
+            
             db_path = str(self.history_db_path.resolve())
             async with aiosqlite.connect(db_path) as conn:
                 await conn.execute('BEGIN')
@@ -194,11 +197,12 @@ class DBManager:
                 for item in self._alarm_queue[:self.BATCH_SIZE]:
                     await conn.execute(
                         f"INSERT INTO {self.alarm_table} "
-                        f"({self.alarm_table.split('_')[0]}_id, alarm_code, alarm_description, created_at) "
-                        f"VALUES (?, ?, ?, ?)",
+                        f"({self.alarm_table.split('_')[0]}_id, alarm_code, alarm_description, display_num, created_at) "
+                        f"VALUES (?, ?, ?, ?, ?)",
                         (item['device_id'], 
                         item['alarm_code'], 
-                        item['description'], 
+                        item['description'],
+                        item.get('display_num', 0),  # display_num 추가, 없으면 0 
                         item['timestamp'].strftime("%Y-%m-%d %H:%M:%S"))
                     )
                 
@@ -234,7 +238,7 @@ class DBManager:
         if len(self._data_queue) >= self.BATCH_SIZE:
             await self._save_data_batch()
 
-    async def save_alarm(self, device_id: str, alarm_code: int, description: str):
+    async def save_alarm(self, device_id: str, alarm_code: int, description: str, display_num: int):
         """알람을 큐에 추가"""
         # 중복 알람 방지 로직 (옵션)
         if self._alarm_queue and self._alarm_queue[-1]['device_id'] == device_id:
@@ -247,6 +251,7 @@ class DBManager:
             'device_id': device_id,
             'alarm_code': alarm_code,
             'description': description,
+            'display_num': display_num,
             'timestamp': datetime.now(timezone.utc).astimezone(ZoneInfo("Asia/Seoul"))
         })
 

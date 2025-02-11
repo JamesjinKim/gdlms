@@ -14,12 +14,18 @@ def setup_logger(name, filename):
     # 기존 핸들러 제거
     logger.handlers.clear()
     
+    # filename이 None이나 빈 문자열이면 로깅하지 않음
+    if not filename:
+        logger.disabled = True
+        return logger
+    
     # 파일 핸들러 설정 (INFO 레벨)
     log_file = LOGS_DIR / filename
     file_handler = RotatingFileHandler(
         log_file, 
         maxBytes=LOG_CONFIG['max_file_size'], 
-        backupCount=LOG_CONFIG['backup_count']
+        backupCount=LOG_CONFIG['backup_count'],
+        encoding='utf-8' #한글 깨짐 방지
     )
     file_handler.setLevel(logging.INFO)  # 파일에는 INFO 레벨부터 기록
     

@@ -1,27 +1,41 @@
 import sys
 from pathlib import Path
-sys.path.append(str(Path(__file__).parent.parent))
+import os
+# 프로젝트 루트 경로 설정
+sys.path.append(str(Path(__file__).parent.parent.parent))
+from backend.config import LOGS_DIR
+
 from pymodbus.server import StartAsyncTcpServer
 from pymodbus.datastore import ModbusSequentialDataBlock, ModbusSlaveContext, ModbusServerContext
 from pymodbus.device import ModbusDeviceIdentification
-from logging.handlers import TimedRotatingFileHandler
-import logging
 import asyncio, time, datetime
-import os
 from copy import deepcopy
 import gc
-from common.db_manager import DBManager
-from gas_cabinet_alarm_code import gas_cabinet_alarm_code
-from common.logger import setup_logger
 
-# 로거 설정
+# backend 패키지의 모듈들을 import
+from backend.common.db_manager import DBManager
+from backend.common.logger import setup_logger
+from gas_alarm_descriptions import get_gas_cabinet_descriptions
+
+# 로거 생성
 logger = setup_logger('gas_cabinet_server', 'gas_cabinet_server.log')
+
+# 로그 디렉토리 확인 코드 추가
+try:
+    LOGS_DIR.mkdir(exist_ok=True, parents=True)
+    print(f"Log directory created/exists at: {LOGS_DIR}")
+    print(f"Log directory is writable: {os.access(LOGS_DIR, os.W_OK)}")
+except Exception as e:
+    print(f"Error creating log directory: {e}")
 
 class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
     def __init__(self, address, values):
         super().__init__(address, values)
-        # 로거 설정 추가
-        self.logger = logging.getLogger('gas_cabinet_server')
+        
+        # 로거 설정 수정
+        global logger  # 전역 logger 사용
+        self.logger = logger  # 기존에 생성된 logger 사용
+
         self.last_log_time = 0
         self.LOG_INTERVAL = 1
         self._buffer = []
@@ -496,24 +510,34 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
 
         # 알람 코드 확인 및 저장
         alarm_code = values[8]
+
         if alarm_code > 0:
-            description = gas_cabinet_alarm_code.get_description(alarm_code)
-            
-            # Unknown Alarm Code가 아닌 경우에만 저장
-            if description != f"Unknown Alarm Code: {alarm_code}":
-                asyncio.create_task(
-                    self.db_manager.save_alarm(
-                        f"gas_{gas_cabinet_id}", 
-                        alarm_code, 
-                        f"Gas Cabinet {gas_cabinet_id} Alarm: Code {alarm_code} - {description}"
-                    )
-                )
+            try:
+                # get_gas_cabinet_descriptions()에서 알람 정보 가져오기
+                alarm_info = get_gas_cabinet_descriptions().get(alarm_code)
+                
+                if alarm_info:
+                    # 알람 정보에서 한글 설명, 영문 설명, 디스플레이 번호 추출
+                    ko_desc, en_desc, display_num = alarm_info
+                    
+                    # Unknown Alarm Code가 아닌 경우에만 저장
+                    if en_desc != f"Unknown Alarm Code: {alarm_code}":
+                        asyncio.create_task(
+                            self.db_manager.save_alarm(
+                                f"gas_{gas_cabinet_id}", 
+                                alarm_code, 
+                                f"Gas Cabinet {gas_cabinet_id} Alarm: Code {alarm_code} - {en_desc}",
+                                display_num  # 디스플레이 번호 추가
+                            )
+                        )
+            except Exception as e:
+                logger.error(f"Alarm save failed: {e}", exc_info=True)
 
         try:
         
             if bunker_id > 0 and gas_cabinet_id > 0:
                 # PLC 데이터 영역 log 작성
-                self.logger.info("=========Gas Cabinet plc_data 시작 =========\n")
+                self.logger.info("=========Gas Cabinet plc_data 시작 =========")
                 values = self.getValues(1, 120)  # 주소 1부터 읽기
 
                 # 기본 정보
@@ -631,6 +655,11 @@ class CustomModbusSequentialDataBlock(ModbusSequentialDataBlock):
         except Exception as e:
             self.logger.error(f"Logging error: {e}", exc_info=True)
 
+    def __del__(self):
+        """객체 소멸 시 배치 저장 중지"""
+        if hasattr(self, 'db_manager'):
+            self.db_manager.stop_batch_save()
+
 class CustomModbusSlaveContext(ModbusSlaveContext):
     def __init__(self):
         super().__init__(
@@ -639,6 +668,9 @@ class CustomModbusSlaveContext(ModbusSlaveContext):
             hr=CustomModbusSequentialDataBlock(0, [0]*1000),
             ir=CustomModbusSequentialDataBlock(0, [0]*1000)
         )
+        # 전역 로거 사용
+        global logger
+        self.logger = logger
         self.TIME_SYNC_ADDRESS = 900
         self.update_time()
     

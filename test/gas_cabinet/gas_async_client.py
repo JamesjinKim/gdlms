@@ -157,26 +157,6 @@ async def run_client():
     client = None
     loop = asyncio.get_running_loop()
     should_exit = asyncio.Event()
-
-    async def read_time_sync_data():
-        """시간 동기화 데이터 읽기"""
-        try:
-            if client and client.connected:
-                # 주소 0-5에서 시간 데이터 읽기
-                result = await client.read_holding_registers(
-                    address=0,
-                    count=6,
-                    slave=1
-                )
-                if result and not result.isError():
-                    time_data = result.registers
-                    print("\n=== 수신된 시간 동기화 데이터 ===")
-                    print(f"날짜: {time_data[0]:04d}년 {time_data[1]:02d}월 {time_data[2]:02d}일")
-                    print(f"시간: {time_data[3]:02d}시 {time_data[4]:02d}분 {time_data[5]:02d}초")
-                    return time_data
-        except Exception as e:
-            print(f"시간 동기화 데이터 읽기 오류: {e}")
-        return None
     
     async def connect_client():
         nonlocal client
@@ -187,8 +167,7 @@ async def run_client():
                 connected = await client.connect()
                 if connected:
                     print("서버 연결 성공!")
-                    # 연결 직후 시간 동기화 데이터 읽기
-                    await read_time_sync_data()
+                    
                 else:
                     print("서버 연결 실패!")
                 return connected
@@ -204,8 +183,6 @@ async def run_client():
             return
                 
         try:
-            # 시간 동기화 데이터 읽기
-            await read_time_sync_data()
 
             # Data area (0-99) 데이터 전송
             data = generate_plc_data()
